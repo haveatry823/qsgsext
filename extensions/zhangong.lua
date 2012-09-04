@@ -15,15 +15,20 @@ zggamedata.enable=0
 
 zgfunc[sgs.CardFinished]={}
 zgfunc[sgs.ChoiceMade]={}
+
 zgfunc[sgs.Damage]={}
 zgfunc[sgs.DamageCaused]={}
 zgfunc[sgs.Damaged]={}
+
 zgfunc[sgs.Death]={}
 zgfunc[sgs.EventPhaseEnd]={}
+
 zgfunc[sgs.FinishRetrial]={}
+
 zgfunc[sgs.GameOverJudge]={}
 zgfunc[sgs.GameOverJudge]["callback"]={}
 zgfunc[sgs.SlashEffected]={}
+
 zgfunc[sgs.TurnStart]={}
 
 require "sqlite3"
@@ -386,7 +391,8 @@ end
 zgfunc[sgs.FinishRetrial].jlsj=function(self, room, event, player, data,isOwner)
 	local name="jlsj"
 	local judge=data:toJudge()
-	if judge.reason=="indulgence" and judge.who:objectName()==room:getOwner():objectName() and not judge:isBad() then
+	if judge.reason=="indulgence" and judge.who:objectName()==room:getOwner():objectName() 
+			and not judge:isBad() then
 		addGameData(name,1)
 		if getGameData(name)>=3 then 			 
 			addZhanGong(room,name)
@@ -398,7 +404,8 @@ end
 zgfunc[sgs.FinishRetrial].alg=function(self, room, event, player, data,isOwner)
 	local name="alg"
 	local judge=data:toJudge()
-	if judge.reason=="indulgence" and judge.who:objectName()==room:getOwner():objectName() and judge:isBad() then
+	if judge.reason=="indulgence" and judge.who:objectName()==room:getOwner():objectName() 
+			and judge:isBad() then
 		addGameData(name,1)
 		if getGameData(name)>=3 then 			 
 			addZhanGong(room,name)
@@ -410,7 +417,8 @@ end
 zgfunc[sgs.FinishRetrial].bjlz=function(self, room, event, player, data,isOwner)
 	local name="bjlz"
 	local judge=data:toJudge()
-	if judge.reason=="supply_shortage" and judge.who:objectName()==room:getOwner():objectName() and not judge:isBad() then
+	if judge.reason=="supply_shortage" and judge.who:objectName()==room:getOwner():objectName() 
+			and not judge:isBad() then
 		addGameData(name,1)
 		if getGameData(name)>=3 then 			 
 			addZhanGong(room,name)
@@ -422,7 +430,8 @@ end
 zgfunc[sgs.FinishRetrial].jcll=function(self, room, event, player, data,isOwner)
 	local name="jcll"
 	local judge=data:toJudge()
-	if judge.reason=="supply_shortage" and judge.who:objectName()==room:getOwner():objectName() and judge:isBad() then
+	if judge.reason=="supply_shortage" and judge.who:objectName()==room:getOwner():objectName() 
+			and judge:isBad() then
 		addGameData(name,1)
 		if getGameData(name)>=3 then 			 
 			addZhanGong(room,name)
@@ -486,8 +495,8 @@ zgfunc[sgs.GameOverJudge].tongji=function(self, room, event, player, data,isOwne
 	end
 	setGameData("enable",0)
 	sqlexec("update results set general='%s',turncount=%d,alive=%d,result='%s',wen=wen+%d,wu=wu+%d,expval=expval+%d where id=%d",
-			owner:getGeneralName(),getGameData("turncount"),alive,result,
-			getTurnData("wen"),getTurnData("wu"),getTurnData("expval"),getGameData("roomid"))
+			owner:getGeneralName(),getGameData("turncount"),alive,result,getTurnData("wen"),
+			getTurnData("wu"),getTurnData("expval"),getGameData("roomid"))
 	
 	local callbacks=zgfunc[sgs.GameOverJudge]["callback"]
 	for name, func in pairs(callbacks) do
@@ -649,8 +658,8 @@ zgfunc[sgs.TurnStart].init=function(self, room, event, player, data,isOwner)
 	addGameData("turncount",1)
 	local alive=room:getOwner():isAlive() and 1 or 0
 	sqlexec("update results set general='%s',turncount=%d,alive=%d,wen=wen+%d,wu=wu+%d,expval=expval+%d where id=%d",
-			room:getOwner():getGeneralName(),getGameData("turncount"), alive,
-			getTurnData("wen"),getTurnData("wu"),getTurnData("expval"),getGameData("roomid"))
+			room:getOwner():getGeneralName(),getGameData("turncount"), alive,getTurnData("wen"),
+			getTurnData("wu"),getTurnData("expval"),getGameData("roomid"))
 	for key,val in pairs(zgturndata) do
 		zgturndata[key]=0
 	end	
@@ -660,7 +669,7 @@ end
 zgfunc[sgs.SlashEffected].dqbr=function(self, room, event, player, data,isOwner)
 	local effect= data:toSlashEffect()
 	local armor= (effect.to:getArmor() and effect.to:getArmor():isKindOf("RenwangShield")) 
-						or ((not effect.to:getArmor()) and effect.to:hasSkill("yizhong"))
+			or ((not effect.to:getArmor()) and effect.to:hasSkill("yizhong"))
 	if effect.to:getMark("qinggang") then armor=false end
 	if armor and effect.to:objectName()==room:getOwner():objectName() and effect.slash:isBlack() then
 		local name="dqbr"
@@ -767,7 +776,7 @@ function init_gamestart(self, room, event, player, data, isOwner)
 		setTurnData("wu",0)
 		setTurnData("expval",0)
 		sqlexec("insert into results values(%d,'%s','%s','%s',0,1,'-',0,0,0)",
-					getGameData("roomid"),player:getGeneralName(),player:getRole(),room:getMode())
+				getGameData("roomid"),player:getGeneralName(),player:getRole(),room:getMode())
 		sqlexec("update gamedata set num=0")
 	end	
 	local skilldata=db:rows("select skillname from skills where gained-used>0 order by random() limit 10")
