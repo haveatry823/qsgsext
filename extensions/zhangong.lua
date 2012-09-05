@@ -12,6 +12,7 @@ zggamedata={}
 zggamedata.turncount=0
 zggamedata.roomid=0
 zggamedata.enable=0
+zggamedata.hegemony=0
 
 zgfunc[sgs.CardFinished]={}
 zgfunc[sgs.ChoiceMade]={}
@@ -509,146 +510,55 @@ zgfunc[sgs.GameOverJudge].tongji=function(self, room, event, player, data,isOwne
 	end
 end
 
-zgfunc[sgs.GameOverJudge].callback.ccml=function(room,player,data,name,result)
-	local sql=string.format("select count(id) as num from results where result<>'-'")	
-	for row in db:rows(sql) do
-		if row.num==1 then 			 
-			addZhanGong(room,name)
-		end
-	end
-end
-
-zgfunc[sgs.GameOverJudge].callback.csss=function(room,player,data,name,result)
-	local sql=string.format("select count(id) as num from results where result<>'-'")
-	for row in db:rows(sql) do
-		if row.num==5 then 			
-			addZhanGong(room,name)
-		end
-	end
-end
-
-zgfunc[sgs.GameOverJudge].callback.xsnd=function(room,player,data,name,result)
-	local sql=string.format("select count(id) as num from results where result<>'-'")
-	for row in db:rows(sql) do
-		if row.num==10 then			 
-			addZhanGong(room,name)
-		end
-	end
-end
-
-zgfunc[sgs.GameOverJudge].callback.xymq=function(room,player,data,name,result)
-	local sql=string.format("select count(id) as num from results where result<>'-'")
-	for row in db:rows(sql) do
-		if row.num==20 then 			 
-			addZhanGong(room,name)
-		end
-	end
-end
-
-zgfunc[sgs.GameOverJudge].callback.fmbl=function(room,player,data,name,result)
-	local sql=string.format("select count(id) as num from results where result<>'-'")
-	for row in db:rows(sql) do
-		if row.num==30 then 			 
-			addZhanGong(room,name)
-		end
-	end
-end
-
-
-zgfunc[sgs.GameOverJudge].callback.wwdz=function(room,player,data,name,result)	
-	local sql=string.format("select count(id) as num from results where role='renegade' and result='win'")
-	if result =='win' and room:getOwner():getRole()=="renegade" then 
+for zgname, count in pairs({ccml=1,csss=5,xsnd=10,xymq=20,fmbl=30}) do
+	zgfunc[sgs.GameOverJudge].callback.zgname=function(room,player,data,name,result)
+		local sql=string.format("select count(id) as num from results where result<>'-'")	
 		for row in db:rows(sql) do
-			if row.num==1 then addZhanGong(room,name) end
+			if row.num==count then 			 
+				addZhanGong(room,zgname)
+			end
 		end
 	end
 end
 
+for data in db:rows("select id,category,general,num from zhangong where num>0 ") do
+	zgfunc[sgs.GameOverJudge].callback[data.id]=function(room,player,data,name,result)			
+		local mode=room:getMode()
+		if result ~='win' then return false end
+		if data.category=="3v3" and room:getMode()~="06_3v3" then return false end
+		if data.category=="1v1" and room:getMode()~="02_1v1" then return false end
+		if data.category=="wujiang" and
+				(mode=="06_3v3" or mode=="02_1v1" or mode=="04_1v3" or getGameData("hegemony")==1) then
+			return false
+		end
+		local flag=false		
+		local role=player:getRole()
+		local sql="select count(id) as num from results where result='win' "
 
-zgfunc[sgs.GameOverJudge].callback.ycww=function(room,player,data,name,result)	
-	local sql=string.format("select count(id) as num from results where role='renegade' and result='win'")
-	if result =='win' and room:getOwner():getRole()=="renegade" then 
+		if data.general=="-" then
+			sql=sql..string.format("and 1 ")
+		elseif data.general==player:getGeneralName() then
+			sql=sql..string.format("and general='%s' ",data.general)
+		elseif data.general==player:getRole() then
+			sql=sql..string.format("and role='%s' ",data.general)
+		elseif data.general==player:getKingdom() then
+			sql=sql..string.format("and kingdom='%s' ",data.general)
+		elseif data.general=="leader" and (role=="lord" or role =="renegade") and mode=="06_3v3" then
+			sql=sql..string.format("and mode='06_3v3' and (role=='lord' or role =='renegade') ")
+		elseif data.general=="guard" and (role=="loyalist" or role =="rebel") and mode=="06_3v3" then
+			sql=sql..string.format("and mode='06_3v3' and (role=='loyalist' or role =='rebel') ")
+		else
+			return false
+		end
+
+		if data.category=="3v3" then sql=sql.."and mode=='06_3v3' " end
+		if data.category=="1v1" then sql=sql.."and mode=='02_1v1' " end
+		if data.category=="wujiang" then 
+			sql=sql.." and hegemony=0 and mode not in ('06_3v3','02_1v1','04_1v3') "
+		end
+		
 		for row in db:rows(sql) do
-			if row.num==20 then addZhanGong(room,name) end
-		end
-	end
-end
-
-zgfunc[sgs.GameOverJudge].callback.zxgg=function(room,player,data,name,result)	
-	local sql=string.format("select count(id) as num from results where role='loyalist' and result='win'")
-	if result =='win' and room:getOwner():getRole()=="loyalist" then 
-		for row in db:rows(sql) do
-			if row.num==60 then addZhanGong(room,name) end
-		end
-	end
-end
-
-
-zgfunc[sgs.GameOverJudge].callback.cttz=function(room,player,data,name,result)	
-	local sql=string.format("select count(id) as num from results where role='rebel' and result='win'")
-	if result =='win' and room:getOwner():getRole()=="rebel" then 
-		for row in db:rows(sql) do
-			if row.num==100 then addZhanGong(room,name) end
-		end
-	end
-end
-
-zgfunc[sgs.GameOverJudge].callback.jltx=function(room,player,data,name,result)	
-	local sql=string.format("select count(id) as num from results where role='lord' and result='win'")
-	if result =='win' and room:getOwner():getRole()=="lord" then 
-		for row in db:rows(sql) do
-			if row.num==40 then addZhanGong(room,name) end
-		end
-	end
-end
-
-
-zgfunc[sgs.GameOverJudge].callback.ccsg=function(room,player,data,name,result)	
-	local sql=string.format("select count(id) as num from results where result='win'")
-	if result ~='win' then return false end
-	for row in db:rows(sql) do
-		if row.num==1 then 			 
-			addZhanGong(room,name)
-		end
-	end
-end
-
-zgfunc[sgs.GameOverJudge].callback.cjss=function(room,player,data,name,result)
-	local sql=string.format("select count(id) as num from results where result='win'")
-	if result ~='win' then return false end	
-	for row in db:rows(sql) do
-		if row.num==5 then 			
-			addZhanGong(room,name)
-		end
-	end
-end
-
-zgfunc[sgs.GameOverJudge].callback.zjss=function(room,player,data,name,result)
-	local sql=string.format("select count(id) as num from results where result='win'")
-	if result ~='win' then return false end
-	for row in db:rows(sql) do
-		if row.num==10 then 			 
-			addZhanGong(room,name)
-		end
-	end
-end
-
-zgfunc[sgs.GameOverJudge].callback.gjss=function(room,player,data,name,result)
-	local sql=string.format("select count(id) as num from results where result='win'")
-	if result ~='win' then return false end
-	for row in db:rows(sql) do
-		if row.num==20 then 			 
-			addZhanGong(room,name)
-		end
-	end
-end
-
-zgfunc[sgs.GameOverJudge].callback.qzss=function(room,player,data,name,result)
-	local sql=string.format("select count(id) as num from results where result='win'")
-	if result ~='win' then return false end
-	for row in db:rows(sql) do
-		if row.num==30 then 			 
-			addZhanGong(room,name)
+			if row.num==data.num then addZhanGong(room,name) end
 		end
 	end
 end
@@ -657,8 +567,8 @@ zgfunc[sgs.TurnStart].init=function(self, room, event, player, data,isOwner)
 	if not isOwner then return false end
 	addGameData("turncount",1)
 	local alive=room:getOwner():isAlive() and 1 or 0
-	sqlexec("update results set general='%s',turncount=%d,alive=%d,wen=wen+%d,wu=wu+%d,expval=expval+%d where id=%d",
-			room:getOwner():getGeneralName(),getGameData("turncount"), alive,getTurnData("wen"),
+	sqlexec("update results set general='%s',kingdom='%s',turncount=%d,alive=%d,wen=wen+%d,wu=wu+%d,expval=expval+%d where id=%d",
+			room:getOwner():getGeneralName(),room:getOwner():getKingdom(),getGameData("turncount"), alive,getTurnData("wen"),
 			getTurnData("wu"),getTurnData("expval"),getGameData("roomid"))
 	for key,val in pairs(zgturndata) do
 		zgturndata[key]=0
@@ -769,14 +679,16 @@ function init_gamestart(self, room, event, player, data, isOwner)
 	end
 
 	setGameData("enable",1)
+	if string.find(flags,"H") then setGameData("hegemony",1) end
 
 	if getGameData("roomid")==0 then 
 		setGameData("roomid",os.time())
 		setTurnData("wen",0)
 		setTurnData("wu",0)
 		setTurnData("expval",0)
-		sqlexec("insert into results values(%d,'%s','%s','%s',0,1,'-',0,0,0)",
-				getGameData("roomid"),player:getGeneralName(),player:getRole(),room:getMode())
+		sqlexec("insert into results values(%d,'%s','%s' '%s','%d','%s',0,1,'-',0,0,0)",
+				getGameData("roomid"),player:getGeneralName(),player:getRole(),
+				player:getKingdom(),getGameData("hegemony"),room:getMode())
 		sqlexec("update gamedata set num=0")
 	end	
 	local skilldata=db:rows("select skillname from skills where gained-used>0 order by random() limit 10")
@@ -842,7 +754,7 @@ function getWinner(room,victim)
 	local alives=sgs.QList2Table(room:getAlivePlayers())
 	
 	--[[
-	if string.find(flags,"H") then		
+	if getGameData("hegemony")==1 then		
         local has_anjiang = false
 		local has_diff_kingdoms = false
         local init_kingdom
