@@ -708,7 +708,7 @@ function broadcastMsg(room,info,...)
 end
 
 function addZhanGong(room,name)
-	sqlexec("update zhangong set num=num+1,lasttime=datetime('now','localtime') where id='%s'",name)
+	sqlexec("update zhangong set gained=gained+1,lasttime=datetime('now','localtime') where id='%s'",name)
 	broadcastMsg(room,"#zhangong_"..name)
 end
 
