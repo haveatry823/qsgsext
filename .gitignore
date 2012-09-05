@@ -19,4 +19,5 @@ skins/
 etc/
 
 !libluasqlite3.dll
-!zhangong.db3
+!zhangong.data
+!sqlite3.dll

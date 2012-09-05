@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+	<hta:application id="ohta" applicationname="myapp" border="thin" borderstyle="normal" caption="yes" icon="QSanguosha.exe" maximizebutton="yes" 
+			minimizebutton="yes" showintaskbar="yes" ingleinstance="no" sysmenu="yes" version="1.0" windowstate="normal" />
+	<title>战功查看器</title> 
+	<style type="text/css">		
+	body{margin-left:10px;font:12px Verdana, Geneva, sans-serif}
+	</style>
+	<script type="text/javascript" language="javascript" src="http://lib.sinaapp.com/js/jquery/1.6/jquery.min.js"></script>
+	<script type="text/javascript" language="javascript" src="http://qsgsext.googlecode.com/svn/trunk/trans.js"></script>
+	<script type="text/javascript" language="javascript" src="http://aui.github.com/artTemplate/template.js"></script>
+	<script type="text/javascript">
+	var data={};
+
+	(function(){		
+		try{
+			var db = new ActiveXObject("LiteX.LiteConnection");
+		}catch(x){
+			return alert("请先运行bat文件注册sqlite3.dll")
+		}
+		db.open("zhangong.data");
+		var ds = new ActiveXObject("LiteX.LiteStatement");
+		ds.ActiveConnection = db
+
+		var sql = "select skillname,gained,used,gained-used as remains from skills order by remains desc";
+		var collist="skillname,gained,used,remains";
+		data.skills=dbquery(sql,collist);
+
+		var sql = "select datetime(id,'unixepoch','localtime') as gametime,* from results";
+		var collist="gametime,id,general,role,kingdom,hegemony,mode,turncount,alive,result,wen,wu,expval";
+		data.results=dbquery(sql,collist);
+
+		var sql = "select * from zhangong order by gained desc";
+		var collist="id,name,score,description,gained,category,lasttime";
+		data.zhangong=dbquery(sql,collist);
+
+		function dbquery(sql,collist){
+			var ds=db.prepare(sql);
+			var ret=[]
+			while (!ds.Step()){
+				var arr=[];
+				var cols=collist.split(",")
+				for (var i=0;i<cols.length;i++){
+					arr[ds.ColumnName(i)]=ds.ColumnValue(cols[i])
+				}
+				ret.push(arr);
+			}
+			return ret;
+		}		
+		ds.close()				
+		//db.close()
+	})()
+	</script>
+</head>
+<body>
+
+<script id="t_skills" type="text/html">
+技能：<br/>
+<table border width="100%">
+	<tr><td>技能卡</td><td>总数</td><td>已消耗</td><td>剩余</td></tr>
+    <% for (i = 0; i<skills.length; i ++) { %>
+        <tr><td><%= gettrans(skills[i].skillname) %></td><td><%= skills[i].gained %></td><td><%= skills[i].used %></td><td><%= skills[i].remains %></td></tr>
+    <% } %>
+</table>
+</script>
+
+
+<script id="t_results" type="text/html">
+战况：<br/>
+<table border width="100%">
+	<tr>
+		<td>游戏时间</td>
+		<td>武将</td>
+		<td>角色</td>
+		<td>模式</td>
+		<td>回合数</td>
+		<td>存活</td>
+		<td>结果</td>
+		<td>文功</td>
+		<td>武功</td>
+		<td>经验</td>		
+	</tr>
+    <% for (i = 0; i<results.length; i ++) { %>
+        <tr>
+		<td><%= results[i].gametime %></td>
+		<td><%= results[i].general %></td>
+		<td><%= results[i].role %></td>
+		<td><%= results[i].mode %></td>
+		<td><%= results[i].turncount %></td>
+		<td><%= results[i].alive %></td>
+		<td><%= results[i].result %></td>
+		<td><%= results[i].wen %></td>
+		<td><%= results[i].wu %></td>
+		<td><%= results[i].expval %></td>		
+	</tr>
+    <% } %>
+</table>
+</script>
+
+<script id="t_zhangong" type="text/html">
+战功：<br/>
+<table border width="100%">
+	<tr>
+		<td>战功</td>
+		<td>获得次数</td>
+		<td>描述</td>
+		<td>最后取得</td>
+	</tr>
+    <% for (i = 0; i<zhangong.length; i ++) { %>
+        <tr>
+		<td><%= zhangong[i].name %></td>
+		<td><%= zhangong[i].gained %></td>
+		<td><%= zhangong[i].description %></td>		
+		<td><%= zhangong[i].lasttime %></td>		
+	</tr>
+    <% } %>
+</table>
+</script>
+
+<script type="text/javascript">
+template.helper('gettrans', function(content){return trans[content] || content;});
+</script>
+
+<table width="100%">
+<tr valign="top">
+<td width="15%"><script>document.write(template('t_skills', data));</script></td>
+<td width="35%"><script>document.write(template('t_results', data));</script></td>
+<td width="50%"><script>document.write(template('t_zhangong', data));</script></td>
+</tr>
+</table>
+
+</body>
+</html>
+
