@@ -36,7 +36,7 @@ require "sqlite3"
 db = sqlite3.open("./zhangong/zhangong.data")
 
 function logmsg(fmt,...)
-	local fp = io.open("zhangong.log","ab")
+	local fp = io.open("zhangong.txt","ab")
 	if type(fmt)=="boolean" then fmt = fmt and "true" or "false" end
 	fp:write(string.format(fmt, unpack(arg)).."\r\n")
 	fp:close()
@@ -51,7 +51,7 @@ end
 zgfunc[sgs.ChoiceMade].srxsm=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
 	local choices= data:toString():split(":")
-	if choices[1]=="skillInvoke" and and choices[2]=="KylinBow" and choices[3]=="yes" then
+	if choices[1]=="skillInvoke"  and  choices[2]=="KylinBow" and choices[3]=="yes" then
 		addGameData(name,1)
 		if getGameData(name)>=3 then
 			addZhanGong(room,name)
@@ -64,7 +64,7 @@ end
 zgfunc[sgs.ChoiceMade].zqxj=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
 	local choices= data:toString():split(":")
-	if choices[1]=="skillInvoke" and and choices[2]=="Fan" and choices[3]=="yes" then
+	if choices[1]=="skillInvoke"  and  choices[2]=="Fan" and choices[3]=="yes" then
 		addGameData(name,1)
 		if getGameData(name)>=3 then
 			addZhanGong(room,name)
@@ -102,7 +102,7 @@ end
 zgfunc[sgs.ChoiceMade].jdld=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
 	local choices= data:toString():split(":")
-	if choices[1]=="skillInvoke" and and choices[2]=="IceSword" and choices[3]=="yes" then
+	if choices[1]=="skillInvoke"  and  choices[2]=="IceSword" and choices[3]=="yes" then
 		addGameData(name,1)
 		if getGameData(name)>=3 then
 			addZhanGong(room,name)
@@ -925,16 +925,18 @@ end
 
 zganjiang:addSkill(zgzhangong)
 initZhangong()
-addTranslation()
 
-function addTranslation()
-	local zgTrList={}
-	local dbdata=db:rows("select id,name,description from zhangong")
-	for row in dbdata do
-		zgTrList["#zhangong_"..row.id]="%from获得了战功【"..row.name.."】,"..row.description
+
+function genTranslation()
+	local zgTrList={}	
+	for row in db:rows("select id,name,description from zhangong") do
+		zgTrList["#zhangong_"..row.id]="%from获得了战功【"..row.name.."】,"..row.description		
 	end
-	sgs.LoadTranslationTable(zgTrList)
+	return zgTrList
 end
+
+
+sgs.LoadTranslationTable(genTranslation())
 
 sgs.LoadTranslationTable {
 	["zhangong"] ="战功包",
@@ -944,3 +946,4 @@ sgs.LoadTranslationTable {
 	["#canntGainSkill"]= "【警告】技能列表为空，无法获得技能",
 	["#gainSkill"]="%from获得了技能卡【%arg】",
 }
+
