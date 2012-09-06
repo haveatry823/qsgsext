@@ -339,9 +339,10 @@ zgfunc[sgs.Death].xbtc=function(self, room, event, player, data,isowner,name)
 	if role1~=role2 then diffgroup=true end
 	if role1=="renegade" or role2=="renegade" then diffgroup=true end
 
-	if getGameData("turncount")==1 and diffgroup and killerName==room:getOwner():objectName() 
+	if getGameData("turncount")==1 and getGameData("get_xbtc")==0 and diffgroup and killerName==room:getOwner():objectName() 
 			and killerName==room:getCurrent():objectName() then
 		addZhanGong(room,name)
+		setGameData("get_xbtc",1)
 	end		
 end
 
@@ -784,7 +785,7 @@ function init_gamestart(self, room, event, player, data, isowner)
 		setTurnData("wen",0)
 		setTurnData("wu",0)
 		setTurnData("expval",0)
-		sqlexec("insert into results values(%d,'%s','%s' '%s','%d','%s',0,1,'-',0,0,0)",
+		sqlexec("insert into results values(%d,'%s','%s','%s','%d','%s',0,1,'-',0,0,0)",
 				getGameData("roomid"),player:getGeneralName(),player:getRole(),
 				player:getKingdom(),getGameData("hegemony"),room:getMode())
 		sqlexec("update gamedata set num=0")
@@ -930,7 +931,7 @@ initZhangong()
 function genTranslation()
 	local zgTrList={}	
 	for row in db:rows("select id,name,description from zhangong") do
-		zgTrList["#zhangong_"..row.id]="%from获得了战功【"..row.name.."】,"..row.description		
+		zgTrList["#zhangong_"..row.id]="%from获得了战功【<font color='yellow'>"..row.name.."</font>】,"..row.description		
 	end
 	return zgTrList
 end
