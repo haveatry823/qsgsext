@@ -1,20 +1,16 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
-	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
-	<hta:application id="ohta" applicationname="myapp" border="thin" borderstyle="normal" caption="yes" icon="QSanguosha.exe" maximizebutton="yes" 
-			minimizebutton="yes" showintaskbar="yes" ingleinstance="no" sysmenu="yes" version="1.0" windowstate="normal" />
-	<title>战功查看器</title> 
-	<style type="text/css">		
-	body{margin-left:10px;font:12px Verdana, Geneva, sans-serif}
-	</style>
-	<script type="text/javascript" language="javascript" src="http://lib.sinaapp.com/js/jquery/1.6/jquery.min.js"></script>
-	<script type="text/javascript" language="javascript" src="http://qsgsext.googlecode.com/svn/trunk/trans.js"></script>
-	<script type="text/javascript" language="javascript" src="http://aui.github.com/artTemplate/template.js"></script>
-	<script type="text/javascript">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<hta:application id="ohta" applicationname="qsgsext" border="thin" borderstyle="normal" caption="yes" icon="../QSanguosha.exe" maximizebutton="no" 
+	minimizebutton="yes" showintaskbar="yes" ingleinstance="no" sysmenu="yes" version="1.0" windowstate="normal" />
+<link href="./js/zg.css" rel="stylesheet" type="text/css">
+<title>太阳神三国杀成就系统</title> 
+<script type="text/javascript" language="javascript" src="./js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" language="javascript" src="./js/jquery.table.js"></script>
+<script type="text/javascript" language="javascript" src="./js/template.min.js"></script>
+<script type="text/javascript" language="javascript" src="./js/trans.js"></script>	
+<script type="text/javascript">
 	var data={};
-
 	(function(){		
 		try{
 			var db = new ActiveXObject("LiteX.LiteConnection");
@@ -29,14 +25,14 @@
 		var collist="skillname,gained,used,remains";
 		data.skills=dbquery(sql,collist);
 
-		var sql = "select datetime(id,'unixepoch','localtime') as gametime,* from results";
+		var sql = "select datetime(id,'unixepoch','localtime') as gametime,* from results order by id desc limit 300";
 		var collist="gametime,id,general,role,kingdom,hegemony,mode,turncount,alive,result,wen,wu,expval";
 		data.results=dbquery(sql,collist);
+		
 
 		var sql = "select * from zhangong order by gained desc";
 		var collist="id,name,score,description,gained,category,lasttime";
 		data.zhangong=dbquery(sql,collist);
-
 		function dbquery(sql,collist){
 			var ds=db.prepare(sql);
 			var ret=[]
@@ -50,88 +46,243 @@
 			}
 			return ret;
 		}		
-		ds.close()				
-		//db.close()
+		ds.close();
+		try{
+			db.close()
+		}catch(x){}
 	})()
-	</script>
+	/*
+		经验值,经验等级
+		战功个数，战功经验
+
+		文功 文等级， 文官职
+		武功 武等级， 武官职		
+
+		shenfen:
+			胜，负，逃
+			主，忠，内，反，的胜率
+			总胜率		
+		3v3:
+			胜，负，逃
+			主帅，前锋，的胜率
+			总胜率
+		1v1:
+			胜，负，逃
+			先手，后手，的胜率
+			总胜率
+		虎牢关:
+			胜，负，逃
+			先手，后手，的胜率
+			总胜率
+		国战:
+			胜，负，逃
+			先手，后手，的胜率
+			总胜率
+
+
+	*/
+</script>
 </head>
 <body>
 
+<script id="t_overview" type="text/html">
+</script>
+
 <script id="t_skills" type="text/html">
-技能：<br/>
-<table border width="100%">
-	<tr><td>技能卡</td><td>总数</td><td>已消耗</td><td>剩余</td></tr>
-    <% for (i = 0; i<skills.length; i ++) { %>
-        <tr><td><%= gettrans(skills[i].skillname) %></td><td><%= skills[i].gained %></td><td><%= skills[i].used %></td><td><%= skills[i].remains %></td></tr>
+<table border width="100%" id="tbl_skills">
+<thead>
+	<tr>
+	<th>技能卡</th><th>总数</th><th>剩余</th>
+	<th>技能卡</th><th>总数</th><th>剩余</th>
+	<th>技能卡</th><th>总数</th><th>剩余</th>
+	<th>技能卡</th><th>总数</th><th>剩余</th>
+	<th>技能卡</th><th>总数</th><th>剩余</th>
+	</tr>
+</thead>
+<tbody>
+    <% for (i = 0; i<skills.length; i+=5) { %>
+        <tr>
+		<td><%= getTrans(skills[i].skillname) %></td><td><%= skills[i].gained %></td><td><%= skills[i].remains %></td>
+		<td><%= getTrans(skills[i+1].skillname) %></td><td><%= skills[i+1].gained %></td><td><%= skills[i+1].remains %></td>
+		<td><%= getTrans(skills[i+2].skillname) %></td><td><%= skills[i+2].gained %></td><td><%= skills[i+2].remains %></td>
+		<td><%= getTrans(skills[i+3].skillname) %></td><td><%= skills[i+3].gained %></td><td><%= skills[i+3].remains %></td>
+		<td><%= getTrans(skills[i+4].skillname) %></td><td><%= skills[i+4].gained %></td><td><%= skills[i+4].remains %></td>
+		</tr>
     <% } %>
+</tbody>
 </table>
 </script>
 
-
 <script id="t_results" type="text/html">
-战况：<br/>
-<table border width="100%">
+<div class="divtitle">显示最近300场游戏记录:</div>
+<table border width="100%" id="tbl_results">
+<thead>	
 	<tr>
-		<td>游戏时间</td>
-		<td>武将</td>
-		<td>角色</td>
-		<td>模式</td>
-		<td>回合数</td>
-		<td>存活</td>
-		<td>结果</td>
-		<td>文功</td>
-		<td>武功</td>
-		<td>经验</td>		
+		<th>游戏时间</th>
+		<th>武将</th>
+		<th>角色</th>
+		<th>开启国战</th>
+		<th>游戏模式</th>		
+		<th>回合数</th>
+		<th>最后存活</th>
+		<th>结果</th>
+		<th>文功</th>
+		<th>武功</th>
+		<th>经验</th>		
 	</tr>
+</thead>	
+<tbody>
     <% for (i = 0; i<results.length; i ++) { %>
-        <tr>
+	<tr>
 		<td><%= results[i].gametime %></td>
-		<td><%= results[i].general %></td>
-		<td><%= results[i].role %></td>
-		<td><%= results[i].mode %></td>
+		<td><%= getGeneral(results[i].general) %></td>
+		<td><%= getRole(results[i].role) %></td>
+		<td align="center"><%= getStatus(results[i].hegemony) %></td>
+		<td><%= getTrans(results[i].mode) %></td>
 		<td><%= results[i].turncount %></td>
-		<td><%= results[i].alive %></td>
-		<td><%= results[i].result %></td>
+		<td  align="center"><%= getStatus(results[i].alive) %></td>
+		<td><%= getTrans(results[i].result) %></td>
 		<td><%= results[i].wen %></td>
 		<td><%= results[i].wu %></td>
 		<td><%= results[i].expval %></td>		
 	</tr>
     <% } %>
+	<% for (i = 0; i< 12 -results.length%12 && results.length%12!=0; i ++) { %>
+	<tr>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>		
+		<td>&nbsp;</td>		
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>		
+		<td>&nbsp;</td>		
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>		
+	</tr>
+	<% } %>
+</tbody>
 </table>
 </script>
 
 <script id="t_zhangong" type="text/html">
-战功：<br/>
-<table border width="100%">
+<table border width="100%" id="tbl_zhangong">
+<thead>
 	<tr>
-		<td>战功</td>
-		<td>获得次数</td>
-		<td>描述</td>
-		<td>最后取得</td>
+		<th>战功</th>
+		<th>获得次数</th>
+		<th>描述</th>
+		<th>最后取得</th>
 	</tr>
+</thead>	
+<tbody>
     <% for (i = 0; i<zhangong.length; i ++) { %>
-        <tr>
+    <tr>
 		<td><%= zhangong[i].name %></td>
 		<td><%= zhangong[i].gained %></td>
 		<td><%= zhangong[i].description %></td>		
 		<td><%= zhangong[i].lasttime %></td>		
 	</tr>
     <% } %>
+	<% for (i = 0; i< 15 -zhangong.length%15 && zhangong.length%15!=0; i++) { %>
+    <tr>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>		
+		<td>&nbsp;</td>		
+	</tr>
+    <% } %>
+</tbody>
 </table>
 </script>
 
 <script type="text/javascript">
-template.helper('gettrans', function(content){return trans[content] || content;});
+var callback={
+	getTrans:function(v){
+		return trans[v] || v;
+	},
+	getGeneral:function(v){
+		return "<img height='20' src='../image/generals/tiny/"+v+".png'/>"+(trans[v] || v);
+	},	
+	getRole:function(v){
+		return "<img height='20' src='../image/system/roles/"+v+"-1.png'/>"+(trans[v] || v);
+	},
+	getStatus:function(v){
+		return v==1 ? "是":"否";
+	}
+};
+
+$.each(callback,function(name,func){	
+	template.helper(name,func)
+});
+
+$(function(){
+	$("a").click(function(){		
+		$(this).blur();
+	});	
+	var arr=["overview","zhangong","results","skills"];
+	$.each(arr,function(i,tab){
+		$("#link_"+tab).click(function(){
+			$.each(arr,function(i,val){
+				$("#"+val).hide();
+				$("#link_"+val).css("color","highlight");
+			});
+			$("#"+tab).show();
+			$("#link_"+tab).css("color","red");						
+		})
+		$("#tbl_"+tab +" tr").each(function(i){
+			if (i%2==0) $(this).css("background","#f5f5f5");			
+		})
+	});
+	$("#link_overview").trigger("click");
+	
+});
 </script>
 
-<table width="100%">
-<tr valign="top">
-<td width="15%"><script>document.write(template('t_skills', data));</script></td>
-<td width="35%"><script>document.write(template('t_results', data));</script></td>
-<td width="50%"><script>document.write(template('t_zhangong', data));</script></td>
-</tr>
-</table>
+<div class="page">
+	<div id="header">		
+		<div id="nav">
+			[ <a href="http://qsanguosha.org/" target="_blank">论坛讨论贴</a> ] 
+			[ <a href="https://github.com/haveatry823/qsgsext" target="_blank" title="本程序的git开源项目地址">github</a> ] 
+			[ <a href="https://code.google.com/p/qsgsext/" target="_blank" title="本程序的SVN开源项目地址">google code</a> ]
+			[ <a href="mailto:haveatry823@qq.com" target="_blank">联系作者</a> ]
+		</div>
+		<div id="menucontainer">
+			<ul id="menu">              
+				<li><a id="link_overview" href="#">概况总结</a></li>
+				<li><a id="link_zhangong" href="#">战功一览</a></li>
+				<li><a id="link_skills" href="#">技能卡</a></li>
+				<li><a id="link_results" href="#">游戏记录</a></li>
+				
+			</ul>            
+		</div>
+	</div>
+    <div id="main">	
+		<div id="overview">
+		<script>document.write(template('t_overview', data));</script>
+		</div>		
+		<div id="zhangong" style="display:none">
+		<script>
+			document.write(template('t_zhangong', data));
+			$("#tbl_zhangong").tablePaging({ pageSize: 15, sorting: false });
+		</script>
+		</div>
 
+		<div id="skills" style="display:none">
+		<script>
+			document.write(template('t_skills', data));
+			$("#tbl_skills").tablePaging({ pageSize: 100, sorting: false});
+		</script>
+		</div>
+		<div id="results" style="display:none">
+		<script>
+			document.write(template('t_results', data));
+			$("#tbl_results").tablePaging({ pageSize: 12, sorting: false});
+		</script>
+		</div>
+    </div>
+
+</div>
 </body>
 </html>
-

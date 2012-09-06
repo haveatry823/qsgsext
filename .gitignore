@@ -3,6 +3,7 @@
 *.sql
 *.q*
 *.txt
+*.ini
 acknowledgement/
 audio/
 backdrop/
