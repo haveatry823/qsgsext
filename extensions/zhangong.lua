@@ -33,7 +33,7 @@ zgfunc[sgs.SlashEffected]={}
 zgfunc[sgs.TurnStart]={}
 
 require "sqlite3"
-db = sqlite3.open("zhangong.data")
+db = sqlite3.open("./zhangong/zhangong.data")
 
 function logmsg(fmt,...)
 	local fp = io.open("zhangong.log","ab")
