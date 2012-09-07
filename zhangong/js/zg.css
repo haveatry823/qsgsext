@@ -256,7 +256,7 @@ div#title
 {
     font-size:1.1em;    
     text-align:left;;
-    margin:2px;
+    margin:10px;
     color:White;
 }
 
@@ -352,4 +352,10 @@ div#title
 
 div.divtitle{
 	height:23px;
+}
+
+.graycolor{
+	filter:gray(enabled=1);
+	FILTER: Alpha(Opacity=100, FinishOpacity=20, Style=2, StartX=0, StartY=0, FinishX=0, FinishY=0) gray;
+	color: #aaaaaa;
 }

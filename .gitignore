@@ -22,3 +22,5 @@ etc/
 !libluasqlite3.dll
 !zhangong.data
 !sqlite3.dll
+!lua5.1.dll
+!lua51.dll

@@ -621,7 +621,7 @@ end
 
 zgfunc[sgs.GameOverJudge].callback.csjj=function(room,player,data,name,result)
 	if result ~='win' then return false end
-	local sql=string.format("select result from results where order by id desc limit 10")	
+	local sql=string.format("select result from results order by id desc limit 10")	
 	local count=0
 	for row in db:rows(sql) do
 		if row.result=='win' then count=count+1 end
@@ -633,10 +633,11 @@ end
 for data in db:rows("select id,category,general,num from zhangong where num>0 ") do
 	zgfunc[sgs.GameOverJudge].callback[data.id]=function(room,player,data,name,result)			
 		local mode=room:getMode()
+		local kingdoms={["wu"]=1,["shu"]=1,["wei"]=1,["qun"]=1,["god"]=1}
 		if result ~='win' then return false end
 		if data.category=="3v3" and room:getMode()~="06_3v3" then return false end
 		if data.category=="1v1" and room:getMode()~="02_1v1" then return false end
-		if data.category=="wujiang" and
+		if kingdoms[data.category] and
 				(mode=="06_3v3" or mode=="02_1v1" or mode=="04_1v3" or getGameData("hegemony")==1) then
 			return false
 		end
@@ -662,7 +663,7 @@ for data in db:rows("select id,category,general,num from zhangong where num>0 ")
 
 		if data.category=="3v3" then sql=sql.."and mode=='06_3v3' " end
 		if data.category=="1v1" then sql=sql.."and mode=='02_1v1' " end
-		if data.category=="wujiang" then 
+		if kingdoms[data.category] and 
 			sql=sql.." and hegemony=0 and mode not in ('06_3v3','02_1v1','04_1v3') "
 		end
 		

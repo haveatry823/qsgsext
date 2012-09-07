@@ -11,6 +11,7 @@
 <script type="text/javascript" language="javascript" src="./js/trans.js"></script>	
 <script type="text/javascript">
 	var data={};
+	var zglist=["zhonghe","wei","shu","wu","qun","god","3v3","1v1"];
 	(function(){		
 		try{
 			var db = new ActiveXObject("LiteX.LiteConnection");
@@ -21,18 +22,20 @@
 		var ds = new ActiveXObject("LiteX.LiteStatement");
 		ds.ActiveConnection = db
 
-		var sql = "select skillname,gained,used,gained-used as remains from skills order by remains desc";
-		var collist="skillname,gained,used,remains";
+		var sql = "select skillname,gained,used,gained-used as remainnum from skills order by remainnum desc";
+		var collist="skillname,gained,used,remainnum";
 		data.skills=dbquery(sql,collist);
 
 		var sql = "select datetime(id,'unixepoch','localtime') as gametime,* from results order by id desc limit 300";
 		var collist="gametime,id,general,role,kingdom,hegemony,mode,turncount,alive,result,wen,wu,expval";
 		data.results=dbquery(sql,collist);
 		
+		$.each(zglist,function(i,val){
+			var sql = "select * from zhangong where category='"+val+"' order by general,num asc";
+			var collist="id,name,score,description,gained,category,lasttime,general,num";
+			data["zg"+val]=dbquery(sql,collist);
+		});
 
-		var sql = "select * from zhangong order by gained desc";
-		var collist="id,name,score,description,gained,category,lasttime";
-		data.zhangong=dbquery(sql,collist);
 		function dbquery(sql,collist){
 			var ds=db.prepare(sql);
 			var ret=[]
@@ -78,8 +81,6 @@
 			胜，负，逃
 			先手，后手，的胜率
 			总胜率
-
-
 	*/
 </script>
 </head>
@@ -102,11 +103,11 @@
 <tbody>
     <% for (i = 0; i<skills.length; i+=5) { %>
         <tr>
-		<td><%= getTrans(skills[i].skillname) %></td><td><%= skills[i].gained %></td><td><%= skills[i].remains %></td>
-		<td><%= getTrans(skills[i+1].skillname) %></td><td><%= skills[i+1].gained %></td><td><%= skills[i+1].remains %></td>
-		<td><%= getTrans(skills[i+2].skillname) %></td><td><%= skills[i+2].gained %></td><td><%= skills[i+2].remains %></td>
-		<td><%= getTrans(skills[i+3].skillname) %></td><td><%= skills[i+3].gained %></td><td><%= skills[i+3].remains %></td>
-		<td><%= getTrans(skills[i+4].skillname) %></td><td><%= skills[i+4].gained %></td><td><%= skills[i+4].remains %></td>
+		<td><%= getTrans(skills[i].skillname) %></td><td><%= skills[i].gained %></td><td><%= skills[i].remainnum %></td>
+		<td><%= getTrans(skills[i+1].skillname) %></td><td><%= skills[i+1].gained %></td><td><%= skills[i+1].remainnum %></td>
+		<td><%= getTrans(skills[i+2].skillname) %></td><td><%= skills[i+2].gained %></td><td><%= skills[i+2].remainnum %></td>
+		<td><%= getTrans(skills[i+3].skillname) %></td><td><%= skills[i+3].gained %></td><td><%= skills[i+3].remainnum %></td>
+		<td><%= getTrans(skills[i+4].skillname) %></td><td><%= skills[i+4].gained %></td><td><%= skills[i+4].remainnum %></td>
 		</tr>
     <% } %>
 </tbody>
@@ -146,56 +147,123 @@
 		<td><%= results[i].wu %></td>
 		<td><%= results[i].expval %></td>		
 	</tr>
-    <% } %>
-	<% for (i = 0; i< 12 -results.length%12 && results.length%12!=0; i ++) { %>
-	<tr>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>		
-		<td>&nbsp;</td>		
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>		
-		<td>&nbsp;</td>		
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>		
-	</tr>
-	<% } %>
+    <% } %>	
 </tbody>
 </table>
 </script>
 
-<script id="t_zhangong" type="text/html">
-<table border width="100%" id="tbl_zhangong">
-<thead>
-	<tr>
-		<th>战功</th>
-		<th>获得次数</th>
-		<th>描述</th>
-		<th>最后取得</th>
-	</tr>
-</thead>	
+<script id='t_zhonghe' type='text/html'>
+<table border width='100%' id='tbl_zhonghe'>
 <tbody>
-    <% for (i = 0; i<zhangong.length; i ++) { %>
+    <% for (i = 0; i<zgzhonghe.length; i+=10) { %>		
     <tr>
-		<td><%= zhangong[i].name %></td>
-		<td><%= zhangong[i].gained %></td>
-		<td><%= zhangong[i].description %></td>		
-		<td><%= zhangong[i].lasttime %></td>		
+		<% for (j = 0; j<10; j++) { %>
+			<td><%= getZgInfo(zgzhonghe[i+j]) %></td>
+		<% } %>			
 	</tr>
-    <% } %>
-	<% for (i = 0; i< 15 -zhangong.length%15 && zhangong.length%15!=0; i++) { %>
-    <tr>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>		
-		<td>&nbsp;</td>		
-	</tr>
-    <% } %>
+    <% } %>	
 </tbody>
 </table>
 </script>
+
+<script id='t_wei' type='text/html'>
+<table border width='100%' id='tbl_wei'>
+<tbody>
+    <% for (i = 0; i<zgwei.length; i+=10) { %>		
+    <tr>
+		<% for (j = 0; j<10; j++) { %>
+			<td><%= getZgInfo(zgwei[i+j]) %></td>
+		<% } %>			
+	</tr>
+    <% } %>	
+</tbody>
+</table>
+</script>
+
+<script id='t_shu' type='text/html'>
+<table border width='100%' id='tbl_shu'>
+<tbody>
+    <% for (i = 0; i<zgshu.length; i+=10) { %>		
+    <tr>
+		<% for (j = 0; j<10; j++) { %>
+			<td><%= getZgInfo(zgshu[i+j]) %></td>
+		<% } %>			
+	</tr>
+    <% } %>	
+</tbody>
+</table>
+</script>
+
+<script id='t_wu' type='text/html'>
+<table border width='100%' id='tbl_wu'>
+<tbody>
+    <% for (i = 0; i<zgwu.length; i+=10) { %>		
+    <tr>
+		<% for (j = 0; j<10; j++) { %>
+			<td><%= getZgInfo(zgwu[i+j]) %></td>
+		<% } %>			
+	</tr>
+    <% } %>	
+</tbody>
+</table>
+</script>
+
+<script id='t_qun' type='text/html'>
+<table border width='100%' id='tbl_qun'>
+<tbody>
+    <% for (i = 0; i<zgqun.length; i+=10) { %>		
+    <tr>
+		<% for (j = 0; j<10; j++) { %>
+			<td><%= getZgInfo(zgqun[i+j]) %></td>
+		<% } %>			
+	</tr>
+    <% } %>	
+</tbody>
+</table>
+</script>
+
+<script id='t_god' type='text/html'>
+<table border width='100%' id='tbl_god'>
+<tbody>
+    <% for (i = 0; i<zggod.length; i+=10) { %>		
+    <tr>
+		<% for (j = 0; j<10; j++) { %>
+			<td><%= getZgInfo(zggod[i+j]) %></td>
+		<% } %>			
+	</tr>
+    <% } %>	
+</tbody>
+</table>
+</script>
+
+<script id='t_3v3' type='text/html'>
+<table border width='100%' id='tbl_3v3'>
+<tbody>
+    <% for (i = 0; i<zg3v3.length; i+=10) { %>		
+    <tr>
+		<% for (j = 0; j<10; j++) { %>
+			<td><%= getZgInfo(zg3v3[i+j]) %></td>
+		<% } %>			
+	</tr>
+    <% } %>	
+</tbody>
+</table>
+</script>
+
+<script id='t_1v1' type='text/html'>
+<table border width='100%' id='tbl_1v1'>
+<tbody>
+    <% for (i = 0; i<zg1v1.length; i+=10) { %>		
+    <tr>
+		<% for (j = 0; j<10; j++) { %>
+			<td><%= getZgInfo(zg1v1[i+j]) %></td>
+		<% } %>			
+	</tr>
+    <% } %>	
+</tbody>
+</table>
+</script>
+
 
 <script type="text/javascript">
 var callback={
@@ -210,6 +278,20 @@ var callback={
 	},
 	getStatus:function(v){
 		return v==1 ? "是":"否";
+	},
+	getZgInfo:function(info){
+		if (!info)	return "<div style='width:53px'>&nbsp;</div>";
+		var imgsrc="./img/"+info.id+".png";
+		if ($.inArray(info.category,["wei","shu","wu","qun","god"])!=-1 && info.general!=='-'){
+			imgsrc="../image/generals/avatar/"+info.general+".png";
+			if ($.inArray(info.general,["guanxingzhangbao","erzhang","yanliangwenchou"])!=-1){
+				imgsrc="../image/generals/big/"+info.general+".png";
+			}
+		}
+		var enableStr= info.gained >0 ? "" : " class='graycolor'";
+		return "<div style='text-align:center;margin:3px' title='"+info.description
+				+"'><img height='53' src='"+imgsrc+"' "+enableStr+"/><div style='margin-top:6px;'"
+				+enableStr+">"+info.name+"</div></div>";
 	}
 };
 
@@ -217,28 +299,31 @@ $.each(callback,function(name,func){
 	template.helper(name,func)
 });
 
+var tabLists=$.merge(["overview","results","skills"],zglist);
+var tabPageNum=[100,12,100,5,5,5,5,5,5,5,5];
+
 $(function(){
 	$("a").click(function(){		
 		$(this).blur();
-	});	
-	var arr=["overview","zhangong","results","skills"];
-	$.each(arr,function(i,tab){
+	});		
+	$.each(tabLists,function(i,tab){
 		$("#link_"+tab).click(function(){
-			$.each(arr,function(i,val){
-				$("#"+val).hide();
+			$.each(tabLists,function(i,val){
+				$("#div_"+val).hide();
 				$("#link_"+val).css("color","highlight");
 			});
-			$("#"+tab).show();
+			$("#div_"+tab).show();
 			$("#link_"+tab).css("color","red");						
 		})
 		$("#tbl_"+tab +" tr").each(function(i){
 			if (i%2==0) $(this).css("background","#f5f5f5");			
 		})
 	});
-	$("#link_overview").trigger("click");
-	
+	$("#link_zhonghe").trigger("click");			
 });
 </script>
+
+
 
 <div class="page">
 	<div id="header">		
@@ -251,38 +336,29 @@ $(function(){
 		<div id="menucontainer">
 			<ul id="menu">              
 				<li><a id="link_overview" href="#">概况总结</a></li>
-				<li><a id="link_zhangong" href="#">战功一览</a></li>
+				<li><a id="link_zhonghe" href="#">综合</a></li>
+				<li><a id="link_wei" href="#">魏</a></li>
+				<li><a id="link_shu" href="#">蜀</a></li>
+				<li><a id="link_wu" href="#">吴</a></li>
+				<li><a id="link_qun" href="#">群</a></li>
+				<li><a id="link_god" href="#">神</a></li>
+				<li><a id="link_3v3" href="#">3v3</a></li>
+				<li><a id="link_1v1" href="#">1v1</a></li>
 				<li><a id="link_skills" href="#">技能卡</a></li>
-				<li><a id="link_results" href="#">游戏记录</a></li>
-				
+				<li><a id="link_results" href="#">游戏记录</a></li>				
 			</ul>            
 		</div>
 	</div>
-    <div id="main">	
-		<div id="overview">
-		<script>document.write(template('t_overview', data));</script>
-		</div>		
-		<div id="zhangong" style="display:none">
-		<script>
-			document.write(template('t_zhangong', data));
-			$("#tbl_zhangong").tablePaging({ pageSize: 15, sorting: false });
-		</script>
-		</div>
-
-		<div id="skills" style="display:none">
-		<script>
-			document.write(template('t_skills', data));
-			$("#tbl_skills").tablePaging({ pageSize: 100, sorting: false});
-		</script>
-		</div>
-		<div id="results" style="display:none">
-		<script>
-			document.write(template('t_results', data));
-			$("#tbl_results").tablePaging({ pageSize: 12, sorting: false});
-		</script>
-		</div>
+    <div id="main">
+		<script type="text/javascript">
+			$.each(tabLists,function(i,tab){
+				document.write('<div id="div_'+tab+'" style="display:none">');
+				document.write(template('t_'+tab, data));
+				document.write('</div>');
+				$("#tbl_"+tab).tablePaging({ pageSize: tabPageNum[i],sorting:false, fillBlank:true});
+			});			
+		</script>		
     </div>
-
 </div>
 </body>
 </html>
