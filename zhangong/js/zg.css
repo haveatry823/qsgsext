@@ -359,3 +359,7 @@ div.divtitle{
 	FILTER: Alpha(Opacity=100, FinishOpacity=20, Style=2, StartX=0, StartY=0, FinishX=0, FinishY=0) gray;
 	color: #aaaaaa;
 }
+
+#tbl_overview tr{
+	height:25px;
+}

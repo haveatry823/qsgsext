@@ -35,7 +35,45 @@
 			var collist="id,name,score,description,gained,category,lasttime,general,num";
 			data["zg"+val]=dbquery(sql,collist);
 		});
+		
+		var info={v3:{},role:{},hegemony:{},v1:{},hulao:{},total:{},wen:{},wu:{},expval:{},zg:{}};
+		
+		function getResult(mode,cond,ratearr){
+			info[mode].winnum=db.execute("select count(id) from results where " + cond +" and result='win'");
+			info[mode].losenum=db.execute("select count(id) from results where " + cond +" and result='lose'");
+			info[mode].escnum=db.execute("select count(id) from results where " + cond +" and result='-'");
+			info[mode].totalnum=info[mode].winnum + info[mode].losenum + info[mode].escnum;
+			info[mode].winrate= (100 *info[mode].winnum/info[mode].totalnum).toFixed(1)+"%";
+			for(var i=0;i<ratearr.length;i++){
+				info[mode]["winnum_"+(i+1)]	= db.execute("select count(id) from results where " + cond +" and result='win' and "+ratearr[i]);
+				info[mode]["winrate_"+(i+1)] = (100*info[mode]["winnum_"+(i+1)] / info[mode].totalnum).toFixed(1)+"%";
+			}
+		}
+		getResult("hulao","mode='04_1v3' and hegemony=0",["role='lord'","role='rebel'"]);
+		getResult("v3",  "mode='06_3v3' and hegemony=0",["role in ('lord','renegade')","role in ('loyalist','rebel')"]);
+		getResult("v1",  "mode='02_1v1' and hegemony=0",["role='renegade'","role='lord'"]);
+		getResult("role","mode like '__p%' and hegemony=0",["role='lord'","role='loyalist'","role='renegade'","role='rebel'"]);		
+		getResult("hegemony","hegemony=1",["kingdom='wei'","kingdom='shu'","kingdom='wu'","kingdom='qun'"]);	
+		getResult("total","1",[]);	
+		info.wen.score=db.execute("select sum(wen) from results");
+		info.wu.score=db.execute("select sum(wu) from results");
+		info.expval.score=db.execute("select sum(expval) from results");
+		info.expval.level=Math.ceil(Math.pow(info.expval.score,1/3));
+		info.zg.num=db.execute("select count(id) from zhangong where gained>0");
+		info.zg.total=db.execute("select count(id) from zhangong");
+		info.zg.score=db.execute("select sum(score*gained) from zhangong where gained>0");
+		
+		var ret1 = new VBArray(db.execute("select level,name from gongxun where category='wen' and score>=? order by score asc limit 1",info.wen.score));
+		info.wen.level=ret1.getItem(0);
+		info.wen.name=ret1.getItem(1);
 
+		var ret2 = new VBArray(db.execute("select level,name from gongxun where category='wu' and score>=? order by score asc limit 1",info.wu.score));
+		info.wu.level=ret2.getItem(0);
+		info.wu.name=ret2.getItem(1);
+
+		info.total.starttime=db.execute("select datetime(min(id),'unixepoch','localtime') from results");
+
+		data.info=info;
 		function dbquery(sql,collist){
 			var ds=db.prepare(sql);
 			var ret=[]
@@ -53,40 +91,141 @@
 		try{
 			db.close()
 		}catch(x){}
-	})()
-	/*
-		经验值,经验等级
-		战功个数，战功经验
-
-		文功 文等级， 文官职
-		武功 武等级， 武官职		
-
-		shenfen:
-			胜，负，逃
-			主，忠，内，反，的胜率
-			总胜率		
-		3v3:
-			胜，负，逃
-			主帅，前锋，的胜率
-			总胜率
-		1v1:
-			胜，负，逃
-			先手，后手，的胜率
-			总胜率
-		虎牢关:
-			胜，负，逃
-			先手，后手，的胜率
-			总胜率
-		国战:
-			胜，负，逃
-			先手，后手，的胜率
-			总胜率
-	*/
+	})()	
 </script>
 </head>
 <body>
 
 <script id="t_overview" type="text/html">
+	<div class="divtitle">本系统启用日期: <%= info.total.starttime %></div>
+	<br/>
+	<table border width="30%">
+		<tr>
+			<th>经验值</th>
+			<th>经验等级</th>
+			<th>战功数</th>
+			<th>战功值</th>
+		</tr>
+		<tr>
+			<td><%= info.expval.score %></td>
+			<td><%= info.expval.level %></td>
+			<td><%= info.zg.num %></td>
+			<td><%= info.zg.score %></td>
+		</tr>
+	</table>
+	<br/><br/>
+
+	<table border width="60%">
+		<tr>
+			<th>文功</th>
+			<th>文功等级</th>
+			<th>文功官职</th>
+			<th>武功</th>
+			<th>武功等级</th>
+			<th>武功官职</th>
+		</tr>
+		<tr>
+			<td><%= info.wen.score %></td>
+			<td><%= info.wen.level %></td>
+			<td><%= info.wen.name %></td>
+			<td><%= info.wu.score %></td>
+			<td><%= info.wu.level %></td>
+			<td><%= info.wu.name %></td>
+		</tr>
+	</table>
+	<br/><br/>
+
+	<table border width="100%" id="tbl_overview">
+	<tr>
+		<th>模式</th>
+		<th>胜利</th>
+		<th>败北</th>
+		<th>逃跑</th>
+		<th>胜率</th>		
+		<th>主胜率</th>
+		<th>忠胜率</th>
+		<th>内胜率</th>
+		<th>反胜率</th>
+	</tr>	
+	<tr>
+		<td>身份局</td>
+		<td><%= info.role.winnum %></td>
+		<td><%= info.role.losenum %></td>
+		<td><%= info.role.escnum %></td>
+		<td><%= info.role.winrate %></td>
+		<td title="主公胜率"><img src="../image/system/roles/lord-1.png" height="23"/><%= info.role.winrate_1 %></td>
+		<td title="忠臣胜率"><img src="../image/system/roles/loyalist-1.png" height="23"/><%= info.role.winrate_2 %></td>
+		<td title="内奸胜率"><img src="../image/system/roles/renegade-1.png" height="23"/><%= info.role.winrate_3 %></td>
+		<td title="反贼胜率"><img src="../image/system/roles/rebel-1.png" height="23"/><%= info.role.winrate_4 %></td>
+	</tr>
+	<tr>
+		<td>虎牢关</td>
+		<td><%= info.hulao.winnum %></td>
+		<td><%= info.hulao.losenum %></td>
+		<td><%= info.hulao.escnum %></td>
+		<td><%= info.hulao.winrate %></td>
+		<td title="吕布胜率"><img src="../image/system/roles/lord.png" height="23"/><%= info.hulao.winrate_1 %></td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td title="联军胜率"><img src="../image/system/roles/rebel.png" height="23"/><%= info.hulao.winrate_2 %></td>
+
+	</tr>
+	<tr>
+		<td>3v3</td>
+		<td><%= info.v3.winnum %></td>
+		<td><%= info.v3.losenum %></td>
+		<td><%= info.v3.escnum %></td>
+		<td><%= info.v3.winrate %></td>
+		<td title="主帅胜率">
+			<img src="../image/system/roles/lord-4.png" height="23"/>
+			<img src="../image/system/roles/renegade-4.png" height="23"/>
+			<%= info.v3.winrate_1 %>
+		</td>
+		<td title="前锋胜率">
+			<img src="../image/system/roles/loyalist-4.png" height="23"/>
+			<img src="../image/system/roles/rebel-4.png" height="23"/>
+			<%= info.v3.winrate_2 %>
+		</td>
+		<td>&nbsp;</td>				
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
+		<td>国战</td>
+		<td><%= info.hegemony.winnum %></td>
+		<td><%= info.hegemony.losenum %></td>
+		<td><%= info.hegemony.escnum %></td>
+		<td><%= info.hegemony.winrate %></td>
+		<td title="魏国胜率"><img src="../image/system/roles/lord-5.png" height="23"/><%= info.hegemony.winrate_1 %></td>
+		<td title="蜀国胜率"><img src="../image/system/roles/loyalist-5.png" height="23"/><%= info.hegemony.winrate_2 %></td>
+		<td title="吴国胜率"><img src="../image/system/roles/rebel-5.png" height="23"/><%= info.hegemony.winrate_3 %></td>
+		<td title="群雄胜率"><img src="../image/system/roles/renegade-5.png" height="23"/><%= info.hegemony.winrate_4 %></td>
+	</tr>
+
+	<tr>
+		<td>1v1</td>
+		<td><%= info.v1.winnum %></td>
+		<td><%= info.v1.losenum %></td>
+		<td><%= info.v1.escnum %></td>
+		<td><%= info.v1.winrate %></td>
+		<td title="后手胜率"><img src="../image/system/roles/lord.png" height="23"/><%= info.v1.winrate_2 %></td>
+		<td>&nbsp;</td>	
+		<td title="先手胜率"><img src="../image/system/roles/renegade.png" height="23"/><%= info.v1.winrate_1 %></td>			
+		<td>&nbsp;</td>
+	</tr>
+	
+	<tr>
+		<th>综合统计</th>
+		<th><%= info.total.winnum %></th>
+		<th><%= info.total.losenum %></th>
+		<th><%= info.total.escnum %></th>
+		<th><%= info.total.winrate %></th>		
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+	</tr>
+	</table>
+	<br/><br/>
 </script>
 
 <script id="t_skills" type="text/html">
@@ -306,6 +445,13 @@ $(function(){
 	$("a").click(function(){		
 		$(this).blur();
 	});		
+	
+	$("body").dblclick(function(){		
+		var img=$("body").css("backgroundImage");
+		var newimg=/version/.test(img) ? img.replace("new-version","default") : img.replace("default","new-version");
+		$("body").css("backgroundImage",newimg);
+	});		
+
 	$.each(tabLists,function(i,tab){
 		$("#link_"+tab).click(function(){
 			$.each(tabLists,function(i,val){
@@ -319,7 +465,7 @@ $(function(){
 			if (i%2==0) $(this).css("background","#f5f5f5");			
 		})
 	});
-	$("#link_zhonghe").trigger("click");			
+	$("#link_overview").trigger("click");			
 });
 </script>
 
@@ -355,7 +501,7 @@ $(function(){
 				document.write('<div id="div_'+tab+'" style="display:none">');
 				document.write(template('t_'+tab, data));
 				document.write('</div>');
-				$("#tbl_"+tab).tablePaging({ pageSize: tabPageNum[i],sorting:false, fillBlank:true});
+				$("#tbl_"+tab).tablePaging({ pageSize: tabPageNum[i],sorting:false});
 			});			
 		</script>		
     </div>
