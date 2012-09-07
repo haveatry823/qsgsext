@@ -339,10 +339,10 @@ zgfunc[sgs.Death].xbtc=function(self, room, event, player, data,isowner,name)
 	if role1~=role2 then diffgroup=true end
 	if role1=="renegade" or role2=="renegade" then diffgroup=true end
 
-	if getGameData("turncount")==1 and getGameData("get_xbtc")==0 and diffgroup and killerName==room:getOwner():objectName() 
+	if getGameData("turncount")==1 and getGameData(name)==0 and diffgroup and killerName==room:getOwner():objectName() 
 			and killerName==room:getCurrent():objectName() then
 		addZhanGong(room,name)
-		setGameData("get_xbtc",1)
+		setGameData(name,1)
 	end		
 end
 
@@ -363,9 +363,10 @@ zgfunc[sgs.GameOverJudge].callback.xbtc=function(room,player,data,name,result)
 	if role1~=role2 then diffgroup=true end
 	if role1=="renegade" or role2=="renegade" then diffgroup=true end
 
-	if getGameData("turncount")==1 and diffgroup and killerName==room:getOwner():objectName() 
+	if getGameData("turncount")==1 and getGameData(name)==0 and diffgroup and killerName==room:getOwner():objectName() 
 			and killerName==room:getCurrent():objectName() then
 		addZhanGong(room,name)
+		setGameData(name,1)
 	end	
 end
 
@@ -503,6 +504,10 @@ zgfunc[sgs.Death].hsqj=function(self, room, event, player, data,isowner,name)
 end
 
 zgfunc[sgs.GameOverJudge].callback.hsqj=function(room,player,data,name,result)
+	local damage = data:toDamageStar()
+	if damage.from and damage.from:objectName()==room:getOwner():objectName() then
+		addGameData(name,1)
+	end	
 	if result =='win' and getGameData(name)==7 then addZhanGong(room,name) end	
 end
 
@@ -515,6 +520,10 @@ zgfunc[sgs.Death].lmss=function(self, room, event, player, data,isowner,name)
 end
 
 zgfunc[sgs.GameOverJudge].callback.lmss=function(room,player,data,name,result)
+	local damage = data:toDamageStar()
+	if damage.from and damage.from:objectName()==room:getOwner():objectName() then
+		addGameData(name,1)
+	end	
 	if result =='win' and getGameData(name)>=4 then addZhanGong(room,name) end
 end
 
