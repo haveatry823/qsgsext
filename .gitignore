@@ -19,7 +19,7 @@ scenarios/
 skins/
 etc/
 
-zhangong/zhangong.data
+!zhangong/zhangong.data
 
 !libluasqlite3.dll
 !sqlite3.dll
