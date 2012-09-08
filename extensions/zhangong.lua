@@ -15,14 +15,20 @@ zggamedata.enable=0
 zggamedata.hegemony=0
 
 zgfunc[sgs.CardFinished]={}
+zgfunc[sgs.CardsMoveOneTime]={}
 zgfunc[sgs.ChoiceMade]={}
 
 zgfunc[sgs.Damage]={}
 zgfunc[sgs.DamageCaused]={}
 zgfunc[sgs.Damaged]={}
+zgfunc[sgs.DamageComplete]={}
+
 
 zgfunc[sgs.Death]={}
 zgfunc[sgs.EventPhaseEnd]={}
+zgfunc[sgs.EventPhaseStart]={}
+
+
 
 zgfunc[sgs.FinishRetrial]={}
 
@@ -88,7 +94,7 @@ end
 zgfunc[sgs.ChoiceMade].srpz=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
 	local choices= data:toString():split(":")
-	if choices[1]=="cardResponsed" and choices[2]=="@Axe" then
+	if choices[1]=="cardResponsed" and choices[2]=="@Axe" and choices[3]~="_nil_" then
 		addGameData(name,1)
 		if getGameData(name)>=3 then
 			addZhanGong(room,name)
@@ -918,7 +924,7 @@ end
 -- bmjs :: 八门金锁 :: 在1局游戏中，装备八卦阵连续判定红色花色至少5次 
 -- 
 zgfunc[sgs.FinishRetrial].bmjs=function(self, room, event, player, data,isowner,name)
-		local judge=data:toJudge()
+	local judge=data:toJudge()
 	if judge.reason=="EightDiagram" and judge.who:objectName()==room:getOwner():objectName() then
 		if judge:isBad() then			
 			setGameData(name,0)
@@ -1108,8 +1114,17 @@ end
 
 -- yqwb :: 掩其无备 :: 使用张辽在1局游戏中发动至少10次突袭 
 -- 
-zgfunc[sgs.todo].yqwb=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.ChoiceMade].yqwb=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="zhangliao" then return false end
+	if not isowner then return false end
+	local choices= data:toString():split(":")
+	if choices[1]=="cardResponsed"  and  choices[2]=="@@tuxi" and choices[3]~="_nil_" then
+		addGameData(name,1)
+		if getGameData(name)>=5 then
+			addZhanGong(room,name)
+			setGameData(name,-100)
+		end
+	end	
 end
 
 
@@ -1129,8 +1144,17 @@ end
 
 -- byyl :: 不遗余力 :: 使用郭嘉在1局游戏中发动遗计发牌至少5次 
 -- 
-zgfunc[sgs.todo].byyl=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.ChoiceMade].byyl=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="guojia" then return false end
+	if not isowner then return false end
+	local choices= data:toString():split(":")
+	if choices[1]=="skillInvoke"  and  choices[2]=="yiji" and choices[3]=="yes" then
+		addGameData(name,1)
+		if getGameData(name)>=5 then
+			addZhanGong(room,name)
+			setGameData(name,-100)
+		end
+	end	
 end
 
 
@@ -1164,8 +1188,20 @@ end
 
 -- qjtj :: 全军突击 :: 使用马超在1局游戏中发动铁骑连续判定红色花色至少5次 
 -- 
-zgfunc[sgs.todo].qjtj=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.FinishRetrial].qjtj=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="machao" then return false end
+	local judge=data:toJudge()
+	if judge.reason=="tieji" and judge.who:objectName()==room:getOwner():objectName() then
+		if judge:isBad() then			
+			setGameData(name,0)
+		else
+			addGameData(name,1)
+		end
+		if getGameData(name)==5 then 			 
+			addZhanGong(room,name)
+			setGameData(name,0)
+		end
+	end
 end
 
 
@@ -1185,15 +1221,32 @@ end
 
 -- jnd :: 锦囊袋 :: 使用黄月英在1个回合内发动至少10次集智 
 -- 
-zgfunc[sgs.todo].jnd=function(self, room, event, player, data,isowner,name)
+zgfunc[sgs.CardFinished].jnd=function(self, room, event, player, data,isowner,name)
+	if not isowner or player:getGeneralName()~="huangyueyin" then return false end
+	local use=data:toCardUse()
+	local card=use.card
+	if card:isNDTrick() then 
+		addTurnData(name,1) 
+		if getTurnData(name)>=10 then 			 
+			addZhanGong(room,name)
+			setTurnData(name,-100)
+		end	
+	end
 	
 end
 
 
 -- kcjc :: 空城绝唱 :: 使用诸葛亮在1局游戏中有至少5个回合结束时是空城状态 
 -- 
-zgfunc[sgs.todo].kcjc=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.EventPhaseEnd].kcjc=function(self, room, event, player, data,isowner,name)
+	if not isowner or player:getGeneralName()~="zhugeliang" then return false end
+	if player:getPhaseString()=="finish" and player:isKongcheng() then
+		addGameData(name,1)
+		if getGameData(name)>=5 then 			 
+			addZhanGong(room,name)
+			setGameData(name,-100)
+		end			
+	end
 end
 
 
@@ -1206,36 +1259,84 @@ end
 
 -- scgm :: 神出鬼没 :: 使用甘宁在1个回合内发动至少6次奇袭 
 -- 
-zgfunc[sgs.todo].scgm=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.CardFinished].scgm=function(self, room, event, player, data,isowner,name)
+	if not isowner or player:getGeneralName()~="ganning" then return false end
+	local use=data:toCardUse()
+	local card=use.card
+	if card:getSkillName()=="qixi" then 
+		addTurnData(name,1) 
+		if getTurnData(name)>=6 then 			 
+			addZhanGong(room,name)
+			setTurnData(name,-100)
+		end	
+	end
 end
 
 
 -- wjdbt :: 无尽的鞭挞 :: 使用黄盖1个回合内发动至少8次苦肉 
 -- 
-zgfunc[sgs.todo].wjdbt=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.CardFinished].wjdbt=function(self, room, event, player, data,isowner,name)
+	if not isowner or player:getGeneralName()~="huanggai" then return false end
+	local use=data:toCardUse()
+	local card=use.card
+	if card:objectName()=="kurou" then 
+		addTurnData(name,1) 
+		if getTurnData(name)>=8 then 			 
+			addZhanGong(room,name)
+			setTurnData(name,-100)
+		end	
+	end
 end
 
 
 -- sjdf :: 伺机待发 :: 使用吕蒙将手牌囤积到20张 
 -- 
-zgfunc[sgs.todo].sjdf=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.CardsMoveOneTime].sjdf=function(self, room, event, player, data,isowner,name)
+	local move=data:toMoveOneTime()
+	if room:getOwner():getGeneralName()=="lvmeng" and room:getOwner():getHandcardNum()>=20 and getGameData(name)==0 then 		 			 
+		addZhanGong(room,name)
+		setGameData(name,1)
+	end
 end
 
 
 -- yhjm :: 移花接木 :: 使用大乔在一局游戏中连续发动流离至少5次 
 -- 
-zgfunc[sgs.todo].yhjm=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.ChoiceMade].yhjm=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="daqiao" then return false end
+	if not isowner then return false end
+	local choices= data:toString():split(":")
+	if choices[1]=="cardResponsed"  and  choices[2]=="@@liuli" then
+		if choices[3]~="_nil_" then			
+			setGameData(name,0)
+		else
+			addGameData(name,1)
+		end
+		if getGameData(name)>=5 then
+			addZhanGong(room,name)
+			setGameData(name,-100)
+		end
+	end	
 end
 
 
 -- yhdf :: 因祸得福 :: 使用孙尚香在1局游戏中累计失去至少5张已装备的装备牌 
 -- 
-zgfunc[sgs.todo].yhdf=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.CardsMoveOneTime].yhdf=function(self, room, event, player, data,isowner,name)
+	if room:getOwner():getGeneralName()~="sunshangxiang" then return false end
+	local move=data:toMoveOneTime()
+	local from_places=sgs.QList2Table(move.from_places)
+	if move.from:objectName() == room:getOwner():objectName() and table.contains(from_places,sgs.Player_PlaceEquip) then
+		for _, place in ipairs(from_places) do
+			if place==sgs.Player_PlaceEquip then
+				addGameData(name,1)
+				if getGameData(name)>=5 then 			 
+					addZhanGong(room,name)
+					setGameData(name,-100)
+				end	
+			end
+		end
+	end
 end
 
 
@@ -1248,15 +1349,44 @@ end
 
 -- lmbj :: 连绵不绝 :: 使用陆逊在1个回合内发动至少10次连营 
 -- 
-zgfunc[sgs.todo].lmbj=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.ChoiceMade].lmbj=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="luxun" then return false end
+	if not isowner then return false end
+	local choices= data:toString():split(":")
+	if choices[1]=="skillInvoke"  and  choices[2]=="lianying" and choices[3]=="yes" then
+		addTurnData(name,1)
+		if getTurnData(name)>=10 then
+			addZhanGong(room,name)
+			setTurnData(name,-100)
+		end
+	end	
 end
 
 
 -- fcdc :: 风驰电掣 :: 使用夏侯渊在1局游戏中，有连续至少3个回合每个回合都发动2次神速 
 -- 
-zgfunc[sgs.todo].fcdc=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.CardFinished].fcdc=function(self, room, event, player, data,isowner,name)
+	if not isowner or player:getGeneralName()~="xiahouyuan" then return false end
+	local use=data:toCardUse()
+	local card=use.card
+	if card:getSkillName()=="shensu" then 
+		addTurnData(name,1)	
+		if getTurnData(name)==2 and getGameData(name)==2 then
+			addZhanGong(room,name)
+			setGameData(name,-100)
+		end
+	end
+end
+
+-- fcdc :: 风驰电掣 :: 使用夏侯渊在1局游戏中，有连续至少3个回合每个回合都发动2次神速 
+-- 如果本回合已经发动两次神速, gamedata计算器+1
+zgfunc[sgs.EventPhaseEnd].fcdc=function(self, room, event, player, data,isowner,name)
+	if not isowner or player:getGeneralName()~="xiahouyuan" then return false end
+	if player:getPhaseString()=="finish" then
+		if getTurnData(name)==2 then 			 
+			addGameData(name,1)
+		end			
+	end
 end
 
 
@@ -1269,10 +1399,15 @@ end
 
 -- jqbd :: 金枪不倒 :: 使用周泰在1局游戏中拥有过至少9张不屈牌并且未死 
 -- 
-zgfunc[sgs.todo].jqbd=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.DamageComplete].jqbd=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="zhoutai" then return false end
+	if not isowner then return false end
+	local buqu=sgs.QList2Table(player:getPile("buqu"))
+	if #buqu>=9 and getGameData(name)==0 then
+		addZhanGong(room,name)
+		setGameData(name,1)
+	end	
 end
-
 
 -- sxcx :: 嗜血成性 :: 使用魏延在1回合内发动狂骨回复至少3点体力 
 -- 
@@ -1360,8 +1495,17 @@ end
 
 -- ljsd :: 乱箭肃敌 :: 使用袁绍在1回合内发动乱击至少6次 
 -- 
-zgfunc[sgs.todo].ljsd=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.CardFinished].ljsd=function(self, room, event, player, data,isowner,name)
+	if not isowner or player:getGeneralName()~="ganning" then return false end
+	local use=data:toCardUse()
+	local card=use.card
+	if card:getSkillName()=="luanjian" then 
+		addTurnData(name,1) 
+		if getTurnData(name)>=6 then 			 
+			addZhanGong(room,name)
+			setTurnData(name,-100)
+		end	
+	end
 end
 
 
@@ -1374,8 +1518,17 @@ end
 
 -- zkzj :: 周苛之节 :: 使用庞德在1局游戏中发动猛进至少5次 
 -- 
-zgfunc[sgs.todo].zkzj=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.ChoiceMade].zkzj=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="luxun" then return false end
+	if not isowner then return false end
+	local choices= data:toString():split(":")
+	if choices[1]=="skillInvoke"  and  choices[2]=="mengjin" and choices[3]=="yes" then
+		addGameData(name,1)
+		if getGameData(name)>=5 then
+			addZhanGong(room,name)
+			setTurnData(name,-100)
+		end
+	end	
 end
 
 
@@ -1619,7 +1772,7 @@ zgzhangong = sgs.CreateTriggerSkill{
 	name = "#zgzhangong",
 	events = {sgs.GameStart,sgs.TurnStart,sgs.CardFinished,sgs.Damage,sgs.GameOverJudge,
 			sgs.Death,sgs.EventPhaseEnd,sgs.FinishRetrial,sgs.ChoiceMade,sgs.SlashEffected,
-			sgs.DamageCaused},
+			sgs.DamageCaused,sgs.EventPhaseStart,sgs.CardsMoveOneTime,sgs.DamageComplete},
 	priority = 6,
 	can_trigger = function()
 		return true
