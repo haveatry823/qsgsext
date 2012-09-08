@@ -555,8 +555,9 @@ end
 
 
 
--- tongji ::  :: 
--- 
+-- 游戏结束判断代码， 
+-- 因为游戏结束的时候，当前阵亡的人的 sgs.Death 事件不会被触发，sgs.cardFinished也不会被触发，这里额外处理
+-- zgfunc[sgs.GameOverJudge]["callback"] 处理最后一个阵亡的人的 Death事件
 zgfunc[sgs.GameOverJudge].tongji=function(self, room, event, player, data,isowner,name)
 	local winner=getWinner(room,player)	
 	if not winner then return false end
@@ -590,6 +591,9 @@ zgfunc[sgs.GameOverJudge].tongji=function(self, room, event, player, data,isowne
 	end
 end
 
+
+-- 完成N盘游戏获得战功
+-- 
 for zgname, count in pairs({ccml=1,csss=5,xsnd=10,xymq=20,fmbl=30}) do
 	zgfunc[sgs.GameOverJudge].callback.zgname=function(room,player,data,name,result)
 		local sql=string.format("select count(id) as num from results where result<>'-'")	
@@ -860,8 +864,12 @@ end
 
 -- qkds :: 旗开得胜 :: 一局游戏中，在自己的首回合结束前获胜 
 -- 
-zgfunc[sgs.todo].qkds=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.GameOverJudge].callback.qkds=function(room,player,data,name,result)
+	local owner=room:getOwner()
+	if result =='win' and ( getGameData("turncount")==0 or 
+			( getGameData("turncount")==1 and owner:objectName()==room:getCurrent():objectName() ) ) then 
+		addZhanGong(room,name) 
+	end	
 end
 
 
@@ -909,22 +917,80 @@ end
 
 -- bmjs :: 八门金锁 :: 在1局游戏中，装备八卦阵连续判定红色花色至少5次 
 -- 
-zgfunc[sgs.todo].bmjs=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.FinishRetrial].bmjs=function(self, room, event, player, data,isowner,name)
+		local judge=data:toJudge()
+	if judge.reason=="EightDiagram" and judge.who:objectName()==room:getOwner():objectName() then
+		if judge:isBad() then			
+			setGameData(name,0)
+		else
+			addGameData(name,1)
+		end
+		if getGameData(name)==5 then 			 
+			addZhanGong(room,name)
+			setGameData(name,0)
+		end
+	end
 end
+
+
 
 
 -- yzzf :: 异族之愤 :: 使用1次南蛮入侵打死至少3名角色 
 -- 
-zgfunc[sgs.todo].yzzf=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.Death].yzzf=function(self, room, event, player, data,isowner,name)
+	local damage = data:toDamageStar()
+	if damage.card and damage.card:isKindOf("savage_assault") and room:getOwner():objectName()==room:getCurrent():objectName() then
+		local key=name..damage.card:getEffectiveId()
+		addTurnData(key,1)
+		if getTurnData(key)>=3 then 			 
+			addZhanGong(room,name)
+			setTurnData(key,-100)
+		end
+	end		
 end
+
+-- yzzf :: 异族之愤 :: 使用1次南蛮入侵打死至少3名角色 
+-- 
+zgfunc[sgs.GameOverJudge].callback.yzzf=function(room,player,data,name,result)
+	local damage = data:toDamageStar()
+	if damage.card and damage.card:isKindOf("savage_assault") and room:getOwner():objectName()==room:getCurrent():objectName() then
+		local key=name..damage.card:getEffectiveId()
+		addTurnData(key,1)
+		if getTurnData(key)>=3 then 			 
+			addZhanGong(room,name)
+			setTurnData(key,-100)
+		end
+	end	
+end
+
 
 
 -- jwxf :: 箭无虚发 :: 使用1次万箭齐发打死至少3名角色 
 -- 
-zgfunc[sgs.todo].jwxf=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.Death].jwxf=function(self, room, event, player, data,isowner,name)
+	local damage = data:toDamageStar()
+	if damage.card and damage.card:isKindOf("archery_attack") and room:getOwner():objectName()==room:getCurrent():objectName() then
+		local key=name..damage.card:getEffectiveId()
+		addTurnData(key,1)
+		if getTurnData(key)>=3 then 			 
+			addZhanGong(room,name)
+			setTurnData(key,-100)
+		end
+	end		
+end
+
+-- jwxf :: 箭无虚发 :: 使用1次万箭齐发打死至少3名角色 
+-- 
+zgfunc[sgs.GameOverJudge].callback.jwxf=function(room,player,data,name,result)
+	local damage = data:toDamageStar()
+	if damage.card and damage.card:isKindOf("archery_attack") and room:getOwner():objectName()==room:getCurrent():objectName() then
+		local key=name..damage.card:getEffectiveId()
+		addTurnData(key,1)
+		if getTurnData(key)>=3 then 			 
+			addZhanGong(room,name)
+			setTurnData(key,-100)
+		end
+	end	
 end
 
 
