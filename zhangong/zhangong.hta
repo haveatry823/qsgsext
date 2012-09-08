@@ -92,6 +92,7 @@
 			db.close()
 		}catch(x){}
 	})()	
+
 </script>
 </head>
 <body>
@@ -465,7 +466,14 @@ $(function(){
 			if (i%2==0) $(this).css("background","#f5f5f5");			
 		})
 	});
-	$("#link_overview").trigger("click");			
+	$("#link_overview").trigger("click");	
+	try{
+		var w=1010,h=640;
+		var x=(screen.width-w)/2;
+		var y=(screen.height-h)/2;
+		window.resizeTo(w,h);
+		window.moveTo(x,y);
+	}catch(x){}
 });
 </script>
 
