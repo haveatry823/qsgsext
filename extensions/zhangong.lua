@@ -1496,7 +1496,7 @@ end
 -- ljsd :: 乱箭肃敌 :: 使用袁绍在1回合内发动乱击至少6次 
 -- 
 zgfunc[sgs.CardFinished].ljsd=function(self, room, event, player, data,isowner,name)
-	if not isowner or player:getGeneralName()~="ganning" then return false end
+	if not isowner or player:getGeneralName()~="yuanshao" then return false end
 	local use=data:toCardUse()
 	local card=use.card
 	if card:getSkillName()=="luanjian" then 
@@ -1519,7 +1519,7 @@ end
 -- zkzj :: 周苛之节 :: 使用庞德在1局游戏中发动猛进至少5次 
 -- 
 zgfunc[sgs.ChoiceMade].zkzj=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="luxun" then return false end
+	if not room:getOwner():getGeneralName()=="pande" then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
 	if choices[1]=="skillInvoke"  and  choices[2]=="mengjin" and choices[3]=="yes" then
