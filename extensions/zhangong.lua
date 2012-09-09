@@ -1589,15 +1589,39 @@ end
 
 -- tslz :: 铁锁连舟 :: 使用庞统在1回合内发动连环横置至少6名角色 
 -- 
-zgfunc[sgs.todo].tslz=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.CardFinished].tslz=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="pantong" then return false end
+	if not isowner then return false end
+	local use=data:toCardUse()
+	local card=use.card
+	local tos=sgs.QList2Table(use.to)
+	if card:isKindOf("IronChain") and #tos>=1 then
+		for i=1,#tos,1 do
+			if (tos[i]:isChained()) then
+				addTurnData(name,1) 
+				if getTurnData(name)>=6 then 			 
+					addZhanGong(room,name)
+					setTurnData(name,-100)
+				end	
+			end
+		end		
+	end
 end
 
 
 -- thly :: 天火燎原 :: 使用卧龙诸葛亮在1回合内发动火计造成至少6点伤害 
 -- 
-zgfunc[sgs.todo].thly=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.Damage].thly=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="wolong" then return false end
+	if not isowner then return false end
+	local damage = data:toDamage()
+	if damage.card and damage.card:getSkillName()=="huoji" then
+		addTurnData(name,damage.damage)
+		if getTurnData(name)>=6 then 			 
+			addZhanGong(room,name)
+			setTurnData(name,-100)
+		end
+	end
 end
 
 
@@ -1614,7 +1638,7 @@ zgfunc[sgs.CardFinished].ljsd=function(self, room, event, player, data,isowner,n
 	if not isowner or player:getGeneralName()~="yuanshao" then return false end
 	local use=data:toCardUse()
 	local card=use.card
-	if card:getSkillName()=="luanjian" then 
+	if card:getSkillName()=="luanji" then 
 		addTurnData(name,1) 
 		if getTurnData(name)>=6 then 			 
 			addZhanGong(room,name)
