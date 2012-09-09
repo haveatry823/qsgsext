@@ -45,8 +45,9 @@
 			info[mode].totalnum=info[mode].winnum + info[mode].losenum + info[mode].escnum;
 			info[mode].winrate= (100 *info[mode].winnum/info[mode].totalnum).toFixed(1)+"%";
 			for(var i=0;i<ratearr.length;i++){
-				info[mode]["winnum_"+(i+1)]	= db.execute("select count(id) from results where " + cond +" and result='win' and "+ratearr[i]);
-				info[mode]["winrate_"+(i+1)] = (100*info[mode]["winnum_"+(i+1)] / info[mode].totalnum).toFixed(1)+"%";
+				info[mode]["winnum_"+(i+1)]	 = db.execute("select count(id) from results where " + cond +" and result='win' and "+ratearr[i]);
+				info[mode]["totalnum_"+(i+1)]= db.execute("select count(id) from results where " + cond +"  and "+ratearr[i]);
+				info[mode]["winrate_"+(i+1)] = (100*info[mode]["winnum_"+(i+1)] / info[mode]["totalnum_"+(i+1)]).toFixed(1)+"%";
 			}
 		}
 		getResult("hulao","mode='04_1v3' and hegemony=0",["role='lord'","role='rebel'"]);
@@ -429,9 +430,11 @@ var callback={
 			}
 		}
 		var enableStr= info.gained >0 ? "" : " class='graycolor'";
+		var numStr = info.gained>0 ? "<br/><font color='#cccccc'>x</font>&nbsp; "+info.gained : "<br/>&nbsp; "
 		return "<div style='text-align:center;margin:3px' title='"+info.description
-				+"'><img height='53' src='"+imgsrc+"' "+enableStr+"/><div style='margin-top:6px;'"
-				+enableStr+">"+info.name+"</div></div>";
+				+"'><img height='53' src='"+imgsrc+"' "+enableStr+"/><div title='最后取得: "
+				+info.lasttime+"' style='margin-top:6px;font-size:11px'"
+				+enableStr+">"+info.name+numStr+"</div></div>";
 	}
 };
 
@@ -440,7 +443,7 @@ $.each(callback,function(name,func){
 });
 
 var tabLists=$.merge(["overview","results","skills"],zglist);
-var tabPageNum=[100,12,100,5,5,5,5,5,5,5,5];
+var tabPageNum=[100,12,100,4,4,4,4,4,4,4,4];;
 
 $(function(){
 	$("a").click(function(){		

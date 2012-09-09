@@ -14,6 +14,8 @@ zggamedata.roomid=0
 zggamedata.enable=0
 zggamedata.hegemony=0
 
+
+zgfunc[sgs.CardEffected]={}
 zgfunc[sgs.CardFinished]={}
 zgfunc[sgs.CardsMoveOneTime]={}
 zgfunc[sgs.ChoiceMade]={}
@@ -22,6 +24,7 @@ zgfunc[sgs.Damage]={}
 zgfunc[sgs.DamageCaused]={}
 zgfunc[sgs.Damaged]={}
 zgfunc[sgs.DamageComplete]={}
+zgfunc[sgs.DamageInflicted]={}
 
 
 zgfunc[sgs.Death]={}
@@ -34,6 +37,8 @@ zgfunc[sgs.FinishRetrial]={}
 
 zgfunc[sgs.GameOverJudge]={}
 zgfunc[sgs.GameOverJudge]["callback"]={}
+zgfunc[sgs.HpRecover]={}
+
 zgfunc[sgs.SlashEffected]={}
 
 zgfunc[sgs.TurnStart]={}
@@ -94,7 +99,7 @@ end
 zgfunc[sgs.ChoiceMade].srpz=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
 	local choices= data:toString():split(":")
-	if choices[1]=="cardResponsed" and choices[2]=="@Axe" and choices[3]~="_nil_" then
+	if choices[1]=="cardResponsed" and choices[2]=="@Axe" and choices[#choices]~="_nil_" then
 		addGameData(name,1)
 		if getGameData(name)>=3 then
 			addZhanGong(room,name)
@@ -857,7 +862,7 @@ zgfunc[sgs.SlashEffected].dqbr=function(self, room, event, player, data,isowner,
 	local effect= data:toSlashEffect()
 	local armor= (effect.to:getArmor() and effect.to:getArmor():isKindOf("RenwangShield")) 
 			or ((not effect.to:getArmor()) and effect.to:hasSkill("yizhong"))
-	if effect.to:getMark("qinggang") then armor=false end
+	if effect.to:getMark("qinggang") or effect.to:hasFlag("wuqian") then armor=false end
 	if armor and effect.to:objectName()==room:getOwner():objectName() and effect.slash:isBlack() then
 		addGameData(name,1)
 		if getGameData(name)>=3 then 			 
@@ -881,10 +886,17 @@ end
 
 -- gycc :: 苟延残喘 :: 在1局游戏中被救活至少5次 
 -- 
-zgfunc[sgs.todo].gycc=function(self, room, event, player, data,isowner,name)
-
+zgfunc[sgs.HpRecover].gycc=function(self, room, event, player, data,isowner,name)
+	if not isowner then return false end
+	local recov = data:toRecover()
+	if recov.recover>=1 and player:getHp()==0  then
+		addGameData(name,1)
+		if getGameData(name)>=5 then 			 
+			addZhanGong(room,name)
+			setGameData(name,-100)
+		end
+	end
 end
-
 
 -- ph :: 炮灰 :: 被南蛮入侵或万箭齐发打死累计10次 
 -- 
@@ -907,17 +919,51 @@ zgfunc[sgs.todo].yqt=function(self, room, event, player, data,isowner,name)
 end
 
 
+-- bszj :: 搬石砸脚 :: 与人决斗失败累计10次 
+-- 
+zgfunc[sgs.todo].bszj=function(self, room, event, player, data,isowner,name)
+	
+end
+
+
+-- dtj :: 打铁匠 :: 累计将铁索连环重铸30次 
+-- 
+zgfunc[sgs.todo].dtj=function(self, room, event, player, data,isowner,name)
+	
+end
+
+
 -- tw :: 桃王 :: 在1局游戏中给自己吃过5个或者更多得桃（不包括华佗的技能） 
 -- 
-zgfunc[sgs.todo].tw=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.CardFinished].tw=function(self, room, event, player, data,isowner,name)
+	if not isowner then return false end
+	local use=data:toCardUse()
+	local card=use.card
+	local tos=sgs.QList2Table(use.to)
+	if card:getSkillName()~="jijiu" and card:isKindOf("Peath") and tos[1]:objectName()==player:objectName() then 
+		addGameData(name,1) 
+		if getGameData(name)>=5 then 			 
+			addZhanGong(room,name)
+			setGameData(name,-100)
+		end	
+	end
 end
 
 
 -- tx :: 桃仙 :: 在1局游戏中，使用桃救人至少5次（不包括华佗的技能） 
 -- 
-zgfunc[sgs.todo].tx=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.CardFinished].tx=function(self, room, event, player, data,isowner,name)
+	if not isowner then return false end
+	local use=data:toCardUse()
+	local card=use.card
+	local tos=sgs.QList2Table(use.to)
+	if card:getSkillName()~="jijiu" and card:isKindOf("Peath") and tos[1]:objectName()~=player:objectName() then 
+		addGameData(name,1) 
+		if getGameData(name)>=5 then 			 
+			addZhanGong(room,name)
+			setGameData(name,-100)
+		end	
+	end
 end
 
 
@@ -937,8 +983,6 @@ zgfunc[sgs.FinishRetrial].bmjs=function(self, room, event, player, data,isowner,
 		end
 	end
 end
-
-
 
 
 -- yzzf :: 异族之愤 :: 使用1次南蛮入侵打死至少3名角色 
@@ -1007,80 +1051,152 @@ zgfunc[sgs.todo].zszm=function(self, room, event, player, data,isowner,name)
 end
 
 
--- bszj :: 搬石砸脚 :: 与人决斗失败累计10次 
--- 
-zgfunc[sgs.todo].bszj=function(self, room, event, player, data,isowner,name)
-	
-end
 
 
 -- tjb :: 藤甲兵 :: 一局游戏中发动藤甲效果抵挡杀、南蛮入侵或万箭齐发至少3次 
 -- 
-zgfunc[sgs.todo].tjb=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.CardEffected].tjb=function(self, room, event, player, data,isowner,name)
+	if not isowner then return false end
+	local effect=data:toCardEffect()
+	if effect.card:isKindOf("AOE") and player:getArmor() and player:getArmor():isKindOf("Vine") then
+		addGameData(name,1)
+		if getGameData(name)>=3 then 			 
+			addZhanGong(room,name)
+			setGameData(name,-100)
+		end
+	end
 end
 
 
 -- dshx :: 大事化小 :: 一局游戏中发动白银狮子特效减少伤害至少1次 
 -- 
-zgfunc[sgs.todo].dshx=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.DamageInflicted].dshx=function(self, room, event, player, data,isowner,name)
+	if not isowner then return false end
+	local damage = data:toDamage()
+	if player:getMark("qinggang") or player:hasFlag("wuqian") then return false end
+	if damage.damage>1 and player:getArmor() and player:getArmor():isKindOf("SilverLion") then
+		addGameData(name,1)
+		if getGameData(name)>=1 then 			 
+			addZhanGong(room,name)
+			setGameData(name,-100)
+		end
+	end
+
 end
 
 
 -- swsm :: 塞翁失马 :: 一局游戏中，失去白银狮子回复体力至少2次 
 -- 
-zgfunc[sgs.todo].swsm=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.HpRecover].swsm=function(self, room, event, player, data,isowner,name)
+	if not isowner then return false end
+	local recov = data:toRecover()
+	if recov.recover>=1 and recov.card:isKindOf("SilverLion") then
+		addGameData(name,1)
+		if getGameData(name)>=2 then 			 
+			addZhanGong(room,name)
+			setGameData(name,-100)
+		end
+	end
 end
 
 
 -- rhss :: 惹火上身 :: 一局游戏中，装备藤甲的时受到至少3次火焰伤害 
 -- 
-zgfunc[sgs.todo].rhss=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.Damaged].rhss=function(self, room, event, player, data,isowner,name)
+	if not isowner then return false end
+	local damage = data:toDamage()
+	if damage.nature == sgs.DamageStruct_Fire and player:getArmor() and player:getArmor():isKindOf("Vine") then		
+		addGameData(name,1)
+		if getGameData(name)>=3 then 			 
+			addZhanGong(room,name)
+			setGameData(name,-100)
+		end
+	end		
 end
 
 
 -- hyjy :: 何以解忧 :: 一局游戏中，使用酒回复体力至少2次 
 -- 
-zgfunc[sgs.todo].hyjy=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.HpRecover].hyjy=function(self, room, event, player, data,isowner,name)
+	if not isowner then return false end
+	local recov = data:toRecover()
+	if recov.recover>=1 and player:getHp()==0 and recov.card:isKindOf("Analeptic") then
+		addGameData(name,1)
+		if getGameData(name)>=2 then 			 
+			addZhanGong(room,name)
+			setGameData(name,-100)
+		end
+	end
 end
 
 
 -- wydk :: 唯有杜康 :: 一局游戏中，使用酒后成功使用杀造成伤害至少3次 
 -- 
-zgfunc[sgs.todo].wydk=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.Damage].wydk=function(self, room, event, player, data,isowner,name)
+	if not isowner then return false end
+	local damage = data:toDamage()
+	if damage.card and damage.card:hasFlag("drank") and not (damage.transfer or damage.chain) then
+		addGameData(name,1)
+		if getGameData(name)>=3 then 			 
+			addZhanGong(room,name)
+			setGameData(name,-100)
+		end
+	end
 end
 
 
 -- gqbb :: 攻其不备 :: 一局游戏中，成功使用火攻造成伤害至少3次 
 -- 
-zgfunc[sgs.todo].gqbb=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.Damage].gqbb=function(self, room, event, player, data,isowner,name)
+	if not isowner then return false end
+	local damage = data:toDamage()
+	if damage.card and damage.card:isKindOf("FireAttack") and not (damage.transfer or damage.chain) then
+		addGameData(name,1)
+		if getGameData(name)>=3 then 			 
+			addZhanGong(room,name)
+			setGameData(name,-100)
+		end
+	end
 end
 
 
 -- bkclm :: 被看穿了吗 :: 一局游戏中，使用火攻失败至少3次 
 -- 
-zgfunc[sgs.todo].bkclm=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.ChoiceMade].bkclm=function(self, room, event, player, data,isowner,name)
+	if not isowner then return false end
+	local choices= data:toString():split(":")
+	player:speak(data:toString());
+	if choices[1]=="cardResponsed"  and  string.match(choices[2],"@fire%-attack") and choices[#choices]=="_nil_" then
+		addGameData(name,1)
+		if getGameData(name)>=3 then
+			addZhanGong(room,name)
+			setGameData(name,-100)
+		end
+	end	
 end
 
 
--- dtj :: 打铁匠 :: 累计将铁索连环重铸30次 
--- 
-zgfunc[sgs.todo].dtj=function(self, room, event, player, data,isowner,name)
-	
-end
+
 
 
 -- yntd :: 有难同当 :: 1局游戏中，使用铁索连环累计横置其他角色至少6次 
 -- 
-zgfunc[sgs.todo].yntd=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.CardFinished].yntd=function(self, room, event, player, data,isowner,name)
+	if not isowner then return false end
+	local use=data:toCardUse()
+	local card=use.card
+	local tos=sgs.QList2Table(use.to)
+	if card:isKindOf("IronChain") and #tos>=1 then
+		for i=1,#tos,1 do
+			if (tos[i]:isChained()) then
+				addGameData(name,1) 
+				if getGameData(name)>=6 then 			 
+					addZhanGong(room,name)
+					setGameData(name,-100)
+				end	
+			end
+		end		
+	end
 end
 
 
@@ -1118,7 +1234,7 @@ zgfunc[sgs.ChoiceMade].yqwb=function(self, room, event, player, data,isowner,nam
 	if not room:getOwner():getGeneralName()=="zhangliao" then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
-	if choices[1]=="cardResponsed"  and  choices[2]=="@@tuxi" and choices[3]~="_nil_" then
+	if choices[1]=="cardResponsed"  and  choices[2]=="@@tuxi" and choices[#choices]~="_nil_" then
 		addGameData(name,1)
 		if getGameData(name)>=5 then
 			addZhanGong(room,name)
@@ -1307,7 +1423,7 @@ zgfunc[sgs.ChoiceMade].yhjm=function(self, room, event, player, data,isowner,nam
 	if not isowner then return false end
 	local choices= data:toString():split(":")
 	if choices[1]=="cardResponsed"  and  choices[2]=="@@liuli" then
-		if choices[3]~="_nil_" then			
+		if choices[#choices]~="_nil_" then			
 			setGameData(name,0)
 		else
 			addGameData(name,1)
@@ -1772,7 +1888,8 @@ zgzhangong = sgs.CreateTriggerSkill{
 	name = "#zgzhangong",
 	events = {sgs.GameStart,sgs.TurnStart,sgs.CardFinished,sgs.Damage,sgs.GameOverJudge,
 			sgs.Death,sgs.EventPhaseEnd,sgs.FinishRetrial,sgs.ChoiceMade,sgs.SlashEffected,
-			sgs.DamageCaused,sgs.EventPhaseStart,sgs.CardsMoveOneTime,sgs.DamageComplete},
+			sgs.DamageCaused,sgs.EventPhaseStart,sgs.CardsMoveOneTime,sgs.DamageComplete,
+			sgs.HpRecover,sgs.DamageInflicted,sgs.CardEffected},
 	priority = 6,
 	can_trigger = function()
 		return true
