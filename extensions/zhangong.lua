@@ -31,10 +31,9 @@ zgfunc[sgs.Death]={}
 zgfunc[sgs.EventPhaseEnd]={}
 zgfunc[sgs.EventPhaseStart]={}
 
-
-
 zgfunc[sgs.FinishRetrial]={}
 
+zgfunc[sgs.GameStart]={}
 zgfunc[sgs.GameOverJudge]={}
 zgfunc[sgs.GameOverJudge]["callback"]={}
 zgfunc[sgs.HpRecover]={}
@@ -193,7 +192,7 @@ end
 -- bgws :: 秉公无私 :: 身为主公在一局游戏中从未对忠臣造成伤害，并取得胜利
 -- 
 zgfunc[sgs.GameOverJudge].callback.bgws=function(room,player,data,name,result)	
-	if getGameData("bgws",0)==0 and result =='win' then		 
+	if getGameData("bgws",0)==0 and result =='win' and string.match(sgs.Sanguosha:getRoles(room:getMode()),"C") then		 
 		addZhanGong(room,name)
 	end
 end
@@ -1706,64 +1705,176 @@ end
 
 -- mlgr :: 谋略过人 :: 选择了3名3血武将并且获胜 (1v1)
 -- 
-zgfunc[sgs.todo].mlgr=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.GameStart].mlgr=function(self, room, event, player, data,isowner,name)
+	if not isowner or room:getMode()~="02_1v1" then return false end
+	local list = room:getOwner():getTag("1v1Arrange"):toStringList()
+	local n=0
+	for _, generalname in ipairs(list) do
+		local general = sgs.Sanguosha:getGeneral(generalname)
+		if general:getMaxHp()==3 then n=n+1 end
+	end
+	if n==3 then
+		setGameData(name,1)
+	end
+end
+
+zgfunc[sgs.GameOverJudge].callback.mlgr=function(room,player,data,name,result)
+	if result=='win' and getGameData(name)==1 then
+		addZhanGong(room,name)
+	end		
 end
 
 
 -- ymgr :: 勇猛过人 :: 选择了3名4血武将并且获胜 (1v1)
 -- 
-zgfunc[sgs.todo].ymgr=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.GameStart].ymgr=function(self, room, event, player, data,isowner,name)
+	if not isowner or room:getMode()~="02_1v1" then return false end
+	local list = room:getOwner():getTag("1v1Arrange"):toStringList()
+	local n=0
+	for _, generalname in ipairs(list) do
+		local general = sgs.Sanguosha:getGeneral(generalname)
+		if general:getMaxHp()==4 then n=n+1 end
+	end
+	if n==3 then
+		setGameData(name,1)
+	end
 end
+
+zgfunc[sgs.GameOverJudge].callback.ymgr=function(room,player,data,name,result)
+	if result=='win' and getGameData(name)==1 then
+		addZhanGong(room,name)
+	end		
+end
+
 
 
 -- bbxr :: 兵不血刃 :: 对方3名武将都在他们各自的回合阵亡 (1v1)
 -- 
-zgfunc[sgs.todo].bbxr=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.Death].bbxr=function(self, room, event, player, data,isowner,name)
+	if isowner or room:getMode()~="02_1v1" then return false end
+	if room:getCurrent():objectName()==player:objectName() then
+		addGameData(name,1)
+	end 
 end
 
+zgfunc[sgs.GameOverJudge].callback.bbxr=function(room,player,data,name,result)
+	if result=='win' and room:getCurrent():objectName()==player:objectName() then
+		addGameData(name,1)
+		if getGameData(name)==3 then
+			addZhanGong(room,name)
+		end
+	end		
+end
 
 -- jgyx :: 巾帼英雄 :: 选择3名女性武将并且获胜 (1v1)
 -- 
-zgfunc[sgs.todo].jgyx=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.GameStart].jgyx=function(self, room, event, player, data,isowner,name)
+	if not isowner or room:getMode()~="02_1v1" then return false end
+	local list = room:getOwner():getTag("1v1Arrange"):toStringList()
+	local n=0
+	for _, generalname in ipairs(list) do
+		local general = sgs.Sanguosha:getGeneral(generalname)
+		if general:isFemale() then n=n+1 end
+	end
+	if n==3 then
+		setGameData(name,1)
+	end
+end
+
+zgfunc[sgs.GameOverJudge].callback.jgyx=function(room,player,data,name,result)
+	if result=='win' and getGameData(name)==1 then
+		addZhanGong(room,name)
+	end		
 end
 
 
 -- hgjs :: 护国军师 :: 以诸葛亮、司马懿、周瑜为上场武将的情况下获胜 (1v1)
 -- 
-zgfunc[sgs.todo].hgjs=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.GameStart].hgjs=function(self, room, event, player, data,isowner,name)
+	if not isowner or room:getMode()~="02_1v1" then return false end
+	local list = table.concat(room:getOwner():getTag("1v1Arrange"):toStringList(),",")
+	local n=0
+	for _, generalname in ipairs({"zhugeliang","simayi","zhouyu"}) do
+		if string.match(list,generalname) then n=n+1 end
+	end
+	if n==3 then
+		setGameData(name,1)
+	end
+end
+
+zgfunc[sgs.GameOverJudge].callback.hgjs=function(room,player,data,name,result)
+	if result=='win' and getGameData(name)==1 then
+		addZhanGong(room,name)
+	end		
 end
 
 
 -- hfws :: 毫发无伤 :: 在本方所有武将满体力的情况下胜利 (1v1)
 -- 
-zgfunc[sgs.todo].hfws=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.GameOverJudge].callback.hfws=function(room,player,data,name,result)
+	local list = room:getOwner():getTag("1v1Arrange"):toStringList()
+	if result=='win' and not room:getOwner():isWounded() and #list==2 then
+		addZhanGong(room,name)
+	end		
 end
-
 
 -- jtnz :: 惊天逆转 :: 在本方剩余1名武将时，杀死对方3名武将获胜 (1v1)
 -- 
-zgfunc[sgs.todo].jtnz=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.Death].jtnz=function(self, room, event, player, data,isowner,name)
+	if not isowner or room:getMode()~="02_1v1" then return false end
+	local list = room:getOwner():getTag("1v1Arrange"):toStringList()
+	local list2 = room:getOwner():getNext():getTag("1v1Arrange"):toStringList()
+	if #list==2 and #list2==2 then
+		setGameData(name,1)
+	end 
+end
+
+zgfunc[sgs.GameOverJudge].callback.jtnz=function(room,player,data,name,result)
+	if result=='win' and getGameData(name)==1 then
+		addZhanGong(room,name)
+	end		
 end
 
 
 -- yywm :: 有勇无谋 :: 以吕布、张飞、许褚为上场武将的情况下获胜 (1v1)
 -- 
-zgfunc[sgs.todo].yywm=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.GameStart].yywm=function(self, room, event, player, data,isowner,name)
+	if not isowner or room:getMode()~="02_1v1" then return false end
+	local list = table.concat(room:getOwner():getTag("1v1Arrange"):toStringList(),",")
+	local n=0
+	for _, generalname in ipairs({"lvbu","zhangfei","xuchu"}) do
+		if string.match(list,generalname) then n=n+1 end
+	end
+	if n==3 then
+		setGameData(name,1)
+	end
+end
+
+zgfunc[sgs.GameOverJudge].callback.yywm=function(room,player,data,name,result)
+	if result=='win' and getGameData(name)==1 then
+		addZhanGong(room,name)
+	end		
 end
 
 
 -- zysq :: 智勇双全 :: 以关羽、赵云、黄忠为上场武将的情况下获胜 (1v1)
 -- 
-zgfunc[sgs.todo].zysq=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.GameStart].zysq=function(self, room, event, player, data,isowner,name)
+	if not isowner or room:getMode()~="02_1v1" then return false end
+	local list = table.concat(room:getOwner():getTag("1v1Arrange"):toStringList(),",")
+	local n=0
+	for _, generalname in ipairs({"guanyu","zhaoyun","huangzhong"}) do
+		if string.match(list,generalname) then n=n+1 end
+	end
+	if n==3 then
+		setGameData(name,1)
+	end
+end
+
+zgfunc[sgs.GameOverJudge].callback.zysq=function(room,player,data,name,result)
+	if result=='win' and getGameData(name)==1 then
+		addZhanGong(room,name)
+	end		
 end
 
 
@@ -1832,7 +1943,7 @@ function init_gamestart(self, room, event, player, data, isowner)
 	local flags=config[5]
 	local owner=room:getOwner()
 
-	if not isowner then return false end
+	if not isowner or getGameData("enable")==1 then return false end
 
 	--[[
 	if not string.find(mode,"^[01]%d[p_]") or string.find(flags,"[FHB]") then		
@@ -1904,16 +2015,17 @@ zgzhangong = sgs.CreateTriggerSkill{
 				log.type = "#enable"					
 				room:sendLog(log)
 			end
-		else
-			local callbacks=zgfunc[event]
-			if callbacks and getGameData("enable")==1 then
-				for name, func in pairs(callbacks) do
-					if type(func)=="function" then 						
-						func(self, room, event, player, data, owner,name) 
-					end				
-				end
-			end			
 		end
+
+		local callbacks=zgfunc[event]
+		if callbacks and getGameData("enable")==1 then
+			for name, func in pairs(callbacks) do
+				if type(func)=="function" then 						
+					func(self, room, event, player, data, owner,name) 
+				end				
+			end
+		end			
+	
 		return false
 	end,
 }
@@ -2009,7 +2121,7 @@ initZhangong()
 function genTranslation()
 	local zgTrList={}	
 	for row in db:rows("select id,name,description from zhangong") do
-		zgTrList["#zhangong_"..row.id]="%from获得了战功【<font color='yellow'>"..row.name.."</font>】,"..row.description		
+		zgTrList["#zhangong_"..row.id]="%from 获得了战功【<b><font color='yellow'>"..row.name.."</font></b>】,"..row.description		
 	end
 	return zgTrList
 end
