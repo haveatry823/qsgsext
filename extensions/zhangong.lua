@@ -2002,7 +2002,11 @@ function init_gamestart(self, room, event, player, data, isowner)
 				player:getKingdom(),getGameData("hegemony"),room:getMode())
 		sqlexec("update gamedata set num=0")
 	end	
-	local skilldata=db:rows("select skillname from skills where gained-used>0 order by random() limit 10")
+
+	local skillnum=db:first_row("select count(id) as num from zhangong where gained>0")
+	skillnum= math.ceil(skillnum.num / 20)
+	
+	local skilldata=db:rows("select skillname from skills where gained-used>0 order by random() limit %d",skillnum)
 	local skills={}
 	for row in skilldata do
 		if sgs.Sanguosha:getSkill(row.skillname) then table.insert(skills,row.skillname) end
@@ -2034,11 +2038,13 @@ zgzhangong = sgs.CreateTriggerSkill{
 		local room = player:getRoom()
 		local owner= room:getOwner():objectName()==player:objectName()
 		if event ==sgs.GameStart then
+			local log= sgs.LogMessage()
 			if init_gamestart(self, room, event, player, data, owner) then
-				local log= sgs.LogMessage()
-				log.type = "#enable"					
-				room:sendLog(log)
+				log.type = "#enableZhangong"
+			else
+				log.type = "#disableZhangong"
 			end
+			room:sendLog(log)
 		end
 
 		local callbacks=zgfunc[event]
@@ -2160,5 +2166,8 @@ sgs.LoadTranslationTable {
 	["#gainExp"] ="%from获得【%arg】点经验",
 	["#canntGainSkill"]= "【警告】技能列表为空，无法获得技能",
 	["#gainSkill"]="%from获得了技能卡【%arg】",
+	["cancel"] = "取消",
+	["#enableZhangong"]="【<b><font color='green'>提示</font></b>】: 本局游戏开启了战功统计.",
+	["#disableZhangong"]="【<b><font color='red'>提示</font></b>】: 本局游戏禁止了战功统计.",
 }
 
