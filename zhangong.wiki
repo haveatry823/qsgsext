@@ -1,0 +1,1004 @@
+
+1. ![初出茅庐](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/ccml.png)
+初出茅庐
+`ccml: 进行1局游戏后`
+
+2. ![初试身手](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/csss.png)
+初试身手
+`csss: 进行5局游戏后`
+
+3. ![小试牛刀](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/xsnd.png)
+小试牛刀
+`xsnd: 进行10局游戏`
+
+4. ![小有名气](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/xymq.png)
+小有名气
+`xymq: 进行20局游戏`
+
+5. ![锋芒毕露](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/fmbl.png)
+锋芒毕露
+`fmbl: 进行30局游戏`
+
+6. ![初尝胜果](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/ccsg.png)
+初尝胜果
+`ccsg: 获得1局胜利`
+
+7. ![初级杀手](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/cjss.png)
+初级杀手
+`cjss: 获得5局胜利`
+
+8. ![中级杀手](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/zjss.png)
+中级杀手
+`zjss: 获得10局胜利`
+
+9. ![高级杀手](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/gjss.png)
+高级杀手
+`gjss: 获得20局胜利`
+
+10. ![全职杀手](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/qzss.png)
+全职杀手
+`qzss: 获得30局胜利`
+
+11. ![命不该绝](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/mbgj.png)
+命不该绝
+`mbgj: 被闪电劈中但是没有死`
+
+12. ![乱臣贼子](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/lczz.png)
+乱臣贼子
+`lczz: 身为反贼在1局游戏中，手刃至少2个忠臣或内奸`
+
+13. ![赤胆忠心](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/cdzx.png)
+赤胆忠心
+`cdzx: 身为忠臣在1局游戏中，手刃至少2个反贼或内奸`
+
+14. ![鸿运当头](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/hydt.png)
+鸿运当头
+`hydt: 在1个回合内使用至少3次无中生有`
+
+15. ![平反大将](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/pfdj.png)
+平反大将
+`pfdj: 在1局游戏中手刃4个反贼`
+
+16. ![秉公无私](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/bgws.png)
+秉公无私
+`bgws: 身为主公在一局游戏中从未对忠臣造成伤害，并取得胜利`
+
+17. ![天谴](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/tq.png)
+天谴
+`tq: 不被改判定牌的情况下被闪电劈死`
+
+18. ![辣手摧花](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/lsch.png)
+辣手摧花
+`lsch: 一局游戏中杀死至少2名女性角色`
+
+19. ![打酱油的](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/djyd.png)
+打酱油的
+`djyd: 在1局游戏中，在自己的回合开始前就死亡`
+
+20. ![先拔头筹](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/xbtc.png)
+先拔头筹
+`xbtc: 一局游戏中，自己的首回合结束前杀死至少一名非本方武将`
+
+21. ![射人先射马](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/srxsm.png)
+射人先射马
+`srxsm: 一局游戏中发动麒麟弓特效至少3次`
+
+22. ![势如破竹](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/srpz.png)
+势如破竹
+`srpz: 一局游戏中发动贯石斧特效至少3次`
+
+23. ![杀很大](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/shd.png)
+杀很大
+`shd: 一回合中发动诸葛连弩特效至少4次`
+
+24. ![绝对零度](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/jdld.png)
+绝对零度
+`jdld: 一局游戏中发动寒冰剑特效至少3次`
+
+25. ![刀枪不入](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/dqbr.png)
+刀枪不入
+`dqbr: 一局游戏中发动仁王盾特效3次`
+
+26. ![苟延残喘](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/gycc.png)
+苟延残喘
+`gycc: 在1局游戏中被救活至少5次`
+
+27. ![横扫千军](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/hsqj.png)
+横扫千军
+`hsqj: 在1局游戏中，手刃7名角色并且获得胜利`
+
+28. ![旗开得胜](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/qkds.png)
+旗开得胜
+`qkds: 一局游戏中，在自己的首回合结束前获胜`
+
+29. ![趁虚而入](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/cxer.png)
+趁虚而入
+`cxer: 身为反贼在1局游戏中，在自己的第1回合时手刃主公`
+
+30. ![忠肝义胆](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/zgyd.png)
+忠肝义胆
+`zgyd: 身为忠臣在1局游戏中存活，并且主公满体力的情况下取得胜利`
+
+31. ![极乐世界](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/jlsj.png)
+极乐世界
+`jlsj: 在1局游戏中，累计3次被乐不思蜀后判定牌都是红桃`
+
+32. ![安乐公](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/alg.png)
+安乐公
+`alg: 在1局游戏中，累计3次被乐不思蜀后判定牌都不是红桃`
+
+33. ![炮灰](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/ph.png)
+炮灰
+`ph: 被南蛮入侵或万箭齐发打死累计10次`
+
+34. ![更大的炮灰](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/gddph.png)
+更大的炮灰
+`gddph: 被南蛮入侵或万箭齐发打死累计50次`
+
+35. ![一骑讨](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/yqt.png)
+一骑讨
+`yqt: 与人决斗胜利累计30次`
+
+36. ![老谋深算](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/lmss.png)
+老谋深算
+`lmss: 身为内奸在1局游戏中手刃至少4个反贼或忠臣并且取得胜利`
+
+37. ![天道威仪](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/tdwy.png)
+天道威仪
+`tdwy: 身为主公在1局游戏中，在忠臣全部死亡后杀死至少3名角色，取得胜利`
+
+38. ![桃王](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/tw.png)
+桃王
+`tw: 在1局游戏中给自己吃过5个或者更多得桃（不包括华佗的技能）`
+
+39. ![桃仙](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/tx.png)
+桃仙
+`tx: 在1局游戏中，使用桃救人至少5次（不包括华佗的技能）`
+
+40. ![八门金锁](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/bmjs.png)
+八门金锁
+`bmjs: 在1局游戏中，装备八卦阵连续判定红色花色至少5次`
+
+41. ![竭智尽忠](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/jzjz.png)
+竭智尽忠
+`jzjz: 身为忠臣在1局游戏中，在自己的首回合中手刃一个反贼或内奸，最后取得胜利`
+
+42. ![绝处逢生](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/jcfs.png)
+绝处逢生
+`jcfs: 身为反贼在1局游戏中，在其他反贼全部死亡且忠臣全部存活的情况下获胜`
+
+43. ![异族之愤](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/yzzf.png)
+异族之愤
+`yzzf: 使用1次南蛮入侵打死至少3名角色`
+
+44. ![箭无虚发](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/jwxf.png)
+箭无虚发
+`jwxf: 使用1次万箭齐发打死至少3名角色`
+
+45. ![至圣至明](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/zszm.png)
+至圣至明
+`zszm: 身为主公在一局游戏中手刃所有反贼和内奸，并在忠臣全部存活的情况下获胜`
+
+46. ![老奸巨猾](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/ljjh.png)
+老奸巨猾
+`ljjh: 身为内奸在1局游戏中，在主公杀死过忠臣的情况下取得胜利`
+
+47. ![搬石砸脚](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/bszj.png)
+搬石砸脚
+`bszj: 与人决斗失败累计10次`
+
+48. ![常胜将军](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/csjj.png)
+常胜将军
+`csjj: 连续胜利10局`
+
+49. ![落井下石](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/ljxs.png)
+落井下石
+`ljxs: 一局游戏中发动古锭刀特效至少3次`
+
+50. ![朱雀星君](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/zqxj.png)
+朱雀星君
+`zqxj: 一局游戏中发动朱雀羽扇特效至少3次`
+
+51. ![藤甲兵](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/tjb.png)
+藤甲兵
+`tjb: 一局游戏中发动藤甲效果抵挡杀、南蛮入侵或万箭齐发至少3次`
+
+52. ![大事化小](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/dshx.png)
+大事化小
+`dshx: 一局游戏中发动白银狮子特效减少伤害至少1次`
+
+53. ![塞翁失马](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/swsm.png)
+塞翁失马
+`swsm: 一局游戏中，失去白银狮子回复体力至少2次`
+
+54. ![惹火上身](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/rhss.png)
+惹火上身
+`rhss: 一局游戏中，装备藤甲的时受到至少3次火焰伤害`
+
+55. ![何以解忧](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/hyjy.png)
+何以解忧
+`hyjy: 一局游戏中，使用酒回复体力至少2次`
+
+56. ![唯有杜康](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/wydk.png)
+唯有杜康
+`wydk: 一局游戏中，使用酒后成功使用杀造成伤害至少3次`
+
+57. ![攻其不备](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/gqbb.png)
+攻其不备
+`gqbb: 一局游戏中，成功使用火攻造成伤害至少3次`
+
+58. ![被看穿了吗](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/bkclm.png)
+被看穿了吗
+`bkclm: 一局游戏中，使用火攻失败至少3次`
+
+59. ![饥肠辘辘](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/jcll.png)
+饥肠辘辘
+`jcll: 在1局游戏中，累计3次被兵粮寸断后判定牌都不是草花`
+
+60. ![兵精粮足](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/bjlz.png)
+兵精粮足
+`bjlz: 在1局游戏中，累计3次被兵粮寸断后判定牌都是草花`
+
+61. ![打铁匠](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/dtj.png)
+打铁匠
+`dtj: 累计将铁索连环重铸30次`
+
+62. ![有难同当](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/yntd.png)
+有难同当
+`yntd: 1局游戏中，使用铁索连环累计横置其他角色至少6次`
+
+63. ![君临天下](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/jltx.png)
+君临天下
+`jltx: 身为主公取得胜利累计40次`
+
+64. ![忠心耿耿](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/zxgg.png)
+忠心耿耿
+`zxgg: 身为忠臣取得胜利累计60次`
+
+65. ![草头天子](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/cttz.png)
+草头天子
+`cttz: 身为反贼取得胜利累计100次`
+
+66. ![唯我独尊](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/wwdz.png)
+唯我独尊
+`wwdz: 身为内奸取得1次胜利`
+
+67. ![运筹帷幄](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/ycww.png)
+运筹帷幄
+`ycww: 身为内奸取得胜利累计20次`
+
+68. 
+险不辞难
+`xbcn: 使用☆SP曹仁获得30场身份模式游戏胜利`
+
+69. 
+乱世的奸雄
+`lsdjx: 使用曹操在1局游戏中发动奸雄得到至少3张南蛮入侵和1张万箭齐发`
+
+70. 
+魏武帝
+`wwd: 使用曹操获得30场身份模式游戏胜利`
+
+71. 
+霸业的继承者
+`bydjcz: 使用曹丕获得30场身份模式游戏胜利`
+
+72. 
+固若金汤
+`grjt: 使用曹仁在一局游戏中发动至少3次据守，并且在损失体力不多于3点的情况下获胜。`
+
+73. 
+大将军
+`djj: 使用曹仁获得30场身份模式游戏胜利`
+
+74. 
+黄须儿
+`hxe: 使用曹彰获得30场身份模式游戏胜利`
+
+75. 
+八斗之才
+`bdzc: 使用曹植获得30场身份模式游戏胜利`
+
+76. 
+矫然的壮士
+`jrdzs: 使用邓艾获得30场身份模式游戏胜利`
+
+77. 
+一夫当关
+`yfdg: 使用典韦在1局游戏中发动至少5次强袭，并用强袭至少杀死3名角色。`
+
+78. 
+古之恶来
+`gzel: 使用典韦获得30场身份模式游戏胜利`
+
+79. 
+不遗余力
+`byyl: 使用郭嘉在1局游戏中发动遗计发牌至少5次`
+
+80. 
+早终的先知
+`zzdxz: 使用郭嘉获得30场身份模式游戏胜利`
+
+81. 
+手眼通天
+`sytt: 使用司马懿在1局游戏中有至少2次发动反馈都抽到对方1张桃`
+
+82. 
+狼顾之鬼
+`lgzg: 使用司马懿获得30场身份模式游戏胜利`
+
+83. 
+金璧之才
+`jbzc: 使用SP蔡文姬获得30场身份模式游戏胜利`
+
+84. 
+汉寿亭侯
+`hsth: 使用SP关羽获得30场身份模式游戏胜利`
+
+85. 
+算无遗策
+`swyc: 使用SP贾诩获得30场身份模式游戏胜利`
+
+86. 
+枱榇之悟
+`tczw: 使用SP庞德获得30场身份模式游戏胜利`
+
+87. 
+决意的巾帼
+`jydjg: 使用王异获得30场身份模式游戏胜利`
+
+88. 
+你死我活
+`nswh: 使用夏侯惇在1局游戏中发动刚烈杀死至少1名角色`
+
+89. 
+独眼的罗刹
+`dydls: 使用夏侯惇获得30场身份模式游戏胜利`
+
+90. 
+风驰电掣
+`fcdc: 使用夏侯渊在1局游戏中，有连续至少3个回合每个回合都发动2次神速`
+
+91. 
+疾行的猎豹
+`jxdlb: 使用夏侯渊获得30场身份模式游戏胜利`
+
+92. 
+妈，我冷
+`mwl: 使用许褚在1局游戏中发动裸衣至少2次并在裸衣的回合中杀死过至少2名角色`
+
+93. 
+虎痴
+`hc: 使用许褚获得30场身份模式游戏胜利`
+
+94. 
+周亚夫之风
+`zyfzf: 使用徐晃获得30场身份模式游戏胜利`
+
+95. 
+曹魏的谋主
+`cwdmz: 使用荀攸获得30场身份模式游戏胜利`
+
+96. 
+驱虎吞狼
+`qhtl: 使用荀彧在1局游戏中至少对3名不同角色发动驱虎，并且这些角色都死于驱虎造成的伤害`
+
+97. 
+王佐之才
+`wzzc: 使用荀彧获得30场身份模式游戏胜利`
+
+98. 
+恃才放旷
+`scfk: 使用杨修获得30场身份模式游戏胜利`
+
+99. 
+魏武之刚
+`wwzg: 使用于禁获得30场身份模式游戏胜利`
+
+100. 
+冷血皇后
+`lxhh: 使用张春华获得30场身份模式游戏胜利`
+
+101. 
+料敌机先
+`ldjx: 使用张郃获得30场身份模式游戏胜利`
+
+102. 
+掩其无备
+`yqwb: 使用张辽在1局游戏中发动至少10次突袭`
+
+103. 
+前将军
+`qjj: 使用张辽获得30场身份模式游戏胜利`
+
+104. 
+洛神赋
+`lsf: 使用甄姬一回合内发动洛神在不被改变判定牌的情况下连续判定黑色花色至少8次`
+
+105. 
+薄幸的美人
+`bxdmr: 使用甄姬获得30场身份模式游戏胜利`
+
+106. 
+桀骜的野心家
+`jadyxj: 使用钟会获得30场身份模式游戏胜利`
+
+107. 
+汉昭烈帝
+`hzld: 使用☆SP刘备获得30场身份模式游戏胜利`
+
+108. 
+横矛立马
+`hmlm: 使用☆SP张飞获得30场身份模式游戏胜利`
+
+109. 
+蜀汉的辅翼
+`shdfy: 使用法正获得30场身份模式游戏胜利`
+
+110. 
+将门虎子
+`jmhz: 使用关兴张苞获得30场身份模式游戏胜利`
+
+111. 
+武圣显灵
+`wsxl: 使用关羽在1局游戏中发动青龙偃月刀特效杀死至少1名角色`
+
+112. 
+美髯公
+`mrg: 使用关羽获得30场身份模式游戏胜利`
+
+113. 
+锦囊袋
+`jnd: 使用黄月英在1个回合内发动至少10次集智`
+
+114. 
+归隐的杰女
+`gydjn: 使用黄月英获得30场身份模式游戏胜利`
+
+115. 
+老将的逆袭
+`ljdnx: 使用黄忠在1局游戏中，剩余1点体力时累计发动烈弓杀死至少3名角色`
+
+116. 
+老当益壮
+`ldyz: 使用黄忠获得30场身份模式游戏胜利`
+
+117. 
+龙的衣钵
+`ldyb: 使用姜维获得30场身份模式游戏胜利`
+
+118. 
+历尽沧桑
+`ljcs: 使用廖化获得30场身份模式游戏胜利`
+
+119. 
+纠结之心
+`jjzx: 使用刘备在1局游戏中发动雌雄双股剑特效杀死至少1名女性角色`
+
+120. 
+乱世的枭雄
+`lsdxx: 使用刘备获得30场身份模式游戏胜利`
+
+121. 
+无为的真命主
+`wwdzmz: 使用刘禅获得30场身份模式游戏胜利`
+
+122. 
+全军突击
+`qjtj: 使用马超在1局游戏中发动铁骑连续判定红色花色至少5次`
+
+123. 
+一骑当千
+`yqdq: 使用马超获得30场身份模式游戏胜利`
+
+124. 
+临危受命
+`lwsm: 使用马岱获得30场身份模式游戏胜利`
+
+125. 
+怀才自负
+`hczf: 使用马谡获得30场身份模式游戏胜利`
+
+126. 
+南蛮王
+`nmw: 使用孟获获得30场身份模式游戏胜利`
+
+127. 
+铁锁连舟
+`tslz: 使用庞统在1回合内发动连环横置至少6名角色`
+
+128. 
+凤雏
+`fc: 使用庞统获得30场身份模式游戏胜利`
+
+129. 
+梦醉良缘
+`mzly: 使用SP孙尚香获得30场身份模式游戏胜利`
+
+130. 
+嗜血成性
+`sxcx: 使用魏延在1回合内发动狂骨回复至少3点体力`
+
+131. 
+嗜血的独狼
+`sxddl: 使用魏延获得30场身份模式游戏胜利`
+
+132. 
+天火燎原
+`thly: 使用卧龙诸葛亮在1回合内发动火计造成至少6点伤害`
+
+133. 
+卧龙
+`wl: 使用卧龙诸葛亮获得30场身份模式游戏胜利`
+
+134. 
+忠孝的侠士
+`zxdxs: 使用徐庶获得30场身份模式游戏胜利`
+
+135. 
+燕人的咆哮
+`yrdpx: 使用张飞在1局游戏中发动丈八蛇矛特效杀死至少1名角色`
+
+136. 
+万夫不当
+`wfbd: 使用张飞获得30场身份模式游戏胜利`
+
+137. 
+浑身是胆
+`hssd: 使用赵云在1局游戏中发动青钢剑特效杀死至少1名角色`
+
+138. 
+少年将军
+`snjj: 使用赵云获得30场身份模式游戏胜利`
+
+139. 
+空城绝唱
+`kcjc: 使用诸葛亮在1局游戏中有至少5个回合结束时是空城状态`
+
+140. 
+迟暮的丞相
+`cmdcx: 使用诸葛亮获得30场身份模式游戏胜利`
+
+141. 
+野性的女王
+`yxdnw: 使用祝融获得30场身份模式游戏胜利`
+
+142. 
+韶光易逝
+`sgys: 使用☆SP大乔获得30场身份模式游戏胜利`
+
+143. 
+国士之风
+`gszf: 使用☆SP吕蒙获得30场身份模式游戏胜利`
+
+144. 
+无冕之后
+`wmzh: 使用步练师获得30场身份模式游戏胜利`
+
+145. 
+三朝虎臣
+`schc: 使用程普获得30场身份模式游戏胜利`
+
+146. 
+移花接木
+`yhjm: 使用大乔在一局游戏中连续发动流离至少5次`
+
+147. 
+矜持之花
+`jczh: 使用大乔获得30场身份模式游戏胜利`
+
+148. 
+经天纬地
+`jtwd: 使用张昭张纮获得30场身份模式游戏胜利`
+
+149. 
+神出鬼没
+`scgm: 使用甘宁在1个回合内发动至少6次奇袭`
+
+150. 
+锦帆游侠
+`jfyx: 使用甘宁获得30场身份模式游戏胜利`
+
+151. 
+石城侯
+`sch: 使用韩当获得30场身份模式游戏胜利`
+
+152. 
+无尽的鞭挞
+`wjdbt: 使用黄盖1个回合内发动至少8次苦肉`
+
+153. 
+轻身为国
+`qswg: 使用黄盖获得30场身份模式游戏胜利`
+
+154. 
+豪情烈胆
+`hqld: 使用凌统获得30场身份模式游戏胜利`
+
+155. 
+独断的外交家
+`dddwjj: 使用鲁肃获得30场身份模式游戏胜利`
+
+156. 
+连绵不绝
+`lmbj: 使用陆逊在1个回合内发动至少10次连营`
+
+157. 
+儒生雄才
+`rsxc: 使用陆逊获得30场身份模式游戏胜利`
+
+158. 
+伺机待发
+`sjdf: 使用吕蒙将手牌囤积到20张`
+
+159. 
+白衣渡江
+`bydj: 使用吕蒙获得30场身份模式游戏胜利`
+
+160. 
+江东的小霸王
+`jddxbw: 使用孙策获得30场身份模式游戏胜利`
+
+161. 
+武烈帝
+`wld: 使用孙坚获得30场身份模式游戏胜利`
+
+162. 
+老不死的
+`lbsd: 使用孙权在1局游戏中被吴国武将用桃救至少3次`
+
+163. 
+年轻的贤君
+`nqdxj: 使用孙权获得30场身份模式游戏胜利`
+
+164. 
+因祸得福
+`yhdf: 使用孙尚香在1局游戏中累计失去至少5张已装备的装备牌`
+
+165. 
+弓腰姬
+`gyj: 使用孙尚香获得30场身份模式游戏胜利`
+
+166. 
+江东之虎
+`jdzh: 使用太史慈在1回合内发动天义拼点胜利后，使用【杀】杀死至少3名角色`
+
+167. 
+笃烈之士
+`dlzs: 使用太史慈获得30场身份模式游戏胜利`
+
+168. 
+武烈皇后
+`wlhh: 使用吴国太获得30场身份模式游戏胜利`
+
+169. 
+怜香惜玉
+`lxxy: 使用小乔在一局游戏中发动天香让某名男性武将摸牌至少15张`
+
+170. 
+矫情之花
+`jqzh: 使用小乔获得30场身份模式游戏胜利`
+
+171. 
+江东的铁壁
+`jddtb: 使用徐盛获得30场身份模式游戏胜利`
+
+172. 
+金枪不倒
+`jqbd: 使用周泰在1局游戏中拥有过至少9张不屈牌并且未死`
+
+173. 
+历战之驱
+`lzzq: 使用周泰获得30场身份模式游戏胜利`
+
+174. 
+无尽的挣扎
+`wjdzz: 使用周瑜在1局游戏中使用反间杀死至少3名角色`
+
+175. 
+大都督
+`ddd: 使用周瑜获得30场身份模式游戏胜利`
+
+176. 
+联盟的维系者
+`lmdwxz: 使用诸葛瑾获得30场身份模式游戏胜利`
+
+177. 
+暗黑的傀儡师
+`ahdkls: 使用☆SP貂蝉获得30场身份模式游戏胜利`
+
+178. 
+怀铃的乌羽
+`hldwy: 使用☆SP甘宁获得30场身份模式游戏胜利`
+
+179. 
+荆楚之高俊
+`jczgj: 使用☆SP庞统获得30场身份模式游戏胜利`
+
+180. 
+白马先锋
+`bmxf: 使用☆SP赵云获得30场身份模式游戏胜利`
+
+181. 
+异乡的孤女
+`yxdgn: 使用蔡文姬获得30场身份模式游戏胜利`
+
+182. 
+刚直壮烈
+`gzzl: 使用陈宫获得30场身份模式游戏胜利`
+
+183. 
+倾国倾城
+`qgqc: 使用貂蝉在1局游戏中发动离间造成至少3名角色死亡`
+
+184. 
+乱世的舞姬
+`lsdwj: 使用貂蝉获得30场身份模式游戏胜利`
+
+185. 
+魔王
+`mw: 使用董卓获得30场身份模式游戏胜利`
+
+186. 
+攻无不克
+`gwbk: 使用高顺获得30场身份模式游戏胜利`
+
+187. 
+白马义从
+`bmyc: 使用公孙瓒在体力大于2的情况下杀死至少3名角色，并且在体力1的情况下存活并获胜。`
+
+188. 
+白马将军
+`bmjj: 使用公孙瓒获得30场身份模式游戏胜利`
+
+189. 
+乱世名医
+`lsmy: 使用华佗在1局游戏中发动急救使至少3个不同的角色脱离濒死状态`
+
+190. 
+神医
+`sy: 使用华佗获得30场身份模式游戏胜利`
+
+191. 
+魔将
+`mj: 使用华雄获得30场身份模式游戏胜利`
+
+192. 
+冷酷的毒士
+`lkdds: 使用贾诩获得30场身份模式游戏胜利`
+
+193. 
+跨蹈汉南
+`kdhn: 使用刘表获得30场身份模式游戏胜利`
+
+194. 
+飞将
+`fj: 使用吕布在1局游戏中发动方天画戟特效杀死至少2名角色`
+
+195. 
+武的化身
+`wdhs: 使用吕布获得30场身份模式游戏胜利`
+
+196. 
+周苛之节
+`zkzj: 使用庞德在1局游戏中发动猛进至少5次`
+
+197. 
+人马一体
+`rmyt: 使用庞德获得30场身份模式游戏胜利`
+
+198. 
+绝世的舞姬
+`jsdwj: 使用SP貂蝉获得30场身份模式游戏胜利`
+
+199. 
+西凉的猛狮
+`xldms: 使用SP马超获得30场身份模式游戏胜利`
+
+200. 
+其利断金
+`qldj: 使用颜良文丑在1局游戏中发动双雄至少3次并在双雄的回合中杀死过至少3名角色`
+
+201. 
+虎狼兄弟
+`hlxd: 使用颜良文丑获得30场身份模式游戏胜利`
+
+202. 
+乱箭肃敌
+`ljsd: 使用袁绍在1回合内发动乱击至少6次`
+
+203. 
+高贵的名门
+`ggdmm: 使用袁绍获得30场身份模式游戏胜利`
+
+204. 
+四世三公
+`sssg: 使用袁术在1回合内消灭场上4个势力中的3个`
+
+205. 
+仲家帝
+`zjd: 使用袁术获得30场身份模式游戏胜利`
+
+206. 
+神鬼莫测
+`sgmc: 使用于吉在1局游戏中累计蛊惑假牌至少成功3次`
+
+207. 
+太平道人
+`tpdr: 使用于吉获得30场身份模式游戏胜利`
+
+208. 
+狂奔的蜗牛
+`kbdwn: 使用张角在1局游戏发动雷击杀死至少3名角色`
+
+209. 
+天公将军
+`tgjj: 使用张角获得30场身份模式游戏胜利`
+
+210. 
+迷之仙人
+`mzxr: 使用左慈获得30场身份模式游戏胜利`
+
+211. 
+超世之英杰
+`cszyj: 使用神曹操获得30场身份模式游戏胜利`
+
+212. 
+鬼神再临
+`gszl: 使用神关羽获得30场身份模式游戏胜利`
+
+213. 
+修罗之道
+`xlzd: 使用神吕布获得30场身份模式游戏胜利`
+
+214. 
+最强神话
+`zqsh: 使用虎牢关吕布获得30场身份模式游戏胜利`
+
+215. 
+暴怒的战神
+`bndzs: 使用虎牢关吕布获得30场身份模式游戏胜利`
+
+216. 
+圣光之国士
+`sgzgs: 使用神吕蒙获得30场身份模式游戏胜利`
+
+217. 
+晋国之祖
+`jgzz: 使用神司马懿获得30场身份模式游戏胜利`
+
+218. 
+神威如龙
+`swrl: 使用神赵云获得30场身份模式游戏胜利`
+
+219. 
+赤壁的火神
+`cbdhs: 使用神周瑜获得30场身份模式游戏胜利`
+
+220. 
+赤壁的妖术师
+`cbdyss: 使用神诸葛亮获得30场身份模式游戏胜利`
+
+221. ![战场新兵](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/zcxb.png)
+战场新兵
+`zcxb: 获得1场3V3游戏胜利(限3v3)`
+
+222. ![背水一战](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/bsyz.png)
+背水一战
+`bsyz: 身为主帅，在本方两名前锋阵亡的情况下，杀死对方3人后获胜(限3v3)`
+
+223. ![一鼓作气](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/ygzq.png)
+一鼓作气
+`ygzq: 一回合内杀死对方3名角色(限3v3)`
+
+224. ![肆无忌惮](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/swjd.png)
+肆无忌惮
+`swjd: 一回合内使用至少3张南蛮入侵或万箭齐发(限3v3)`
+
+225. ![暴发户](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/bfh.png)
+暴发户
+`bfh: 一回合内获得至少10张手牌(限3v3)`
+
+226. ![舍生取义](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/ssqy.png)
+舍生取义
+`ssqy: 身为前锋，被本方角色杀死累计10次(限3v3)`
+
+227. ![直捣黄龙](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/zdhl.png)
+直捣黄龙
+`zdhl: 在对方两名前锋都没有受伤的情况下杀死对方主帅(限3v3)`
+
+228. ![速战速决](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/szsj.png)
+速战速决
+`szsj: 在自己的首回合结束前获得胜利(限3v3)`
+
+229. ![持久战](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/cjz.png)
+持久战
+`cjz: 在自己的第5回合结束后获得胜利(限3v3)`
+
+230. ![锋线杀手](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/fxss.png)
+锋线杀手
+`fxss: 身为前锋获得20场3V3游戏胜利(限3v3)`
+
+231. ![用兵有方](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/ybyf.png)
+用兵有方
+`ybyf: 身为主帅获得20场3V3游戏胜利(限3v3)`
+
+232. ![群雄霸者](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/qxbz.png)
+群雄霸者
+`qxbz: 使用群雄武将获得20场3V3游戏胜利(限3v3)`
+
+233. ![蜀之霸者](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/szbz.png)
+蜀之霸者
+`szbz: 使用蜀国武将获得20场3V3游戏胜利(限3v3)`
+
+234. ![魏之霸者](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/wzbz.png)
+魏之霸者
+`wzbz: 使用魏国武将获得20场3V3游戏胜利(限3v3)`
+
+235. ![吴之霸者](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/wuzbz.png)
+吴之霸者
+`wuzbz: 使用吴国武将获得20场3V3游戏胜利(限3v3)`
+
+236. ![初来乍到](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/clzd.png)
+初来乍到
+`clzd: 获得1场1V1游戏胜利(限1v1)`
+
+237. ![谋略过人](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/mlgr.png)
+谋略过人
+`mlgr: 选择了3名3血武将并且获胜(限1v1)`
+
+238. ![勇猛过人](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/ymgr.png)
+勇猛过人
+`ymgr: 选择了3名4血武将并且获胜(限1v1)`
+
+239. ![兵不血刃](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/bbxr.png)
+兵不血刃
+`bbxr: 对方3名武将都在他们各自的回合阵亡(限1v1)`
+
+240. ![巾帼英雄](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/jgyx.png)
+巾帼英雄
+`jgyx: 选择3名女性武将并且获胜(限1v1)`
+
+241. ![护国军师](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/hgjs.png)
+护国军师
+`hgjs: 以诸葛亮、司马懿、周瑜为上场武将的情况下获胜(限1v1)`
+
+242. ![毫发无伤](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/hfws.png)
+毫发无伤
+`hfws: 在本方所有武将满体力的情况下胜利(限1v1)`
+
+243. ![惊天逆转](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/jtnz.png)
+惊天逆转
+`jtnz: 在本方剩余1名武将时，杀死对方3名武将获胜(限1v1)`
+
+244. ![有勇无谋](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/yywm.png)
+有勇无谋
+`yywm: 以吕布、张飞、许褚为上场武将的情况下获胜(限1v1)`
+
+245. ![智勇双全](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/zysq.png)
+智勇双全
+`zysq: 以关羽、赵云、黄忠为上场武将的情况下获胜(限1v1)`
+
+246. ![后发制人](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/hfzr.png)
+后发制人
+`hfzr: 后手出牌获得30场1V1游戏胜利(限1v1)`
+
+247. ![群雄武者](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/qxwz.png)
+群雄武者
+`qxwz: 使用群雄武将获得30场1V1游戏胜利(限1v1)`
+
+248. ![先发制人](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/xfzr.png)
+先发制人
+`xfzr: 先手出牌获得30场1V1游戏胜利(限1v1)`
+
+249. ![蜀之武者](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/szwz.png)
+蜀之武者
+`szwz: 使用蜀国武将获得30场1V1游戏胜利(限1v1)`
+
+250. ![魏之武者](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/wzwz.png)
+魏之武者
+`wzwz: 使用魏国武将获得30场1V1游戏胜利(限1v1)`
+
+251. ![吴之武者](https://qsgsext.googlecode.com/svn/trunk/zhangong/img/wuzwz.png)
+吴之武者
+`wuzwz: 使用吴国武将获得30场1V1游戏胜利(限1v1)`
