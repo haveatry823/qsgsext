@@ -20,6 +20,8 @@ zgfunc[sgs.CardFinished]={}
 zgfunc[sgs.CardsMoveOneTime]={}
 zgfunc[sgs.ChoiceMade]={}
 
+
+zgfunc[sgs.ConfirmDamage]={}
 zgfunc[sgs.Damage]={}
 zgfunc[sgs.DamageCaused]={}
 zgfunc[sgs.Damaged]={}
@@ -42,9 +44,6 @@ zgfunc[sgs.SlashEffected]={}
 
 zgfunc[sgs.TurnStart]={}
 
-sgs.todo=9999
-zgfunc[sgs.todo]={}
-
 require "sqlite3"
 db = sqlite3.open("./zhangong/zhangong.data")
 
@@ -58,7 +57,6 @@ end
 function sqlexec(sql,...)
 	local sqlstr=string.format(sql, unpack(arg))
 	db:exec(sqlstr)
-	logmsg(sqlstr.."\r\n")	
 end
 
 
@@ -69,9 +67,8 @@ zgfunc[sgs.ChoiceMade].srxsm=function(self, room, event, player, data,isowner,na
 	local choices= data:toString():split(":")
 	if choices[1]=="skillInvoke"  and  choices[2]=="KylinBow" and choices[3]=="yes" then
 		addGameData(name,1)
-		if getGameData(name)>=3 then
+		if getGameData(name)==3 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end	
 end
@@ -85,9 +82,8 @@ zgfunc[sgs.ChoiceMade].zqxj=function(self, room, event, player, data,isowner,nam
 	local choices= data:toString():split(":")
 	if choices[1]=="skillInvoke"  and  choices[2]=="Fan" and choices[3]=="yes" then
 		addGameData(name,1)
-		if getGameData(name)>=3 then
+		if getGameData(name)==3 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end	
 end
@@ -100,9 +96,8 @@ zgfunc[sgs.ChoiceMade].srpz=function(self, room, event, player, data,isowner,nam
 	local choices= data:toString():split(":")
 	if choices[1]=="cardResponsed" and choices[2]=="@Axe" and choices[#choices]~="_nil_" then
 		addGameData(name,1)
-		if getGameData(name)>=3 then
+		if getGameData(name)==3 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end	
 end
@@ -117,9 +112,8 @@ zgfunc[sgs.CardFinished].shd=function(self, room, event, player, data,isowner,na
 	local card=use.card
 	if player:getWeapon() and player:getWeapon():isKindOf("Crossbow") and card:isKindOf("Slash") then 
 		addTurnData(name,1) 
-		if getTurnData(name)>=4 then
+		if getTurnData(name)==4 then
 			addZhanGong(room,name)
-			setTurnData(name,-100)
 		end
 	end	
 end
@@ -132,9 +126,8 @@ zgfunc[sgs.ChoiceMade].jdld=function(self, room, event, player, data,isowner,nam
 	local choices= data:toString():split(":")
 	if choices[1]=="skillInvoke"  and  choices[2]=="IceSword" and choices[3]=="yes" then
 		addGameData(name,1)
-		if getGameData(name)>=3 then
+		if getGameData(name)==3 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end	
 end
@@ -159,9 +152,8 @@ zgfunc[sgs.CardFinished].hydt=function(self, room, event, player, data,isowner,n
 	local card=use.card
 	if card:isKindOf("ExNihilo") then 
 		addTurnData(name,1)
-		if getTurnData(name)>=3 then			 
+		if getTurnData(name)==3 then			 
 			addZhanGong(room,name)
-			setTurnData(name,-100)
 		end
 	end
 end
@@ -207,9 +199,8 @@ zgfunc[sgs.DamageCaused].ljxs=function(self, room, event, player, data,isowner,n
 	if damage.card and damage.card:isKindOf("Slash") and damage.to:isKongcheng() 
 			and not damage.chain and not damage.transfer then
 		addGameData(name,1)
-		if getGameData(name)>=3 then			 
+		if getGameData(name)==3 then			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end		
 end
@@ -258,9 +249,8 @@ zgfunc[sgs.Death].lczz=function(self, room, event, player, data,isowner,name)
 	if killer:getRole()=="rebel" and (player:getRole()=="renegade" or player:getRole()=="loyalist") 
 			and killer:objectName()==room:getOwner():objectName()  then
 		addGameData(name,1)		
-		if getGameData(name,0)>=2 then 			 
+		if getGameData(name,0)==2 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 		
 	end		
@@ -276,9 +266,8 @@ zgfunc[sgs.GameOverJudge].callback.lczz=function(room,player,data,name,result)
 	if killer:getRole()=="rebel" and (player:getRole()=="renegade" or player:getRole()=="loyalist") 
 			and killer:objectName()==room:getOwner():objectName()  then
 		addGameData(name,1)		
-		if getGameData(name)>=2 then 			 
+		if getGameData(name)==2 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end		
 end
@@ -294,9 +283,8 @@ zgfunc[sgs.Death].cdzx=function(self, room, event, player, data,isowner,name)
 	if killer:getRole()=="loyalist" and (player:getRole()=="renegade" or player:getRole()=="rebel") 
 			and killer:objectName()==room:getOwner():objectName()  then
 		addGameData(name,1)		
-		if getGameData(name,0)>=2  then 			 
+		if getGameData(name,0)==2  then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end		
 end
@@ -311,11 +299,9 @@ zgfunc[sgs.GameOverJudge].callback.cdzx=function(room,player,data,name,result)
 	if killer:getRole()=="loyalist" and (player:getRole()=="renegade" or player:getRole()=="rebel") 
 			and killer:objectName()==room:getOwner():objectName()  then
 		addGameData(name,1)		
-		if getGameData(name)>=2 then 			 
+		if getGameData(name)==2 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
-
 	end		
 end
 
@@ -330,7 +316,6 @@ zgfunc[sgs.Death].pfdj=function(self, room, event, player, data,isowner,name)
 		addGameData(name,1)		
 		if getGameData(name,0)==4 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end		
 end
@@ -346,7 +331,6 @@ zgfunc[sgs.GameOverJudge].callback.pfdj=function(room,player,data,name,result)
 		addGameData(name,1)
 		if getGameData(name)==4 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end		
 end
@@ -362,9 +346,8 @@ zgfunc[sgs.Death].lsch=function(self, room, event, player, data,isowner,name)
 	if not killer then return false end
 	if player:isFemale() and killer:objectName()==room:getOwner():objectName()  then
 		addGameData(name,1)		
-		if getGameData(name,0)>=2 then 			 
+		if getGameData(name,0)==2 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end		
 end
@@ -378,9 +361,8 @@ zgfunc[sgs.GameOverJudge].callback.lsch=function(room,player,data,name,result)
 	if not killer then return false end
 	if player:isFemale() and killer:objectName()==room:getOwner():objectName()  then
 		addGameData(name,1)
-		if getGameData(name)>=2 then 			 
+		if getGameData(name)==2 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end		
 end
@@ -470,9 +452,8 @@ zgfunc[sgs.FinishRetrial].jlsj=function(self, room, event, player, data,isowner,
 	if judge.reason=="indulgence" and judge.who:objectName()==room:getOwner():objectName() 
 			and not judge:isBad() then
 		addGameData(name,1)
-		if getGameData(name)>=3 then 			 
+		if getGameData(name)==3 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end
 end
@@ -485,9 +466,8 @@ zgfunc[sgs.FinishRetrial].alg=function(self, room, event, player, data,isowner,n
 	if judge.reason=="indulgence" and judge.who:objectName()==room:getOwner():objectName() 
 			and judge:isBad() then
 		addGameData(name,1)
-		if getGameData(name)>=3 then 			 
+		if getGameData(name)==3 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end
 end
@@ -500,9 +480,8 @@ zgfunc[sgs.FinishRetrial].bjlz=function(self, room, event, player, data,isowner,
 	if judge.reason=="supply_shortage" and judge.who:objectName()==room:getOwner():objectName() 
 			and not judge:isBad() then
 		addGameData(name,1)
-		if getGameData(name)>=3 then 			 
+		if getGameData(name)==3 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end
 end
@@ -515,9 +494,8 @@ zgfunc[sgs.FinishRetrial].jcll=function(self, room, event, player, data,isowner,
 	if judge.reason=="supply_shortage" and judge.who:objectName()==room:getOwner():objectName() 
 			and judge:isBad() then
 		addGameData(name,1)
-		if getGameData(name)>=3 then 			 
+		if getGameData(name)==3 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end
 end
@@ -528,8 +506,6 @@ end
 -- 
 zgfunc[sgs.FinishRetrial].tq=function(self, room, event, player, data,isowner,name)
 		local judge=data:toJudge()
-	room:output(judge.reason)
-	room:output(room:getTag("retrial"):toBool() and "retrial" or "no retrial")
 	if judge.reason=="lightning" and room:getTag("retrial"):toBool()==false 
 			and judge.who:objectName()==room:getOwner():objectName() then
 		setTurnData(name,1)
@@ -606,7 +582,7 @@ end
 -- 
 for zgname, count in pairs({ccml=1,csss=5,xsnd=10,xymq=20,fmbl=30}) do
 	zgfunc[sgs.GameOverJudge].callback[zgname]=function(room,player,data,name,result)
-		room:getOwner():speak(name..count..zgname)
+		
 		local sql=string.format("select count(id) as num from results where result<>'-'")	
 		for row in db:rows(sql) do
 			if row.num==count then 			 
@@ -642,7 +618,7 @@ end
 -- 
 zgfunc[sgs.Death].lmss=function(self, room, event, player, data,isowner,name)
 	local damage = data:toDamageStar()
-	if damage.from and damage.from:objectName()==room:getOwner():objectName() 
+	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:getRole()=="renegade" and (player:getRole()=="rebel" or player:getRole()=="loyalist") then
 		addGameData(name,1)
 	end		
@@ -863,9 +839,8 @@ zgfunc[sgs.SlashEffected].dqbr=function(self, room, event, player, data,isowner,
 	local armor= effect.to:hasArmorEffect("RenwangShield")
 	if armor and effect.to:objectName()==room:getOwner():objectName() and effect.slash:isBlack() then
 		addGameData(name,1)
-		if getGameData(name)>=3 then 			 
+		if getGameData(name)==3 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end
 end
@@ -889,47 +864,100 @@ zgfunc[sgs.HpRecover].gycc=function(self, room, event, player, data,isowner,name
 	local recov = data:toRecover()
 	if recov.recover>=1 and player:getHp()==0  then
 		addGameData(name,1)
-		if getGameData(name)>=5 then 			 
+		if getGameData(name)==5 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end
 end
 
 -- ph :: 炮灰 :: 被南蛮入侵或万箭齐发打死累计10次 
 -- 
-zgfunc[sgs.todo].ph=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.Death].ph=function(self, room, event, player, data,isowner,name)
+	local damage = data:toDamageStar()
+	if player:objectName()==room:getOwner():objectName() and damage.card and damage.card:isKindOf("AOE") then
+		addGlobalData(name,1)
+		if getGlobalData(name)==10 then
+			addZhanGong(room,name)
+		end
+	end		
 end
+
+zgfunc[sgs.GameOverJudge].callback.ph=function(room,player,data,name,result)
+	local damage = data:toDamageStar()
+	if player:objectName()==room:getOwner():objectName() and damage.card and damage.card:isKindOf("AOE") then
+		addGlobalData(name,1)
+		if getGlobalData(name)==10 then
+			addZhanGong(room,name)
+		end
+	end	
+end
+
 
 
 -- gddph :: 更大的炮灰 :: 被南蛮入侵或万箭齐发打死累计50次 
 -- 
-zgfunc[sgs.todo].gddph=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.Death].gddph=function(self, room, event, player, data,isowner,name)
+	local damage = data:toDamageStar()
+	if player:objectName()==room:getOwner():objectName() and damage.card and damage.card:isKindOf("AOE") then
+		addGlobalData(name,1)
+		if getGlobalData(name)==50 then
+			addZhanGong(room,name)
+		end
+	end		
+end
+
+zgfunc[sgs.GameOverJudge].callback.gddph=function(room,player,data,name,result)
+	local damage = data:toDamageStar()
+	if player:objectName()==room:getOwner():objectName() and damage.card and damage.card:isKindOf("AOE") then
+		addGlobalData(name,1)
+		if getGlobalData(name)==50 then
+			addZhanGong(room,name)
+		end
+	end	
 end
 
 
 -- yqt :: 一骑讨 :: 与人决斗胜利累计30次 
 -- 
-zgfunc[sgs.todo].yqt=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.ConfirmDamage].yqt=function(self, room, event, player, data,isowner,name)
+	if not isowner then return false end
+	local damage = data:toDamage()
+	if damage.card and damage.card:isKindOf("Duel") then
+		addGlobalData(name,1)
+		if getGlobalData(name)==30 then
+			addZhanGong(room,name)
+		end
+	end	
 end
 
 
 -- bszj :: 搬石砸脚 :: 与人决斗失败累计10次 
 -- 
-zgfunc[sgs.todo].bszj=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.ConfirmDamage].bszj=function(self, room, event, player, data,isowner,name)	
+	local damage = data:toDamage()
+	if damage.card and damage.card:isKindOf("Duel") and damage.to:objectName()==room:getOwner():objectName() then
+		addGlobalData(name,1)
+		if getGlobalData(name)==10 then
+			addZhanGong(room,name)
+		end
+	end	
 end
 
 
 -- dtj :: 打铁匠 :: 累计将铁索连环重铸30次 
 -- 
-zgfunc[sgs.todo].dtj=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.CardFinished].dtj=function(self, room, event, player, data,isowner,name)
+	if not isowner then return false end
+	local use=data:toCardUse()
+	local card=use.card
+	local tos=sgs.QList2Table(use.to)
+	if card:isKindOf("IronChain") and ((not tos) or  #tos==0) then 
+		addGlobalData(name,1) 
+		if getGlobalData(name)==30 then 			 
+			addZhanGong(room,name)
+		end	
+	end
 end
-
 
 -- tw :: 桃王 :: 在1局游戏中给自己吃过5个或者更多得桃（不包括华佗的技能） 
 -- 
@@ -940,9 +968,8 @@ zgfunc[sgs.CardFinished].tw=function(self, room, event, player, data,isowner,nam
 	local tos=sgs.QList2Table(use.to)
 	if card:getSkillName()~="jijiu" and card:isKindOf("Peath") and tos[1]:objectName()==player:objectName() then 
 		addGameData(name,1) 
-		if getGameData(name)>=5 then 			 
+		if getGameData(name)==5 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end	
 	end
 end
@@ -957,9 +984,8 @@ zgfunc[sgs.CardFinished].tx=function(self, room, event, player, data,isowner,nam
 	local tos=sgs.QList2Table(use.to)
 	if card:getSkillName()~="jijiu" and card:isKindOf("Peath") and tos[1]:objectName()~=player:objectName() then 
 		addGameData(name,1) 
-		if getGameData(name)>=5 then 			 
+		if getGameData(name)==5 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end	
 	end
 end
@@ -990,9 +1016,8 @@ zgfunc[sgs.Death].yzzf=function(self, room, event, player, data,isowner,name)
 	if damage.card and damage.card:isKindOf("savage_assault") and room:getOwner():objectName()==room:getCurrent():objectName() then
 		local key=name..damage.card:getEffectiveId()
 		addTurnData(key,1)
-		if getTurnData(key)>=3 then 			 
+		if getTurnData(key)==3 then 			 
 			addZhanGong(room,name)
-			setTurnData(key,-100)
 		end
 	end		
 end
@@ -1004,9 +1029,8 @@ zgfunc[sgs.GameOverJudge].callback.yzzf=function(room,player,data,name,result)
 	if damage.card and damage.card:isKindOf("savage_assault") and room:getOwner():objectName()==room:getCurrent():objectName() then
 		local key=name..damage.card:getEffectiveId()
 		addTurnData(key,1)
-		if getTurnData(key)>=3 then 			 
+		if getTurnData(key)==3 then 			 
 			addZhanGong(room,name)
-			setTurnData(key,-100)
 		end
 	end	
 end
@@ -1020,9 +1044,8 @@ zgfunc[sgs.Death].jwxf=function(self, room, event, player, data,isowner,name)
 	if damage.card and damage.card:isKindOf("archery_attack") and room:getOwner():objectName()==room:getCurrent():objectName() then
 		local key=name..damage.card:getEffectiveId()
 		addTurnData(key,1)
-		if getTurnData(key)>=3 then 			 
+		if getTurnData(key)==3 then 			 
 			addZhanGong(room,name)
-			setTurnData(key,-100)
 		end
 	end		
 end
@@ -1034,9 +1057,8 @@ zgfunc[sgs.GameOverJudge].callback.jwxf=function(room,player,data,name,result)
 	if damage.card and damage.card:isKindOf("archery_attack") and room:getOwner():objectName()==room:getCurrent():objectName() then
 		local key=name..damage.card:getEffectiveId()
 		addTurnData(key,1)
-		if getTurnData(key)>=3 then 			 
+		if getTurnData(key)==3 then 			 
 			addZhanGong(room,name)
-			setTurnData(key,-100)
 		end
 	end	
 end
@@ -1044,11 +1066,26 @@ end
 
 -- zszm :: 至圣至明 :: 身为主公在一局游戏中手刃所有反贼和内奸，并在忠臣全部存活的情况下获胜 
 -- 
-zgfunc[sgs.todo].zszm=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.Death].zszm=function(self, room, event, player, data,isowner,name)
+	local damage = data:toDamageStar()
+	if (player:getRole()=="rebel" or player:getRole()=="renegade") and damage and damage.from 
+			and damage.from:objectName()==room:getOwner():objectName() and damage.from:isLord() then
+		addGameData(name,1)
+	end
 end
 
-
+zgfunc[sgs.GameOverJudge].callback.jwxf=function(room,player,data,name,result)
+	local damage = data:toDamageStar()
+	if result~="win" then return false end
+	if not room:getOwner():isLord() then return false end
+	if (player:getRole()=="rebel" or player:getRole()=="renegade") and damage and damage.from 
+			and damage.from:objectName()==room:getOwner():objectName() and damage.from:isLord() then
+		addGameData(name,1)
+	end
+	if sgs.Sanguosha:getPlayerCount(room:getMode())- room:alivePlayerCount()==getGameData(name) then
+		addZhanGong(room,name)
+	end	
+end
 
 
 -- tjb :: 藤甲兵 :: 一局游戏中发动藤甲效果抵挡杀、南蛮入侵或万箭齐发至少3次 
@@ -1058,9 +1095,8 @@ zgfunc[sgs.CardEffected].tjb=function(self, room, event, player, data,isowner,na
 	local effect=data:toCardEffect()
 	if effect.card:isKindOf("AOE") and player:hasArmorEffect("Vine") then
 		addGameData(name,1)
-		if getGameData(name)>=3 then 			 
+		if getGameData(name)==3 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end
 end
@@ -1073,9 +1109,8 @@ zgfunc[sgs.DamageInflicted].dshx=function(self, room, event, player, data,isowne
 	local damage = data:toDamage()	
 	if damage.damage>1 and player:hasArmorEffect("SilverLion") then
 		addGameData(name,1)
-		if getGameData(name)>=1 then 			 
+		if getGameData(name)==1 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end
 
@@ -1089,9 +1124,8 @@ zgfunc[sgs.HpRecover].swsm=function(self, room, event, player, data,isowner,name
 	local recov = data:toRecover()
 	if recov.recover>=1 and recov.card:isKindOf("SilverLion") then
 		addGameData(name,1)
-		if getGameData(name)>=2 then 			 
+		if getGameData(name)==2 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end
 end
@@ -1104,9 +1138,8 @@ zgfunc[sgs.Damaged].rhss=function(self, room, event, player, data,isowner,name)
 	local damage = data:toDamage()
 	if damage.nature == sgs.DamageStruct_Fire and player:getArmor() and player:getArmor():isKindOf("Vine") then		
 		addGameData(name,1)
-		if getGameData(name)>=3 then 			 
+		if getGameData(name)==3 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end		
 end
@@ -1119,9 +1152,8 @@ zgfunc[sgs.HpRecover].hyjy=function(self, room, event, player, data,isowner,name
 	local recov = data:toRecover()
 	if recov.recover>=1 and player:getHp()==0 and recov.card:isKindOf("Analeptic") then
 		addGameData(name,1)
-		if getGameData(name)>=2 then 			 
+		if getGameData(name)==2 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end
 end
@@ -1134,9 +1166,8 @@ zgfunc[sgs.Damage].wydk=function(self, room, event, player, data,isowner,name)
 	local damage = data:toDamage()
 	if damage.card and damage.card:hasFlag("drank") and not (damage.transfer or damage.chain) then
 		addGameData(name,1)
-		if getGameData(name)>=3 then 			 
+		if getGameData(name)==3 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end
 end
@@ -1149,9 +1180,8 @@ zgfunc[sgs.Damage].gqbb=function(self, room, event, player, data,isowner,name)
 	local damage = data:toDamage()
 	if damage.card and damage.card:isKindOf("FireAttack") and not (damage.transfer or damage.chain) then
 		addGameData(name,1)
-		if getGameData(name)>=3 then 			 
+		if getGameData(name)==3 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end
 end
@@ -1164,15 +1194,11 @@ zgfunc[sgs.ChoiceMade].bkclm=function(self, room, event, player, data,isowner,na
 	local choices= data:toString():split(":")
 	if choices[1]=="cardResponsed"  and  string.match(choices[2],"@fire%-attack") and choices[#choices]=="_nil_" then
 		addGameData(name,1)
-		if getGameData(name)>=3 then
+		if getGameData(name)==3 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end	
 end
-
-
-
 
 
 -- yntd :: 有难同当 :: 1局游戏中，使用铁索连环累计横置其他角色至少6次 
@@ -1186,9 +1212,8 @@ zgfunc[sgs.CardFinished].yntd=function(self, room, event, player, data,isowner,n
 		for i=1,#tos,1 do
 			if (tos[i]:isChained()) then
 				addGameData(name,1) 
-				if getGameData(name)>=6 then 			 
+				if getGameData(name)==6 then 			 
 					addZhanGong(room,name)
-					setGameData(name,-100)
 				end	
 			end
 		end		
@@ -1222,9 +1247,8 @@ zgfunc[sgs.Death].fj=function(self, room, event, player, data,isowner,name)
 	if damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:getGeneralName()=="lvbu" and damage.card:hasFlag(name) then
 		addGameData(name,1)	
-		if getGameData(name)>=2 then
+		if getGameData(name)==2 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end	
 end
@@ -1235,9 +1259,8 @@ zgfunc[sgs.GameOverJudge].callback.fj=function(room,player,data,name,result)
 	if damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:getGeneralName()=="lvbu" and damage.card:hasFlag(name) then
 		addGameData(name,1)	
-		if getGameData(name)>=2 then
+		if getGameData(name)==2 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end
 end
@@ -1249,11 +1272,10 @@ end
 zgfunc[sgs.Death].qgqc=function(self, room, event, player, data,isowner,name)
 	if not room:getOwner():getGeneralName()=="diaochan" then return false end
 	local damage=data:toDamageStar()
-	if  room:getCurrent():objectName()==room:getOwner():objectName() and damage.card and damge.card:getSkillName()=="lijian" then
+	if  room:getCurrent():objectName()==room:getOwner():objectName() and damage.card and damage.card:getSkillName()=="lijian" then
 		addGameData(name,1)	
-		if getGameData(name)>=3 then
+		if getGameData(name)==3 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end	
 end
@@ -1261,11 +1283,10 @@ end
 zgfunc[sgs.GameOverJudge].callback.qgqc=function(room,player,data,name,result)
 	if not room:getOwner():getGeneralName()=="diaochan" then return false end
 	local damage=data:toDamageStar()
-	if  room:getCurrent():objectName()==room:getOwner():objectName() and damage.card and damge.card:getSkillName()=="lijian" then
+	if  room:getCurrent():objectName()==room:getOwner():objectName() and damage.card and damage.card:getSkillName()=="lijian" then
 		addGameData(name,1)	
-		if getGameData(name)>=3 then
+		if getGameData(name)==3 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end	
 end
@@ -1273,10 +1294,25 @@ end
 
 -- lsmy :: 乱世名医 :: 使用华佗在1局游戏中发动急救使至少3个不同的角色脱离濒死状态 
 -- 
-zgfunc[sgs.todo].lsmy=function(self, room, event, player, data,isowner,name)
+zgfunc[sgs.CardFinished].lsmy=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="huatuo" then return false end
+	if not isowner then return false end
+	local use=data:toCardUse()
+	local card=use.card
+	local tos=sgs.QList2Table(use.to)
 	
+	if card:getSkillName()=="jijiu" and tos[1]:getHp()>=1 then 
+		if getGameData(name,0)==0 then setGameData(name,"") end
+		local to=tos[1]:objectName()
+		local val=getGameData(name)
+		if not string.find(val,to..",") then 
+			setGameData(name,val..to..",") 
+			if string.match(getGameData(name),"^%w+,%w+,%w+,$") then
+				addZhanGong(room,name)
+			end
+		end		
+	end
 end
-
 
 -- lsdjx :: 乱世的奸雄 :: 使用曹操在1局游戏中发动奸雄得到至少3张南蛮入侵和1张万箭齐发 
 -- 
@@ -1317,9 +1353,8 @@ zgfunc[sgs.ChoiceMade].yqwb=function(self, room, event, player, data,isowner,nam
 	local choices= data:toString():split(":")
 	if choices[1]=="cardResponsed"  and  choices[2]=="@@tuxi" and choices[#choices]~="_nil_" then
 		addGameData(name,1)
-		if getGameData(name)>=5 then
+		if getGameData(name)==10 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end	
 end
@@ -1330,12 +1365,11 @@ end
 zgfunc[sgs.Death].nswh=function(self, room, event, player, data,isowner,name)
 	if not room:getOwner():getGeneralName()=="xiahoudun" then return false end
 	local damage=data:toDamageStar()
-	if damage.from and damage.from:objectName()==room:getOwner():objectName() 
+	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:getGeneralName()=="xiahoudun" and  not damage.card then
 		addGameData(name,1)	
-		if getGameData(name)>=1 then
+		if getGameData(name)==1 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end	
 end
@@ -1343,12 +1377,11 @@ end
 zgfunc[sgs.GameOverJudge].callback.nswh=function(room,player,data,name,result)
 	if not room:getOwner():getGeneralName()=="xiahoudun" then return false end
 	local damage=data:toDamageStar()
-	if damage.from and damage.from:objectName()==room:getOwner():objectName() 
+	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:getGeneralName()=="xiahoudun" and  not damage.card then
 		addGameData(name,1)	
-		if getGameData(name)>=1 then
+		if getGameData(name)==1 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end	
 end
@@ -1357,8 +1390,39 @@ end
 
 -- mwl :: 妈，我冷 :: 使用许褚在1局游戏中发动裸衣至少2次并在裸衣的回合中杀死过至少2名角色 
 -- 
-zgfunc[sgs.todo].mwl=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.ChoiceMade].mwl=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="xuchu" then return false end
+	if not isowner then return false end
+	local choices= data:toString():split(":")
+	if choices[1]=="skillInvoke"  and  choices[2]=="luoyi" and choices[3]=="yes" then
+		addGameData(name,1)
+	end	
+end
+
+zgfunc[sgs.Death].mwl=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="xuchu" then return false end
+	local damage=data:toDamageStar()
+	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
+		and damage.from:hasFlag("luoyi") and getGameData(name)>=2 and damage.card 
+		and (damage.card:isKindOf("Slash") or damage.card:isKindOf("Duel")) then
+		addGameData(name.."kill",1)	
+		if getGameData(name.."kill")==2 then
+			addZhanGong(room,name)
+		end
+	end	
+end
+
+zgfunc[sgs.GameOverJudge].callback.mwl=function(room,player,data,name,result)
+	if not room:getOwner():getGeneralName()=="xuchu" then return false end
+	local damage=data:toDamageStar()
+	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
+		and damage.from:hasFlag("luoyi") and getGameData(name)>=2 and damage.card 
+		and (damage.card:isKindOf("Slash") or damage.card:isKindOf("Duel")) then
+		addGameData(name.."kill",1)	
+		if getGameData(name.."kill")==2 then
+			addZhanGong(room,name)
+		end
+	end		
 end
 
 
@@ -1370,9 +1434,8 @@ zgfunc[sgs.ChoiceMade].byyl=function(self, room, event, player, data,isowner,nam
 	local choices= data:toString():split(":")
 	if choices[1]=="skillInvoke"  and  choices[2]=="yiji" and choices[3]=="yes" then
 		addGameData(name,1)
-		if getGameData(name)>=5 then
+		if getGameData(name)==5 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end	
 end
@@ -1380,23 +1443,54 @@ end
 
 -- sytt :: 手眼通天 :: 使用司马懿在1局游戏中有至少2次发动反馈都抽到对方1张桃 
 -- 
-zgfunc[sgs.todo].sytt=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.ChoiceMade].byyl=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="simayi" then return false end
+	if not isowner then return false end
+	local choices= data:toString():split(":")
+	if choices[1]=="cardChosen" and choices[2]=="fankui" and sgs.Sanguosha:getCard(choices[3]):isKindOf("Peath") then
+		addGameData(name,1)
+		if getGameData(name)==2 then
+			addZhanGong(room,name)
+		end
+	end	
 end
 
 
 -- lsf :: 洛神赋 :: 使用甄姬一回合内发动洛神在不被改变判定牌的情况下连续判定黑色花色至少8次 
 -- 
-zgfunc[sgs.todo].lsf=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.FinishRetrial].bmjs=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="liubei" then return false end
+	if not isowner then return false end
+	local judge=data:toJudge()
+	if judge.reason=="luoshen" and judge.who:objectName()==room:getOwner():objectName() then
+		if judge:isBad() then 
+			setTurnData(name,0)
+			return false
+		end
+		if room:getTag("retrial"):toBool()==false then			
+			addTurnData(name,1)
+			if getTurnData(name)==8 then 			 
+				addZhanGong(room,name)			
+			end
+		end
+	end
 end
 
 
--- jjzx :: 纠结之心 :: 使用刘备在1局游戏中发动雌雄双股剑特效杀死至少1名女性角色 
+-- jjzx :: 纠结之心 :: 使用刘备在1局游戏中至少发动5次雌雄双股剑特效 
 -- 
-zgfunc[sgs.todo].jjzx=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.ChoiceMade].jjzx=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="liubei" then return false end
+	if not isowner then return false end
+	local choices= data:toString():split(":")
+	if choices[1]=="skillInvoke"  and  choices[2]=="DoubleSword" and choices[3]=="yes" then
+		addGameData(name,1)
+		if getGameData(name)==5 then
+			addZhanGong(room,name)
+		end
+	end	
 end
+
 
 
 -- yrdpx :: 燕人的咆哮 :: 使用张飞在1局游戏中发动丈八蛇矛特效杀死至少1名角色 
@@ -1407,9 +1501,8 @@ zgfunc[sgs.Death].yrdpx=function(self, room, event, player, data,isowner,name)
 	if damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.card and damage.card:getSkillName()=="Spear" then
 		addGameData(name,1)	
-		if getGameData(name)>=1 then
+		if getGameData(name)==1 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end	
 end
@@ -1420,9 +1513,8 @@ zgfunc[sgs.GameOverJudge].callback.yrdpx=function(room,player,data,name,result)
 	if damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.card and damage.card:getSkillName()=="Spear" then
 		addGameData(name,1)	
-		if getGameData(name)>=1 then
+		if getGameData(name)==1 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end	
 end
@@ -1447,17 +1539,57 @@ zgfunc[sgs.FinishRetrial].qjtj=function(self, room, event, player, data,isowner,
 end
 
 
--- wsxl :: 武圣显灵 :: 使用关羽在1局游戏中发动青龙偃月刀特效杀死至少1名角色 
+-- wsxl :: 武圣显灵 :: 使用关羽在1局游戏中发动武圣至少杀死3名角色 
 -- 
-zgfunc[sgs.todo].wsxl=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.Death].wsxl=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="guanyu" then return false end
+	local damage=data:toDamageStar()
+	if damage.from and damage.from:objectName()==room:getOwner():objectName() 
+		and damage.card and damage.card:getSkillName()=="wusheng" then
+		addGameData(name,1)	
+		if getGameData(name)==3 then
+			addZhanGong(room,name)
+		end
+	end	
+end
+
+zgfunc[sgs.GameOverJudge].callback.wsxl=function(room,player,data,name,result)
+	if not room:getOwner():getGeneralName()=="guanyu" then return false end
+	local damage=data:toDamageStar()
+	if damage.from and damage.from:objectName()==room:getOwner():objectName() 
+		and damage.card and damage.card:getSkillName()=="wusheng" then
+		addGameData(name,1)	
+		if getGameData(name)==3 then
+			addZhanGong(room,name)
+		end
+	end	
 end
 
 
--- hssd :: 浑身是胆 :: 使用赵云在1局游戏中发动青钢剑特效杀死至少1名角色 
+-- hssd :: 浑身是胆 :: 使用赵云在1局游戏中发动龙胆至少杀死3名角色 
 -- 
-zgfunc[sgs.todo].hssd=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.Death].hssd=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="zhaoyun" then return false end
+	local damage=data:toDamageStar()
+	if damage.from and damage.from:objectName()==room:getOwner():objectName() 
+		and damage.card and damage.card:getSkillName()=="longdan" then
+		addGameData(name,1)	
+		if getGameData(name)==3 then
+			addZhanGong(room,name)
+		end
+	end	
+end
+
+zgfunc[sgs.GameOverJudge].callback.hssd=function(room,player,data,name,result)
+	if not room:getOwner():getGeneralName()=="zhaoyun" then return false end
+	local damage=data:toDamageStar()
+	if damage.from and damage.from:objectName()==room:getOwner():objectName() 
+		and damage.card and damage.card:getSkillName()=="longdan" then
+		addGameData(name,1)	
+		if getGameData(name)==3 then
+			addZhanGong(room,name)
+		end
+	end	
 end
 
 
@@ -1469,14 +1601,12 @@ zgfunc[sgs.CardFinished].jnd=function(self, room, event, player, data,isowner,na
 	local card=use.card
 	if card:isNDTrick() then 
 		addTurnData(name,1) 
-		if getTurnData(name)>=10 then 			 
+		if getTurnData(name)==10 then 			 
 			addZhanGong(room,name)
-			setTurnData(name,-100)
 		end	
 	end
 	
 end
-
 
 -- kcjc :: 空城绝唱 :: 使用诸葛亮在1局游戏中有至少5个回合结束时是空城状态 
 -- 
@@ -1484,9 +1614,8 @@ zgfunc[sgs.EventPhaseEnd].kcjc=function(self, room, event, player, data,isowner,
 	if not isowner or player:getGeneralName()~="zhugeliang" then return false end
 	if player:getPhaseString()=="finish" and player:isKongcheng() then
 		addGameData(name,1)
-		if getGameData(name)>=5 then 			 
+		if getGameData(name)==5 then 			 
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end			
 	end
 end
@@ -1494,10 +1623,19 @@ end
 
 -- lbsd :: 老不死的 :: 使用孙权在1局游戏中被吴国武将用桃救至少3次 
 -- 
-zgfunc[sgs.todo].lbsd=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.HpRecover].lbsd=function(self, room, event, player, data,isowner,name)
+	if player:getGeneralName()~="sunquan" then return false end	
+	if not isowner then return false end
+	local recov = data:toRecover()
+	if recov.recover>1 and recov.card:isKindOf("Peath") and player:getHp()>=1
+		and (recov.card:hasFlag("jiuyuan") or player:hasFlag("jiuyuan")) then
+		addGameData(name,1)
+		if getGameData(name)>=3 then			 
+			addZhanGong(room,name)
+			setGameData(name,-100)
+		end
+	end
 end
-
 
 -- scgm :: 神出鬼没 :: 使用甘宁在1个回合内发动至少6次奇袭 
 -- 
@@ -1507,9 +1645,8 @@ zgfunc[sgs.CardFinished].scgm=function(self, room, event, player, data,isowner,n
 	local card=use.card
 	if card:getSkillName()=="qixi" then 
 		addTurnData(name,1) 
-		if getTurnData(name)>=6 then 			 
+		if getTurnData(name)==6 then 			 
 			addZhanGong(room,name)
-			setTurnData(name,-100)
 		end	
 	end
 end
@@ -1523,9 +1660,8 @@ zgfunc[sgs.CardFinished].wjdbt=function(self, room, event, player, data,isowner,
 	local card=use.card
 	if card:objectName()=="kurou" then 
 		addTurnData(name,1) 
-		if getTurnData(name)>=8 then 			 
+		if getTurnData(name)==8 then 			 
 			addZhanGong(room,name)
-			setTurnData(name,-100)
 		end	
 	end
 end
@@ -1554,7 +1690,7 @@ zgfunc[sgs.ChoiceMade].yhjm=function(self, room, event, player, data,isowner,nam
 		else
 			addGameData(name,1)
 		end
-		if getGameData(name)>=5 then
+		if getGameData(name)==5 then
 			addZhanGong(room,name)
 			setGameData(name,-100)
 		end
@@ -1572,9 +1708,8 @@ zgfunc[sgs.CardsMoveOneTime].yhdf=function(self, room, event, player, data,isown
 		for _, place in ipairs(from_places) do
 			if place==sgs.Player_PlaceEquip then
 				addGameData(name,1)
-				if getGameData(name)>=5 then 			 
+				if getGameData(name)==5 then 			 
 					addZhanGong(room,name)
-					setGameData(name,-100)
 				end	
 			end
 		end
@@ -1590,9 +1725,8 @@ zgfunc[sgs.Death].wjdzz=function(self, room, event, player, data,isowner,name)
 	if damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:getGeneralName()=="zhouyu" and  not damage.card then
 		addGameData(name,1)	
-		if getGameData(name)>=3 then
+		if getGameData(name)==3 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end	
 end
@@ -1603,9 +1737,8 @@ zgfunc[sgs.GameOverJudge].callback.wjdzz=function(room,player,data,name,result)
 	if damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:getGeneralName()=="zhouyu" and  not damage.card then
 		addGameData(name,1)	
-		if getGameData(name)>=3 then
+		if getGameData(name)==3 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end	
 end
@@ -1619,9 +1752,8 @@ zgfunc[sgs.ChoiceMade].lmbj=function(self, room, event, player, data,isowner,nam
 	local choices= data:toString():split(":")
 	if choices[1]=="skillInvoke"  and  choices[2]=="lianying" and choices[3]=="yes" then
 		addTurnData(name,1)
-		if getTurnData(name)>=10 then
+		if getTurnData(name)==10 then
 			addZhanGong(room,name)
-			setTurnData(name,-100)
 		end
 	end	
 end
@@ -1637,7 +1769,7 @@ zgfunc[sgs.CardFinished].fcdc=function(self, room, event, player, data,isowner,n
 		addTurnData(name,1)	
 		if getTurnData(name)==2 and getGameData(name)==2 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
+			setGameData(name,0)
 		end
 	end
 end
@@ -1688,9 +1820,8 @@ zgfunc[sgs.Death].ljdnx=function(self, room, event, player, data,isowner,name)
 		and damage.from:getGeneralName()=="huangzhong" and damage.card:isKindOf("Slash") 
 		and player:hasFlag("liegongInvoke") and damage.from:getHp()==1 then
 		addGameData(name,1)	
-		if getGameData(name)>=3 then
+		if getGameData(name)==3 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end	
 end
@@ -1704,9 +1835,8 @@ zgfunc[sgs.GameOverJudge].callback.ljdnx=function(room,player,data,name,result)
 		and damage.from:getGeneralName()=="huangzhong" and damage.card:isKindOf("Slash") 
 		and player:hasFlag("liegongInvoke") and damage.from:getHp()==1 then
 		addGameData(name,1)	
-		if getGameData(name)>=3 then
+		if getGameData(name)==3 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end	
 end
@@ -1759,52 +1889,166 @@ end
 
 -- lxxy :: 怜香惜玉 :: 使用小乔在一局游戏中发动天香让某名男性武将摸牌至少15张 
 -- 
-zgfunc[sgs.todo].lxxy=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.ChoiceMade].srpz=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="xiaoqiao" then return false end
+	if not isowner then return false end
+	local choices= data:toString():split(":")
+	if choices[1]=="cardResponsed" and choices[2]=="@@tianxiang" and choices[#choices]~="_nil_" then
+		setTurnData(name,1)
+	end	
+end
+
+zgfunc[sgs.DamageComplete].lxxy=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="xiaoqiao" then return false end
+	if player:hasFlag("TianxiangTarget") and player:isAlive() and getTurnData(name)==1 then
+		addGameData(name,player:getLostHp())
+		if getGameData(name)>=15 then
+			addZhanGong(room,name)
+			setGameData(name,-100)
+		end
+    end
 end
 
 
 -- kbdwn :: 狂奔的蜗牛 :: 使用张角在1局游戏发动雷击杀死至少3名角色 
 -- 
-zgfunc[sgs.todo].kbdwn=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.Death].kbdwn=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="zhangjiao" then return false end
+	local damage=data:toDamageStar()
+	if damage.from and damage.from:objectName()==room:getOwner():objectName() 
+		and damage.from:getGeneralName()=="zhangjiao" and  not damage.card and damage.nature == sgs.DamageStruct_Thunder then
+		addGameData(name,1)	
+		if getGameData(name)==3 then
+			addZhanGong(room,name)
+		end
+	end	
 end
+
+zgfunc[sgs.GameOverJudge].callback.kbdwn=function(room,player,data,name,result)
+	if not room:getOwner():getGeneralName()=="zhangjiao" then return false end
+	local damage=data:toDamageStar()
+	if damage.from and damage.from:objectName()==room:getOwner():objectName() 
+		and damage.from:getGeneralName()=="zhangjiao" and  not damage.card and damage.nature == sgs.DamageStruct_Thunder then
+		addGameData(name,1)	
+		if getGameData(name)==3 then
+			addZhanGong(room,name)			
+		end
+	end	
+end
+
 
 
 -- sgmc :: 神鬼莫测 :: 使用于吉在1局游戏中累计蛊惑假牌至少成功3次 
 -- 
-zgfunc[sgs.todo].sgmc=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.CardFinished].ljdnx=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName() =="yuji" then return false end
+	if not isowner then return false end	
+	local use=data:toCardUse()
+	local card=use.card
+	local part=card:toString():split(":")
+	if part and #part==3 and string.find(part[2],"guhuo%[") then
+		local arr=part[3]:split("=")
+		local card2=sgs.Sanguosha:getCard(arr[2])
+		if part[1]~=card2:objectName() then
+			addGameData(name,1)
+			if getGameData(name)==3 then
+				addZhanGong(room,name)
+			end
+		end
+	end
 end
 
 
 -- sssg :: 四世三公 :: 使用袁术在1回合内消灭场上4个势力中的3个 
 -- 
-zgfunc[sgs.todo].sssg=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.Death].sssg=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="yuanshu" then return false end
+	local owner=room:getOwner()
+	local damage=data:toDamageStar()
+	if damage.from and damage.from:objectName()==owner:objectName() then
+		local kingdom=player:getKingdom()
+		local same=false
+		for _,p in sgs.qlist(room:getAlivePlayers()) do
+			if p:getKingdom()==kingdom then same=true end
+		end
+		if not same then
+			addTurnData(name,1)
+		end
+		if getTurnData(name)==3 then
+			addZhanGong(room,name)
+		end
+	end
 end
 
+zgfunc[sgs.GameOverJudge].callback.sssg=function(room,player,data,name,result)
+	if not room:getOwner():getGeneralName()=="yuanshu" then return false end
+	local owner=room:getOwner()
+	local damage=data:toDamageStar()
+	if damage.from and damage.from:objectName()==owner:objectName() then
+		local kingdom=player:getKingdom()
+		local same=false
+		for _,p in sgs.qlist(room:getAlivePlayers()) do
+			if p:getKingdom()==kingdom then same=true end
+		end
+		if not same then
+			addTurnData(name,1)
+		end
+		if getTurnData(name)==3 then
+			addZhanGong(room,name)
+		end
+	end
+end
 
 -- bmyc :: 白马义从 :: 使用公孙瓒在体力大于2的情况下杀死至少3名角色，并且在体力1的情况下存活并获胜。 
 -- 
-zgfunc[sgs.todo].bmyc=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.Death].bmyc=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="gongsunzhan" then return false end
+	local owner=room:getOwner()
+	local damage=data:toDamageStar()
+	if damage.from and damage.from:objectName()==owner:objectName() and owner:getHp()>2 then
+		addGameData(name,1)		
+	end	
+end
+
+zgfunc[sgs.GameOverJudge].callback.bmyc=function(room,player,data,name,result)
+	if not room:getOwner():getGeneralName()=="gongsunzhan" then return false end
+	local owner=room:getOwner()
+	if result=="win" and owner:getHp()==1 and getGameData(name)>=3 then
+		addZhanGong(room,name)
+	end
 end
 
 
--- yfdg :: 一夫当关 :: 使用典韦在1局游戏中发动至少5次强袭，并用强袭至少杀死3名角色。 
+-- yfdg :: 一夫当关 :: 使用典韦在1局游戏中发动至少5次强袭 
 -- 
-zgfunc[sgs.todo].yfdg=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.CardFinished].yfdg=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="dianwei" then return false end
+	if not isowner then return false end
+	local use=data:toCardUse()
+	local card=use.card	
+	if card:isKindOf("QiangxiCard") then
+		addGameData(name,1)
+		if getGameData(name)==5 then
+			addZhanGong(room,name)
+		end
+	end
 end
 
 
--- qhtl :: 驱虎吞狼 :: 使用荀彧在1局游戏中至少对3名不同角色发动驱虎，并且这些角色都死于驱虎造成的伤害 
+
+-- qhtl :: 驱虎吞狼 :: 使用荀彧在1局游戏中至少发动5次驱虎并拼点成功
 -- 
-zgfunc[sgs.todo].qhtl=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.ChoiceMade].qhtl=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="xunyu" then return false end
+	if not isowner then return false end
+	local choices= data:toString():split(":")
+	if choices[1]=="playerChosen"  and  choices[2]=="quhu" then
+		addGameData(name,1)
+		if getGameData(name)==5 then
+			addZhanGong(room,name)
+		end
+	end	
 end
-
 
 -- tslz :: 铁锁连舟 :: 使用庞统在1回合内发动连环横置至少6名角色 
 -- 
@@ -1818,9 +2062,8 @@ zgfunc[sgs.CardFinished].tslz=function(self, room, event, player, data,isowner,n
 		for i=1,#tos,1 do
 			if (tos[i]:isChained()) then
 				addTurnData(name,1) 
-				if getTurnData(name)>=6 then 			 
+				if getTurnData(name)==6 then 			 
 					addZhanGong(room,name)
-					setTurnData(name,-100)
 				end	
 			end
 		end		
@@ -1846,8 +2089,30 @@ end
 
 -- jdzh :: 江东之虎 :: 使用太史慈在1回合内发动天义拼点胜利后，使用【杀】杀死至少3名角色 
 -- 
-zgfunc[sgs.todo].jdzh=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.Death].jdzh=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="taishici" then return false end
+	local owner=room:getOwner()
+	local damage=data:toDamageStar()
+	if damage.from and damage.from:objectName()==owner:objectName() 
+		and damage.card and damage.card:isKindOf("Slash") and damage.from:hasFlag("tianyi_success") then
+		addTurnData(name,1)
+		if getTurnData(name)==3 then
+			addZhanGong(room,name)
+		end
+	end	
+end
+
+zgfunc[sgs.GameOverJudge].callback.jdzh=function(room,player,data,name,result)
+	if not room:getOwner():getGeneralName()=="taishici" then return false end
+	local owner=room:getOwner()
+	local damage=data:toDamageStar()
+	if damage.from and damage.from:objectName()==owner:objectName() 
+		and damage.card and damage.card:isKindOf("Slash") and damage.from:hasFlag("tianyi_success") then
+		addTurnData(name,1)
+		if getTurnData(name)==3 then
+			addZhanGong(room,name)
+		end
+	end	
 end
 
 
@@ -1859,9 +2124,8 @@ zgfunc[sgs.CardFinished].ljsd=function(self, room, event, player, data,isowner,n
 	local card=use.card
 	if card:getSkillName()=="luanji" then 
 		addTurnData(name,1) 
-		if getTurnData(name)>=6 then 			 
+		if getTurnData(name)==6 then 			 
 			addZhanGong(room,name)
-			setTurnData(name,-100)
 		end	
 	end
 end
@@ -1869,8 +2133,38 @@ end
 
 -- qldj :: 其利断金 :: 使用颜良文丑在1局游戏中发动双雄至少3次并在双雄的回合中杀死过至少3名角色 
 -- 
-zgfunc[sgs.todo].qldj=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.ChoiceMade].qldj=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="yanliangwenchou" then return false end
+	if not isowner then return false end
+	local choices= data:toString():split(":")
+	if choices[1]=="skillInvoke"  and  choices[2]=="shuangxiong" and choices[3]=="yes" then
+		addGameData(name,1)
+		setTurnData(name,1)
+	end	
+end
+
+zgfunc[sgs.Death].qldj=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="yanliangwenchou" then return false end
+	local owner=room:getOwner()
+	local damage=data:toDamageStar()
+	if damage.from and damage.from:objectName()==owner:objectName() and getTurnData(name)==1 then
+		addGameData(name.."kill",1)
+		if getGameData(name.."kill")==3 then
+			addZhanGong(room,name)
+		end
+	end	
+end
+
+zgfunc[sgs.GameOverJudge].callback.qldj=function(room,player,data,name,result)
+	if not room:getOwner():getGeneralName()=="yanliangwenchou" then return false end
+	local owner=room:getOwner()
+	local damage=data:toDamageStar()
+	if damage.from and damage.from:objectName()==owner:objectName() and getTurnData(name)==1 then
+		addGameData(name.."kill",1)
+		if getGameData(name.."kill")==3 then
+			addZhanGong(room,name)
+		end
+	end	
 end
 
 
@@ -1882,9 +2176,8 @@ zgfunc[sgs.ChoiceMade].zkzj=function(self, room, event, player, data,isowner,nam
 	local choices= data:toString():split(":")
 	if choices[1]=="skillInvoke"  and  choices[2]=="mengjin" and choices[3]=="yes" then
 		addGameData(name,1)
-		if getGameData(name)>=5 then
+		if getGameData(name)==5 then
 			addZhanGong(room,name)
-			setTurnData(name,-100)
 		end
 	end	
 end
@@ -1924,8 +2217,27 @@ end
 
 -- ygzq :: 一鼓作气 :: 一回合内杀死对方3名角色 (3v3)
 -- 
-zgfunc[sgs.todo].ygzq=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.Death].ygzq=function(self, room, event, player, data,isowner,name)
+	if room:getMode()~="06_3v3" then return false end
+	local owner=room:getOwner()
+	local damage=data:toDamageStar()
+	local role1=owner:getRole()
+	local role2=player:getRole()
+	if ((string.find("lord,loyalist",role1) and role2=="rebel") or (string.find("rebel,renegade",role1) and role2=="loyalist"))
+			and room:getCurrent():objectName()==owner:objectName() 
+			and damage.from and damage.from:objectName()==owner:objectName() then
+		addTurnData(name,1)
+	end
+end
+
+zgfunc[sgs.GameOverJudge].callback.ygzq=function(room,player,data,name,result)
+	if room:getMode()~="06_3v3" then return false end	
+	if not result=="win" then return false end
+	local damage=data:toDamageStar()
+	if room:getCurrent():objectName()==owner:objectName() and getTurnData(name)==2
+			and damage.from and damage.from:objectName()==owner:objectName() then
+		addZhanGong(room,name)
+	end
 end
 
 
@@ -1938,12 +2250,10 @@ zgfunc[sgs.CardFinished].swjd=function(self, room, event, player, data,isowner,n
 	local card=use.card
 	if card:isKindOf("SavageAssault") or card:isKindOf("ArcheryAttack") then 
 		addTurnData(name,1) 
-		if getTurnData(name)>=3 then
+		if getTurnData(name)==3 then
 			addZhanGong(room,name)
-			setTurnData(name,-100) 
 		end
-	end
-	
+	end	
 end
 
 
@@ -1970,8 +2280,18 @@ end
 
 -- ssqy :: 舍生取义 :: 身为前锋，被本方角色杀死累计10次 (3v3)
 -- 
-zgfunc[sgs.todo].ssqy=function(self, room, event, player, data,isowner,name)
-	
+zgfunc[sgs.Death].ssqy=function(self, room, event, player, data,isowner,name)
+	if room:getMode()~="06_3v3" then return false end
+	if not isowner then return false end
+	local damage=data:toDamageStar()
+	local killerRole=damage.from and damage.from:getRole() or ""
+	if (player:getRole()=="loyalist" and (killerRole=="lord" or killerRole=="loyalist")) or 
+			(player:getRole()=="rebel" and (killerRole=="rebel" or killerRole=="renegade")) then
+		addGlobalData(name,1)
+		if getGlobalData(name)==10 then
+			addZhanGong(room,name)
+		end
+	end
 end
 
 
@@ -2189,16 +2509,16 @@ end
 
 
 
-function gainSkill(room)
-	local skilldata=db:rows("select skillname from skills where 1 order by random() limit 10")
+function gainSkill(room)	
 	local skillname 
-	for row in skilldata do
-		if sgs.Sanguosha:getSkill(row.skillname) then 
-			skillname=row.skillname
-			break
-		end
-	end
-	if not skillname then return broadcastMsg(room,"#canntGainSkill") end
+	local count=0
+	local row
+	repeat
+		row=db:first_row("select skillname from skills where 1 order by random() limit 1")
+		if sgs.Sanguosha:getSkill(row.skillname) then skillname=row.skillname end
+		count=count+1
+	until skillname or count>=10
+	if not skillname then return broadcastMsg(room,"#canntGainSkill",row.skillname) end
 	sqlexec("update skills set gained=gained+1 where skillname='%s'",skillname)
 	broadcastMsg(room,"#gainSkill",skillname)
 end
@@ -2219,6 +2539,35 @@ function addZhanGong(room,name)
 	broadcastMsg(room,"#zhangong_"..name)
 end
 
+--[[
+	GlobalData  永久保存到数据库中的数据
+	用于保存类似， 被南蛮入侵打死N次， 3v3前锋被主帅打死N次等类似战功的数据存储
+]]
+function addGlobalData(key,val)
+	getGlobalData(key)
+	sqlexec("update gamedata set num=num+%d where id='%s'",val,key)
+end
+
+function setGlobalData(key,val)	
+	getGlobalData(key)
+	sqlexec("update gamedata set num=%d where id='%s'",val,key)
+end
+
+function getGlobalData(key,...)
+	local defval= #arg>=1 and arg[1] or 0
+	local row=db:first_row(string.format("select id,num from gamedata where id='%s'",key))
+	if (not row) or row.id==nil then
+		sqlexec("insert into gamedata values('%s',0)",key)
+		return defval
+	else
+		return row.num
+	end
+end
+
+--[[
+	GameData  某盘游戏的全局变量
+	游戏开始时，GameData变量清0，游戏结束后，GameData变量的数据消失	
+]]
 function addGameData(key,val)
 	if not zggamedata[key] then zggamedata[key]=0 end
 	zggamedata[key]=zggamedata[key]+val
@@ -2233,6 +2582,11 @@ function getGameData(key,...)
 	return zggamedata[key]
 end
 
+
+--[[
+	TurnData  回合变量
+	房主每一个回合开始时，所有TurnData变量清0，	
+]]
 function addTurnData(key,val)
 	if not zgturndata[key] then zgturndata[key]=0 end
 	zgturndata[key]=zgturndata[key]+val
@@ -2286,13 +2640,11 @@ function init_gamestart(self, room, event, player, data, isowner)
 		sqlexec("insert into results values(%d,'%s','%s','%s','%d','%s',0,1,'-',0,0,0)",
 				getGameData("roomid"),player:getGeneralName(),player:getRole(),
 				player:getKingdom(),getGameData("hegemony"),room:getMode())
-		sqlexec("update gamedata set num=0")
 	end	
 
-	local skillnum=db:first_row("select count(id) as num from zhangong where gained>0")
-	skillnum= math.ceil(skillnum.num / 20)
-	
-	local skilldata=db:rows("select skillname from skills where gained-used>0 order by random() limit %d",skillnum)
+	local zgquery=db:first_row("select count(id) as num from zhangong where gained>0")
+	local limitnum= math.ceil(zgquery.num / 20)
+	local skilldata=db:rows("select skillname from skills where gained-used>0 order by random() limit "..limitnum)
 	local skills={}
 	for row in skilldata do
 		if sgs.Sanguosha:getSkill(row.skillname) then table.insert(skills,row.skillname) end
@@ -2314,7 +2666,7 @@ zgzhangong = sgs.CreateTriggerSkill{
 	events = {sgs.GameStart,sgs.TurnStart,sgs.CardFinished,sgs.Damage,sgs.GameOverJudge,
 			sgs.Death,sgs.EventPhaseEnd,sgs.FinishRetrial,sgs.ChoiceMade,sgs.SlashEffected,
 			sgs.DamageCaused,sgs.EventPhaseStart,sgs.CardsMoveOneTime,sgs.DamageComplete,
-			sgs.HpRecover,sgs.DamageInflicted,sgs.CardEffected},
+			sgs.HpRecover,sgs.DamageInflicted,sgs.CardEffected,sgs.ConfirmDamage},
 	priority = 6,
 	can_trigger = function()
 		return true
@@ -2323,7 +2675,7 @@ zgzhangong = sgs.CreateTriggerSkill{
 	on_trigger = function(self, event, player, data)
 		local room = player:getRoom()
 		local owner= room:getOwner():objectName()==player:objectName()
-		if event ==sgs.GameStart then
+		if event ==sgs.GameStart and owner then
 			local log= sgs.LogMessage()
 			if init_gamestart(self, room, event, player, data, owner) then
 				log.type = "#enableZhangong"
@@ -2358,38 +2710,47 @@ function getWinner(room,victim)
 
 	local alives=sgs.QList2Table(room:getAlivePlayers())
 	
-	--[[
+	
 	if getGameData("hegemony")==1 then		
+		room:getOwner():speak("is guozhan")
         local has_anjiang = false
 		local has_diff_kingdoms = false
         local init_kingdom
 		for _, p in sgs.qlist(room:getAlivePlayers()) do
 			if room:getTag(p:objectName()):toString() then 
 				has_anjiang = true
+				room:getOwner():speak("has_anjiang")
             end
             if init_kingdom == nil then 
                 init_kingdom = p:getKingdom()
-            else if init_kingdom ~= p:getKingdom() then
+            elseif init_kingdom ~= p:getKingdom() then
                 has_diff_kingdoms = true
+				room:getOwner():speak("has_diff_kingdoms")
             end
 		end
         if not has_anjiang and  not has_diff_kingdoms then
+			room:getOwner():speak("no_anjiang and no_diff_kindoms")
             local winners={}
 			local aliveKingdom = room:getAlivePlayers():at(1):getKingdom()
 
             for _, p in sgs.qlist(room:getAllPlayers()) do
-                if p:isAlive() then table.insert(winners , p:objectName()) end
-                if p:getKingdom() == aliveKingdom then
-                    local generals = room:getTag(p:objectName()):toString()
-                    if (not (generals and not string.find(flags,"S"))) or (not string.find(generals,",")) then
-						table.insert(winners , p:objectName())
+                if p:isAlive() then 
+					table.insert(winners , p:objectName()) 
+					room:getOwner():speak("alive+"..p:getGeneralName())
+				else
+					if p:getKingdom() == aliveKingdom then
+						local generals = room:getTag(p:objectName()):toString()
+						if (not (generals and not string.find(flags,"S"))) or (not string.find(generals,",")) then
+							table.insert(winners , p:objectName())
+							room:getOwner():speak("dead+"..p:getGeneralName())
+						end
 					end
-                end
+				end
             end
             return #winners and table.concat(winners,"+") or false
         end	
 	end
-	]]
+	
 	
 	if mode == "06_3v3" then
 		if role=="lord" then return "renegade+rebel" end
@@ -2450,8 +2811,9 @@ sgs.LoadTranslationTable {
 	["#gainWen"] ="%from获得【%arg】点文功",
 	["#gainWu"] ="%from获得【%arg】点武功",
 	["#gainExp"] ="%from获得【%arg】点经验",
-	["#canntGainSkill"]= "【警告】技能列表为空，无法获得技能",
+	["#canntGainSkill"]= "【警告】无法获得技能【%arg】",
 	["#gainSkill"]="%from获得了技能卡【%arg】",
+	["@choose_skill"]="选择技能",
 	["cancel"] = "取消",
 	["#enableZhangong"]="【<b><font color='green'>提示</font></b>】: 本局游戏开启了战功统计.",
 	["#disableZhangong"]="【<b><font color='red'>提示</font></b>】: 本局游戏禁止了战功统计.",
