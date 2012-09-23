@@ -2705,6 +2705,7 @@ function init_gamestart(self, room, event, player, data, isowner)
 		local choice=room:askForChoice(owner,"@choose_skill","cancel+"..table.concat(skills,"+"))
 		if choice ~= "cancel" then
 			room:acquireSkill(owner,choice)
+			room:loseHp(owner)
 			sqlexec("update skills set  used=used+1 where skillname='%s'",choice)
 		end
 	end
@@ -2866,7 +2867,7 @@ sgs.LoadTranslationTable {
 	["#gainExp"] ="%from获得【%arg】点经验",
 	["#canntGainSkill"]= "【警告】无法获得技能【%arg】",
 	["#gainSkill"]="%from获得了技能卡【%arg】",
-	["@choose_skill"]="选择技能",
+	["@choose_skill"]="流失体力获得技能",
 	["cancel"] = "取消",
 	["#enableZhangong"]="【<b><font color='green'>提示</font></b>】: 本局游戏开启了战功统计.",
 	["#disableZhangong"]="【<b><font color='red'>提示</font></b>】: 本局游戏禁止了战功统计.",
