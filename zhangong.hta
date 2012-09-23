@@ -8,15 +8,18 @@
 <script type="text/javascript" language="javascript" src="./zhangong/js/jquery-1.4.2.min.js"></script>
 <script type="text/javascript" language="javascript" src="./zhangong/js/jquery.table.js"></script>
 <script type="text/javascript" language="javascript" src="./zhangong/js/template.min.js"></script>
-<script type="text/javascript" language="javascript" src="./zhangong/js/sqlite.js"></script>	
 <script type="text/javascript" language="javascript" src="./zhangong/js/trans.js"></script>	
+<script type="text/javascript" language="javascript" src="./zhangong/js/sqlite.js"></script>	
+
 </head>
 <body>
 
 <script id="t_overview" type="text/html">
 	<div class="divtitle">
 		本系统启用日期: <%= info.total.starttime %>
-		<a style="padding-left:20px;padding-right:20px" href="#"	onclick="return resetDB()">清空所有数据</a>
+		<a style="padding-left:20px;padding-right:5px;color:red" href="#"	onclick="return resetDB()">清空所有数据</a>
+		<a style="padding-left:20px;padding-right:5px;color:green" href="#"	onclick="return clearEsc()">清空回合数小于5的逃跑记录</a>
+
 	</div>
 	<br/>		
 	<table border width="30%">
@@ -365,7 +368,7 @@ $.each(callback,function(name,func){
 });
 
 var tabLists=$.merge(["overview","results","skills"],zglist);
-var tabPageNum=[100,12,11,4,4,4,4,4,4,4,4];;
+var tabPageNum=[100,12,10,4,4,4,4,4,4,4,4];;
 
 $(function(){
 	$("a").click(function(){		

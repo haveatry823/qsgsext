@@ -21,6 +21,8 @@ var db=null;
 	var collist="gametime,id,general,role,kingdom,hegemony,mode,turncount,alive,result,wen,wu,expval";
 	data.results=dbquery(sql,collist);
 	
+	
+
 	$.each(zglist,function(i,val){
 		var sql = "select * from zhangong where category='"+val+"' order by general asc";
 		var collist="id,name,score,description,gained,category,lasttime,general,num";
@@ -92,10 +94,26 @@ function resetDB(){
 	db.execute("update gamedata set num=0;");
 	db.execute("update skills set gained=0,used=0;");
 	db.execute("update zhangong set gained=0;");
-	db.execute("vacuum");		
+	db.execute("vacuum");	
+	alert("操作成功")
 	try{
 		db.close();
 	}catch(x){}
 	location.reload();
 	return false;
 }
+
+
+function clearEsc(){
+	if (!confirm("即将删除所有回合数小于5的逃跑记录，要继续吗?")) return false;	
+	db.open("./zhangong/zhangong.data");
+	db.execute("delete from results where result='-' and turncount<5;");		
+	db.execute("vacuum");		
+	try{
+		db.close();
+	}catch(x){}
+	alert("操作成功")
+	location.reload();
+	return false;
+}
+
