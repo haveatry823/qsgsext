@@ -2588,6 +2588,8 @@ end
 
 function addZhanGong(room,name)
 	sqlexec("update zhangong set gained=gained+1,lasttime=datetime('now','localtime') where id='%s'",name)
+	setGameData("myzhangong", getGameData("myzhangong","")..name..",")
+	sqlexec("update results set zhangong='%s' where id='%d'",getGameData("myzhangong",""),getGameData("roomid"))
 	broadcastMsg(room,"#zhangong_"..name)
 end
 
@@ -2661,13 +2663,11 @@ function init_gamestart(self, room, event, player, data, isowner)
 
 	if not isowner or getGameData("enable")==1 then return false end
 
-	--[[
 	if not string.find(mode,"^[01]%d[p_]") or string.find(flags,"[F]") then		
 		setGameData("enable",0)
 		return false
 	end
-	]]
-
+	
 	local count=0
 	for _, p in sgs.qlist(room:getAllPlayers()) do
 		if p:getState() ~= "robot" then count=count+1 end
@@ -2682,6 +2682,7 @@ function init_gamestart(self, room, event, player, data, isowner)
 	end
 
 	setGameData("enable",1)
+	setGameData("myzhangong","")
 	if string.find(flags,"H") then setGameData("hegemony",1) end
 
 	if getGameData("roomid")==0 then 
@@ -2689,7 +2690,7 @@ function init_gamestart(self, room, event, player, data, isowner)
 		setTurnData("wen",0)
 		setTurnData("wu",0)
 		setTurnData("expval",0)
-		sqlexec("insert into results values(%d,'%s','%s','%s','%d','%s',0,1,'-',0,0,0)",
+		sqlexec("insert into results values(%d,'%s','%s','%s','%d','%s',0,1,'-',0,0,0,'')",
 				getGameData("roomid"),player:getGeneralName(),player:getRole(),
 				player:getKingdom(),getGameData("hegemony"),room:getMode())
 	end	

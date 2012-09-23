@@ -188,20 +188,21 @@
 		<th>游戏时间</th>
 		<th>武将</th>
 		<th>角色</th>
-		<th>开启国战</th>
+		<th>国战</th>
 		<th>游戏模式</th>		
 		<th>回合数</th>
-		<th>最后存活</th>
+		<th>存活</th>
 		<th>结果</th>
 		<th>文功</th>
 		<th>武功</th>
-		<th>经验</th>		
+		<th>经验</th>
+		<th>获得战功</th>
 	</tr>
 </thead>	
 <tbody>
     <% for (i = 0; i<results.length; i ++) { %>
 	<tr>
-		<td><%= results[i].gametime %></td>
+		<td><%= getTime(results[i].gametime) %></td>
 		<td><%= getGeneral(results[i].general) %></td>
 		<td><%= getRole(results[i].role) %></td>
 		<td align="center"><%= getStatus(results[i].hegemony) %></td>
@@ -211,7 +212,8 @@
 		<td><%= getTrans(results[i].result) %></td>
 		<td><%= results[i].wen %></td>
 		<td><%= results[i].wu %></td>
-		<td><%= results[i].expval %></td>		
+		<td><%= results[i].expval %></td>
+		<td><%= results[i].zhangong %></td>
 	</tr>
     <% } %>	
 </tbody>
@@ -336,6 +338,10 @@ var callback={
 	getTrans:function(v){
 		return trans[v] || v;
 	},
+	getTime:function(v){
+		if (/^\d{4}\-\d\d\-\d\d \d\d\:\d\d:\d\d$/) return v.slice(5,-3);
+		return v;
+	},
 	getGeneral:function(v){
 		return "<img height='20' src='./image/generals/tiny/"+v+".png'/>"+(trans[v] || v);
 	},	
@@ -343,7 +349,7 @@ var callback={
 		return "<img height='20' src='./image/system/roles/"+v+"-1.png'/>"+(trans[v] || v);
 	},
 	getStatus:function(v){
-		return v==1 ? "是":"否";
+		return v==1 ? "<font color='green'>是</font>":"<font color='#cccccc'>否</font>";
 	},
 	getZgInfo:function(info){
 		if (!info)	return "<div style='width:53px'>&nbsp;</div>";

@@ -18,7 +18,7 @@ var db=null;
 	data.skills=dbquery(sql,collist);
 
 	var sql = "select datetime(id,'unixepoch','localtime') as gametime,* from results order by id desc limit 300";
-	var collist="gametime,id,general,role,kingdom,hegemony,mode,turncount,alive,result,wen,wu,expval";
+	var collist="gametime,id,general,role,kingdom,hegemony,mode,turncount,alive,result,wen,wu,expval,zhangong";
 	data.results=dbquery(sql,collist);
 	
 	
