@@ -27,6 +27,9 @@ var db=null;
 		var sql = "select * from zhangong where category='"+val+"' order by general asc";
 		var collist="id,name,score,description,gained,category,lasttime,general,num";
 		data["zg"+val]=dbquery(sql,collist);
+		$.each(data["zg"+val],function(index,item){
+			trans[item.id]=[item.name];
+		})
 	});
 	
 	var info={v3:{},role:{},hegemony:{},v1:{},hulao:{},total:{},wen:{},wu:{},expval:{},zg:{}};

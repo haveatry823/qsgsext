@@ -213,7 +213,7 @@
 		<td><%= results[i].wen %></td>
 		<td><%= results[i].wu %></td>
 		<td><%= results[i].expval %></td>
-		<td><%= results[i].zhangong %></td>
+		<td><%= getZhangong(results[i].zhangong) %></td>
 	</tr>
     <% } %>	
 </tbody>
@@ -350,6 +350,14 @@ var callback={
 	},
 	getStatus:function(v){
 		return v==1 ? "<font color='green'>是</font>":"<font color='#cccccc'>否</font>";
+	},
+	getZhangong:function(v){
+		var arr=v.split(/\:/g);
+		var ret=[];
+		for(var i=0;i<arr.length;i++){
+			if (arr[i]!="") ret.push(trans[arr[i]] || arr[i]);
+		}
+		return ret.join(",");
 	},
 	getZgInfo:function(info){
 		if (!info)	return "<div style='width:53px'>&nbsp;</div>";

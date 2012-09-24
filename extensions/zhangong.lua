@@ -2588,7 +2588,7 @@ end
 
 function addZhanGong(room,name)
 	sqlexec("update zhangong set gained=gained+1,lasttime=datetime('now','localtime') where id='%s'",name)
-	setGameData("myzhangong", getGameData("myzhangong","")..name..",")
+	setGameData("myzhangong", getGameData("myzhangong","")..name..":")
 	sqlexec("update results set zhangong='%s' where id='%d'",getGameData("myzhangong",""),getGameData("roomid"))
 	broadcastMsg(room,"#zhangong_"..name)
 end
