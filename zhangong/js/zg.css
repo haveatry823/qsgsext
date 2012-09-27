@@ -1,11 +1,11 @@
-﻿/*----------------------------------------------------------
+/*----------------------------------------------------------
 The base color for this template is #5c87b2. If you'd like
 to use a different color start by replacing all instances of
 #5c87b2 with your new color.
 ----------------------------------------------------------*/
 body
 {
-    background: #5c87b2 url("../../backdrop/default.jpg") 0 0;
+    background: #88915a url("../img/gamebg.jpg") 0 0;
     font-size: .75em;
     font-family: Verdana, Helvetica, Sans-Serif;
     margin: 0;
@@ -356,8 +356,12 @@ div.divtitle{
 
 .graycolor{
 	filter:gray(enabled=1);
-	FILTER: Alpha(Opacity=100, FinishOpacity=20, Style=2, StartX=0, StartY=0, FinishX=0, FinishY=0) gray;
+	FILTER: Alpha(Opacity=100, FinishOpacity=40, Style=2, StartX=0, StartY=0, FinishX=0, FinishY=0) gray;
 	color: #aaaaaa;
+	-moz-opacity:0.2;
+	-khtml-opacity: 0.2;
+	opacity: 0.2;
+	zoom: 1;
 }
 
 #tbl_overview tr{
