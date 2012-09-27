@@ -103,6 +103,7 @@ function database2js()
 			for _,p in pairs(query) do 
 				return p
 			end			
+			return 0
 		end	
 
 		local getData=function(col,val,valtype)
@@ -1865,12 +1866,15 @@ end
 -- 
 zgfunc[sgs.CardsMoveOneTime].yhdf=function(self, room, event, player, data,isowner,name)
 	if room:getOwner():getGeneralName()~="sunshangxiang" then return false end
+	if player:getGeneralName()~="sunshangxiang" then return false end
 	local move=data:toMoveOneTime()
 	local from_places=sgs.QList2Table(move.from_places)
 	if move and move.from and move.from:objectName() == room:getOwner():objectName() and table.contains(from_places,sgs.Player_PlaceEquip) then
 		for _, place in ipairs(from_places) do
 			if place==sgs.Player_PlaceEquip then
+				
 				addGameData(name,1)
+				player:speak(getGameData(name))
 				if getGameData(name)==5 then 			 
 					addZhanGong(room,name)
 				end	
