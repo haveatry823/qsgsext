@@ -3028,4 +3028,3 @@ sgs.LoadTranslationTable {
 	["#enableZhangong"]="【<b><font color='green'>提示</font></b>】: 本局游戏开启了战功统计.",
 	["#disableZhangong"]="【<b><font color='red'>提示</font></b>】: 本局游戏禁止了战功统计.",
 }
-

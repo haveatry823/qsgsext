@@ -162,7 +162,7 @@
 </thead>
 <tbody>
     <% for (i = 0; i<skills.length; i+=5) { %>
-        <tr height="23">
+        <tr height="27">
 		<td><%= getTrans(skills[i].skillname) %></td><td><%= skills[i].gained %></td><td><%= skills[i].remainnum %></td>
 		<td><%= getTrans(skills[i+1].skillname) %></td><td><%= skills[i+1].gained %></td><td><%= skills[i+1].remainnum %></td>
 		<td><%= getTrans(skills[i+2].skillname) %></td><td><%= skills[i+2].gained %></td><td><%= skills[i+2].remainnum %></td>
@@ -196,17 +196,17 @@
 <tbody>
     <% for (i = 0; i<results.length; i ++) { %>
 	<tr>
-		<td><%= getTime(results[i].gametime) %></td>
-		<td><%= getGeneral(results[i].general) %></td>
-		<td><%= getRole(results[i].role) %></td>
-		<td align="center"><%= getStatus(results[i].hegemony) %></td>
-		<td><%= getTrans(results[i].mode) %></td>
-		<td><%= results[i].turncount %></td>
-		<td  align="center"><%= getStatus(results[i].alive) %></td>
-		<td><%= getTrans(results[i].result) %></td>
-		<td><%= results[i].wen %></td>
-		<td><%= results[i].wu %></td>
-		<td><%= results[i].expval %></td>
+		<td nowrap="nowrap"><%= getTime(results[i].gametime) %></td>
+		<td nowrap="nowrap"><%= getGeneral(results[i].general) %></td>
+		<td nowrap="nowrap"><%= getRole(results[i].role) %></td>
+		<td nowrap="nowrap" align="center"><%= getStatus(results[i].hegemony) %></td>
+		<td nowrap="nowrap"><%= getTrans(results[i].mode) %></td>
+		<td nowrap="nowrap"><%= results[i].turncount %></td>
+		<td nowrap="nowrap" align="center"><%= getStatus(results[i].alive) %></td>
+		<td nowrap="nowrap"><%= getTrans(results[i].result) %></td>
+		<td nowrap="nowrap"><%= results[i].wen %></td>
+		<td nowrap="nowrap"><%= results[i].wu %></td>
+		<td nowrap="nowrap"><%= results[i].expval %></td>
 		<td><%= getZhangong(results[i].zhangong) %></td>
 	</tr>
     <% } %>	
@@ -214,12 +214,13 @@
 </table>
 </script>
 
+
 <script id='t_zhonghe' type='text/html'>
 <table border width='100%' id='tbl_zhonghe'>
 <tbody>
-    <% for (i = 0; i<zgzhonghe.length; i+=10) { %>		
+    <% for (i = 0; i<zgzhonghe.length; i+=12) { %>		
     <tr>
-		<% for (j = 0; j<10; j++) { %>
+		<% for (j = 0; j<12; j++) { %>
 			<td><%= getZgInfo(zgzhonghe[i+j]) %></td>
 		<% } %>			
 	</tr>
@@ -376,7 +377,6 @@ $.each(callback,function(name,func){
 });
 
 var tabLists=$.merge(["overview","results","skills"],zglist);
-var tabPageNum=[100,12,10,4,4,4,4,4,4,4,4];;
 
 $(function(){
 	$("a").click(function(){
@@ -432,9 +432,9 @@ $(function(){
 			$.each(tabLists,function(i,tab){
 				document.write('<div id="div_'+tab+'" style="display:none">');
 				document.write(template('t_'+tab, data));
-				document.write('</div>');
-				$("#tbl_"+tab).tablePaging({ pageSize: tabPageNum[i],sorting:false});
+				document.write('</div>');				
 			});			
+			$("#tbl_results").tablePaging({ pageSize: 15,sorting:false});
 		</script>		
     </div>
 </div>
