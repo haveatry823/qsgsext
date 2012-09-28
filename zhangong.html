@@ -18,87 +18,95 @@
 	<br/>		
 	<table border width="30%">
 		<tr>
-			<th>经验值</th>
-			<th>经验等级</th>
-			<th>战功数</th>
-			<th>战功值</th>
+			<th style="text-align:center"><a href='#' class='t'>经验值(?)
+				<span>你每造成1点伤害,经验加1</span></a></th>
+			<th style="text-align:center"><a href='#' class='t'>经验等级(?)
+				<span style="width:500px"><%= getExpLevel() %></span></a></th>
+			<th style="text-align:center"><a href='#' class='t'>战功数(?)
+				<span>你已完成的战功数<br/>(同一战功多次拿到只计算为1个)</span></a></th>
+			<th style="text-align:center"><a href='#' class='t'>战功值(?)
+				<span>已完成战功*每个战功的战功值<br/>(同一战功多次拿到可累计)</span></a></th>
 		</tr>
 		<tr>
-			<td><%= info.expval.score %></td>
-			<td><%= info.expval.level %></td>
-			<td><%= info.zg.num %></td>
-			<td><%= info.zg.score %></td>
+			<td align="center"><%= info.expval.score %></td>
+			<td align="center"><%= info.expval.level %></td>
+			<td align="center"><%= info.zg.num %></td>
+			<td align="center"><%= info.zg.score %></td>
 		</tr>
 	</table>
 	<br/><br/>
 
 	<table border width="60%">
 		<tr>
-			<th>文功</th>
-			<th>文功等级</th>
-			<th>文功官职</th>
-			<th>武功</th>
-			<th>武功等级</th>
-			<th>武功官职</th>
+			<th align="center" style="text-align:center"><a href='#' class='t'>文功(?)
+				<span style="width:220px">你每打出或使用1张【锦囊牌】,文功加1</span></a></th>
+			<th align="center" style="text-align:center"><a href='#' class='t'>文功等级(?)
+				<span style="width:800px;left:-5em;top:0.6em;cursor:default"><%= getGongxun('wen') %></span></a></th>
+			<th align="center" style="text-align:center">文功官职</th>
+			<th align="center" style="text-align:center"><a href='#' class='t'>武功(?)
+				<span>你每打出或使用1张【杀】,武功加1</span></a></th>
+			<th align="center" style="text-align:center"><a href='#' class='t'>武功等级(?)
+				<span style="width:800px;left:-5em;top:0.6em;cursor:default"><%= getGongxun('wu') %></span></a></th>
+			<th align="center" style="text-align:center">武功官职</th>
 		</tr>
 		<tr>
-			<td><%= info.wen.score %></td>
-			<td><%= info.wen.level %></td>
-			<td><%= info.wen.name %></td>
-			<td><%= info.wu.score %></td>
-			<td><%= info.wu.level %></td>
-			<td><%= info.wu.name %></td>
+			<td align="center"><%= info.wen.score %></td>
+			<td align="center"><%= info.wen.level %></td>
+			<td align="center"><%= info.wen.name %></td>
+			<td align="center"><%= info.wu.score %></td>
+			<td align="center"><%= info.wu.level %></td>
+			<td align="center"><%= info.wu.name %></td>
 		</tr>
 	</table>
 	<br/><br/>
 
 	<table border width="100%" id="tbl_overview">
 	<tr>
-		<th>模式</th>
-		<th>胜利</th>
-		<th>败北</th>
-		<th>逃跑</th>
-		<th>胜率</th>		
-		<th>主胜率</th>
-		<th>忠胜率</th>
-		<th>内胜率</th>
-		<th>反胜率</th>
+		<th align="center" style="text-align:center">模式</th>
+		<th align="center" style="text-align:center">胜利</th>
+		<th align="center" style="text-align:center">败北</th>
+		<th align="center" style="text-align:center">逃跑</th>
+		<th align="center" style="text-align:center">胜率</th>		
+		<th align="center" style="text-align:center">主胜率</th>
+		<th align="center" style="text-align:center">忠胜率</th>
+		<th align="center" style="text-align:center">内胜率</th>
+		<th align="center" style="text-align:center">反胜率</th>
 	</tr>	
 	<tr>
-		<td>身份局</td>
-		<td><%= info.role.winnum %></td>
-		<td><%= info.role.losenum %></td>
-		<td><%= info.role.escnum %></td>
-		<td><%= info.role.winrate %></td>
-		<td title="主公胜率"><img src="./image/system/roles/lord-1.png" height="23"/><%= info.role.winrate_1 %></td>
-		<td title="忠臣胜率"><img src="./image/system/roles/loyalist-1.png" height="23"/><%= info.role.winrate_2 %></td>
-		<td title="内奸胜率"><img src="./image/system/roles/renegade-1.png" height="23"/><%= info.role.winrate_3 %></td>
-		<td title="反贼胜率"><img src="./image/system/roles/rebel-1.png" height="23"/><%= info.role.winrate_4 %></td>
+		<td align="center">身份局</td>
+		<td align="center"><%= info.role.winnum %></td>
+		<td align="center"><%= info.role.losenum %></td>
+		<td align="center"><%= info.role.escnum %></td>
+		<td align="center"><%= info.role.winrate %></td>
+		<td title="主公胜率" align="center"><img src="./image/system/roles/lord-1.png" height="23"/><%= info.role.winrate_1 %></td>
+		<td title="忠臣胜率" align="center"><img src="./image/system/roles/loyalist-1.png" height="23"/><%= info.role.winrate_2 %></td>
+		<td title="内奸胜率" align="center"><img src="./image/system/roles/renegade-1.png" height="23"/><%= info.role.winrate_3 %></td>
+		<td title="反贼胜率" align="center"><img src="./image/system/roles/rebel-1.png" height="23"/><%= info.role.winrate_4 %></td>
 	</tr>
 	<tr>
-		<td>虎牢关</td>
-		<td><%= info.hulao.winnum %></td>
-		<td><%= info.hulao.losenum %></td>
-		<td><%= info.hulao.escnum %></td>
-		<td><%= info.hulao.winrate %></td>
-		<td title="吕布胜率"><img src="./image/system/roles/lord.png" height="23"/><%= info.hulao.winrate_1 %></td>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-		<td title="联军胜率"><img src="./image/system/roles/rebel.png" height="23"/><%= info.hulao.winrate_2 %></td>
+		<td align="center">虎牢关</td>
+		<td align="center"><%= info.hulao.winnum %></td>
+		<td align="center"><%= info.hulao.losenum %></td>
+		<td align="center"><%= info.hulao.escnum %></td>
+		<td align="center"><%= info.hulao.winrate %></td>
+		<td  align="center" title="吕布胜率"><img src="./image/system/roles/lord.png" height="23"/><%= info.hulao.winrate_1 %></td>
+		<td align="center">&nbsp;</td>
+		<td align="center">&nbsp;</td>
+		<td  align="center" title="联军胜率"><img src="./image/system/roles/rebel.png" height="23"/><%= info.hulao.winrate_2 %></td>
 
 	</tr>
 	<tr>
-		<td>3v3</td>
-		<td><%= info.v3.winnum %></td>
-		<td><%= info.v3.losenum %></td>
-		<td><%= info.v3.escnum %></td>
-		<td><%= info.v3.winrate %></td>
-		<td title="主帅胜率">
+		<td align="center">3v3</td>
+		<td align="center"><%= info.v3.winnum %></td>
+		<td align="center"><%= info.v3.losenum %></td>
+		<td align="center"><%= info.v3.escnum %></td>
+		<td align="center"><%= info.v3.winrate %></td>
+		<td title="主帅胜率" align="center">
 			<img src="./image/system/roles/lord-4.png" height="23"/>
 			<img src="./image/system/roles/renegade-4.png" height="23"/>
 			<%= info.v3.winrate_1 %>
 		</td>
-		<td title="前锋胜率">
+		<td title="前锋胜率" align="center">
 			<img src="./image/system/roles/loyalist-4.png" height="23"/>
 			<img src="./image/system/roles/rebel-4.png" height="23"/>
 			<%= info.v3.winrate_2 %>
@@ -107,42 +115,42 @@
 		<td>&nbsp;</td>
 	</tr>
 	<tr>
-		<td>国战</td>
-		<td><%= info.hegemony.winnum %></td>
-		<td><%= info.hegemony.losenum %></td>
-		<td><%= info.hegemony.escnum %></td>
-		<td><%= info.hegemony.winrate %></td>
-		<td title="魏国胜率"><img src="./image/system/roles/lord-5.png" height="23"/><%= info.hegemony.winrate_1 %></td>
-		<td title="蜀国胜率"><img src="./image/system/roles/loyalist-5.png" height="23"/><%= info.hegemony.winrate_2 %></td>
-		<td title="吴国胜率"><img src="./image/system/roles/rebel-5.png" height="23"/><%= info.hegemony.winrate_3 %></td>
-		<td title="群雄胜率"><img src="./image/system/roles/renegade-5.png" height="23"/><%= info.hegemony.winrate_4 %></td>
+		<td align="center">国战</td>
+		<td align="center"><%= info.hegemony.winnum %></td>
+		<td align="center"><%= info.hegemony.losenum %></td>
+		<td align="center"><%= info.hegemony.escnum %></td>
+		<td align="center"><%= info.hegemony.winrate %></td>
+		<td title="魏国胜率" align="center"><img src="./image/system/roles/lord-5.png" height="23"/><%= info.hegemony.winrate_1 %></td>
+		<td title="蜀国胜率" align="center"><img src="./image/system/roles/loyalist-5.png" height="23"/><%= info.hegemony.winrate_2 %></td>
+		<td title="吴国胜率" align="center"><img src="./image/system/roles/rebel-5.png" height="23"/><%= info.hegemony.winrate_3 %></td>
+		<td title="群雄胜率" align="center"><img src="./image/system/roles/renegade-5.png" height="23"/><%= info.hegemony.winrate_4 %></td>
 	</tr>
 
 	<tr>
-		<td>1v1</td>
-		<td><%= info.v1.winnum %></td>
-		<td><%= info.v1.losenum %></td>
-		<td><%= info.v1.escnum %></td>
-		<td><%= info.v1.winrate %></td>
-		<td title="后手胜率"><img src="./image/system/roles/lord.png" height="23"/><%= info.v1.winrate_2 %></td>
+		<td align="center">1v1</td>
+		<td align="center"><%= info.v1.winnum %></td>
+		<td align="center"><%= info.v1.losenum %></td>
+		<td align="center"><%= info.v1.escnum %></td>
+		<td align="center"><%= info.v1.winrate %></td>
+		<td title="后手胜率" align="center"><img src="./image/system/roles/lord.png" height="23"/><%= info.v1.winrate_2 %></td>
 		<td>&nbsp;</td>	
-		<td title="先手胜率"><img src="./image/system/roles/renegade.png" height="23"/><%= info.v1.winrate_1 %></td>			
+		<td title="先手胜率" align="center"><img src="./image/system/roles/renegade.png" height="23"/><%= info.v1.winrate_1 %></td>			
 		<td>&nbsp;</td>
 	</tr>
 	
 	<tr>
-		<th>综合统计</th>
-		<th><%= info.total.winnum %></th>
-		<th><%= info.total.losenum %></th>
-		<th><%= info.total.escnum %></th>
-		<th><%= info.total.winrate %></th>		
+		<th align="center" style="text-align:center">综合统计</th>
+		<th align="center" style="text-align:center"><%= info.total.winnum %></th>
+		<th align="center" style="text-align:center"><%= info.total.losenum %></th>
+		<th align="center" style="text-align:center"><%= info.total.escnum %></th>
+		<th align="center" style="text-align:center"><%= info.total.winrate %></th>		
 		<th>&nbsp;</th>
 		<th>&nbsp;</th>
 		<th>&nbsp;</th>
 		<th>&nbsp;</th>
 	</tr>
-	</table>
-	<br/><br/>
+	</table>	
+	<div style="text-align:center;margin-top:20px">注：本报表并非实时更新，通常在你的回合开始后或者你获得战功后才更新数据</div>
 </script>
 
 <script id="t_skills" type="text/html">
@@ -354,6 +362,41 @@ var callback={
 		}
 		return ret.join(",");
 	},
+	getExpLevel:function(){
+		var ret=["<div style='margin:10px'><table>"];
+		ret.push("<tr><td>等级</td><td>所需经验</td><td>等级</td><td>所需经验</td><td>等级</td><td>所需经验</td><td>等级</td><td>所需经验</td><td>等级</td><td>所需经验</td></tr>")
+		for(var i=1;i<=50;i+=5){
+			ret.push("<tr>")
+			for(var j=0;j<5;j++){
+				ret.push("<td>"+(i+j)+"</td><td>"+(i+j)*(i+j)*(i+j)+"</td>")
+			}
+			ret.push("</tr>");
+		}
+		ret.push("</table></div>")
+		return ret.join("\r\n");
+	},
+	getGongxun:function(cat){
+		var ret=["<div style='margin:10px'><table>"];
+		var arr=[];
+		for(var i=0,n=data.gongxun.length;i<n;i++){
+			if (data.gongxun[i].cat==cat) arr.push(data.gongxun[i])
+		}
+		ret.push("<tr>");
+		var gongxun= cat=='wen' ? "所需文功" : "所需武功";
+		for(var i=0;i<5;i++){
+			ret.push("<td>等级</td><td>官职</td><td>"+gongxun+"</td>");
+		}
+		ret.push("</tr>");
+		for(var i=0;i<50;i+=5){
+			ret.push("<tr>")
+			for(var j=0;j<5;j++){
+				ret.push("<td>"+arr[i+j].level+"</td><td>"+arr[i+j].name+"</td><td>"+arr[i+j].score+"</td>")
+			}
+			ret.push("</tr>");
+		}
+		ret.push("</table></div>");
+		return ret.join("\r\n");
+	},
 	getZgInfo:function(info){
 		if (!info)	return "<div style='width:53px'>&nbsp;</div>";
 		var imgsrc="./zhangong/img/"+info.id+".png";
@@ -365,9 +408,7 @@ var callback={
 		}
 		var enableStr= info.gained !=="0" ? "" : " class='graycolor'";
 		var numStr = info.gained>0 ? "<br/><font color='#cccccc'>x</font>&nbsp; "+info.gained : "<br/>&nbsp; "
-		return "<div style='text-align:center;margin:3px' title='"+info.description
-				+"'><img height='53' src='"+imgsrc+"' "+enableStr+"/><div title='最后取得: "
-				+info.lasttime+"' style='margin-top:6px;font-size:11px;color:black'"
+		return "<div style='text-align:center;margin:3px'><a href='#' onclick='return false' class='s'><img height='53' src='"+imgsrc+"' "+enableStr+"/><span>"+info.name+"<font size='1'>(战功值:"+info.score+")</font>:&nbsp;&nbsp;"+info.description+"</span></a><div style='margin-top:6px;font-size:11px;color:black'"
 				+enableStr+">"+info.name+numStr+"</div></div>";
 	}
 };
@@ -382,6 +423,10 @@ $(function(){
 	$("a").click(function(){
 		$(this).blur();
 	});		
+
+	$("a.t").click(function(){
+		return false;
+	});
 	
 	$.each(tabLists,function(i,tab){
 		$("#link_"+tab).click(function(){
@@ -400,8 +445,6 @@ $(function(){
 	$("#link_overview").trigger("click");		
 });
 </script>
-
-
 
 <div class="page">
 	<div id="header">		

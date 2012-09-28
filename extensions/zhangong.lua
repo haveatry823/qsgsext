@@ -148,29 +148,35 @@ function database2js()
 		getData("wen.score",wen)
 		getData("wu.score",wu)		
 		getData("expval.score",expval)
-		getData("expval.level",math.ceil(math.pow(expval,1/3)))
+		getData("expval.level",math.floor(math.pow(expval,1/3)))
 
 		getData("zg.num",getVal("select count(id) from zhangong where gained>0"))
 		getData("zg.total",getVal("select count(id) from zhangong"))
 		getData("zg.score",getVal("select sum(score*gained) from zhangong where gained>0"))
+		getData("wen.level",getVal("select level from gongxun where category='wen' and score<=%d order by score desc limit 1",wen))
+		getData("wen.name",getVal("select name from gongxun where category='wen' and score<=%d order by score desc limit 1",wen),"str")
+		
+		getData("wu.level",getVal("select level from gongxun where category='wu' and score<=%d order by score desc limit 1",wu))
+		getData("wu.name",getVal("select name from gongxun where category='wu' and score<=%d order by score desc limit 1",wu),"str")
 
-		getData("wen.level",getVal("select level from gongxun where category='wen' and score>=%d order by score asc limit 1",wen))
-		getData("wen.name",getVal("select name from gongxun where category='wen' and score>=%d order by score asc limit 1",wen),"str")
-		
-		getData("wu.level",getVal("select level from gongxun where category='wu' and score>=%d order by score asc limit 1",wu))
-		getData("wu.name",getVal("select name from gongxun where category='wu' and score>=%d order by score asc limit 1",wu),"str")
-		
-		getData("total.starttime",getVal("select datetime(min(id),'unixepoch','localtime') from results") or "尚未开始统计","str")
+		local starttime=getVal("select datetime(min(id),'unixepoch','localtime') from results")
+		if starttime==0 then starttime="尚未开始统计" end
+		getData("total.starttime",starttime,"str")
 		
 		table.insert(arr,"return info;")
 		return table.concat(arr,"")
 	end
 	table.insert(ret,string.format("data.info=(function(){%s})();",getinfodata()))
+
+	local sql = "select level,name,score,category as cat from gongxun where level>0 and category in ('wen','wu') order by category,level"
+	local collist="level,name,score,cat"
+	table.insert(ret,string.format("data.gongxun=[%s];",dbquery(sql,collist)))
 	
 	local fp = io.open("./zhangong/js/zg.js","wb")
 	fp:write(table.concat(ret,""))
 	fp:close()
 end
+
 
 -- srxsm :: 射人先射马 :: 一局游戏中发动麒麟弓特效至少3次
 -- 
