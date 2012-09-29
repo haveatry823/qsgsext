@@ -1130,7 +1130,7 @@ zgfunc[sgs.CardFinished].tw=function(self, room, event, player, data,isowner,nam
 	local use=data:toCardUse()
 	local card=use.card
 	local tos=sgs.QList2Table(use.to)
-	if card:getSkillName()~="jijiu" and card:isKindOf("Peath") and tos[1]:objectName()==player:objectName() then 
+	if card:getSkillName()~="jijiu" and card:isKindOf("Peach") and tos[1]:objectName()==player:objectName() then 
 		addGameData(name,1) 
 		if getGameData(name)==5 then 			 
 			addZhanGong(room,name)
@@ -1146,7 +1146,7 @@ zgfunc[sgs.CardFinished].tx=function(self, room, event, player, data,isowner,nam
 	local use=data:toCardUse()
 	local card=use.card
 	local tos=sgs.QList2Table(use.to)
-	if card:getSkillName()~="jijiu" and card:isKindOf("Peath") and tos[1]:objectName()~=player:objectName() then 
+	if card:getSkillName()~="jijiu" and card:isKindOf("Peach") and tos[1]:objectName()~=player:objectName() then 
 		addGameData(name,1) 
 		if getGameData(name)==5 then 			 
 			addZhanGong(room,name)
@@ -1617,7 +1617,7 @@ zgfunc[sgs.ChoiceMade].byyl=function(self, room, event, player, data,isowner,nam
 	if not room:getOwner():getGeneralName()=="simayi" then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
-	if choices[1]=="cardChosen" and choices[2]=="fankui" and sgs.Sanguosha:getCard(choices[3]):isKindOf("Peath") then
+	if choices[1]=="cardChosen" and choices[2]=="fankui" and sgs.Sanguosha:getCard(choices[3]):isKindOf("Peach") then
 		addGameData(name,1)
 		if getGameData(name)==2 then
 			addZhanGong(room,name)
@@ -1797,7 +1797,7 @@ zgfunc[sgs.HpRecover].lbsd=function(self, room, event, player, data,isowner,name
 	if player:getGeneralName()~="sunquan" then return false end	
 	if not isowner then return false end
 	local recov = data:toRecover()
-	if recov.recover>1 and recov.card:isKindOf("Peath") and player:getHp()>=1
+	if recov.recover>1 and recov.card:isKindOf("Peach") and player:getHp()>=1
 		and (recov.card:hasFlag("jiuyuan") or player:hasFlag("jiuyuan")) then
 		addGameData(name,1)
 		if getGameData(name)>=3 then			 
