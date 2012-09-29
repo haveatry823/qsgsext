@@ -316,7 +316,7 @@ zgfunc[sgs.DamageCaused].ljxs=function(self, room, event, player, data,isowner,n
 	if not isowner then return false end
 	local damage = data:toDamage()
 	if damage and damage.card and damage.card:isKindOf("Slash") and damage.to:isKongcheng() 
-			and not damage.chain and not damage.transfer then
+			and not damage.chain and not damage.transfer and damage.from and damage.from:hasWeapon("GudingBlade") then
 		addGameData(name,1)
 		if getGameData(name)==3 then			 
 			addZhanGong(room,name)
