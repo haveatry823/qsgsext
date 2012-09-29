@@ -35,6 +35,17 @@ FAQ
    * 如果上述步骤都OK, 就可用浏览器打开 zhangong.html 来查看战功了.
 
 
+截图
+------
+1. 战功成就系统
+   * ![战功1](https://qsgsext.googlecode.com/svn-history/r23/wiki/overview.jpg)
+   * 
+   * ![战功2](https://qsgsext.googlecode.com/svn-history/r23/wiki/zhonghe.jpg)
+   * 
+   * ![战功2](https://qsgsext.googlecode.com/svn-history/r23/wiki/qun.jpg)
+   * 
+   * ![战功2](https://qsgsext.googlecode.com/svn-history/r23/wiki/results.jpg)
+   * 
     
 
 
