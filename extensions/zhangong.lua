@@ -1613,7 +1613,7 @@ end
 
 -- sytt :: 手眼通天 :: 使用司马懿在1局游戏中有至少2次发动反馈都抽到对方1张桃 
 -- 
-zgfunc[sgs.ChoiceMade].byyl=function(self, room, event, player, data,isowner,name)
+zgfunc[sgs.ChoiceMade].sytt=function(self, room, event, player, data,isowner,name)
 	if not room:getOwner():getGeneralName()=="simayi" then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
