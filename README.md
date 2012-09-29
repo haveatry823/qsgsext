@@ -1,6 +1,8 @@
 lua 扩展for [太阳神三国杀](https://github.com/gaodayihao/QSanguosha)
 ===========================
 
+本项目svn地址 https://code.google.com/p/qsgsext/
+
 功能
 ----------
 
