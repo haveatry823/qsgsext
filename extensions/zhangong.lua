@@ -1768,7 +1768,7 @@ end
 -- jnd :: 锦囊袋 :: 使用黄月英在1个回合内发动至少10次集智 
 -- 
 zgfunc[sgs.CardFinished].jnd=function(self, room, event, player, data,isowner,name)
-	if not isowner or player:getGeneralName()~="huangyueyin" then return false end
+	if not isowner or player:getGeneralName()~="huangyueying" then return false end
 	local use=data:toCardUse()
 	local card=use.card
 	if card:isNDTrick() then 
