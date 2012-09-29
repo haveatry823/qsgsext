@@ -698,7 +698,7 @@ zgfunc[sgs.GameOverJudge].tongji=function(self, room, event, player, data,isowne
 		end	
 		gainSkill(room)
 	end
-	setGameData("enable",0)
+	
 	local kingdom=room:getOwner():getKingdom()
 	if kingdom=="god" and getGameData("hegemony")==1 then kingdom=room:getOwner():getGeneral():getKingdom() end
 
@@ -715,6 +715,8 @@ zgfunc[sgs.GameOverJudge].tongji=function(self, room, event, player, data,isowne
 		broadcastMsg(room,"#gainWu",row.wu)
 		broadcastMsg(room,"#gainExp",row.expval)
 	end
+
+	setGameData("enable",0)
 	database2js()
 end
 
