@@ -930,45 +930,45 @@ end
 
 -- 所有武将的 获得N场胜利 取得相应战功的代码  
 --
-for data in db:rows("select id,category,general,num from zhangong where num>0 ") do
-	zgfunc[sgs.GameOverJudge].callback[data.id]=function(room,player,data,name,result)			
+for query in db:rows("select id,category,general,num,description from zhangong where num>0 ") do
+	zgfunc[sgs.GameOverJudge].callback[query.id]=function(room,player,data,name,result)			
 		local mode=room:getMode()
 		local kingdoms={["wu"]=1,["shu"]=1,["wei"]=1,["qun"]=1,["god"]=1}
 		if result ~='win' then return false end
-		if data.category=="3v3" and room:getMode()~="06_3v3" then return false end
-		if data.category=="1v1" and room:getMode()~="02_1v1" then return false end
-		if kingdoms[data.category] and
+		if query.category=="3v3" and room:getMode()~="06_3v3" then return false end
+		if query.category=="1v1" and room:getMode()~="02_1v1" then return false end
+		if kingdoms[query.category] and
 				(mode=="06_3v3" or mode=="02_1v1" or mode=="04_1v3" or getGameData("hegemony")==1) then
 			return false
 		end
 		local flag=false		
-		local role=player:getRole()
+		local role=room:getOwner():getRole()
 		local sql="select count(id) as num from results where result='win' "
 
-		if data.general=="-" then
+		if query.general=="-" then
 			sql=sql..string.format("and 1 ")
-		elseif data.general==player:getGeneralName() then
-			sql=sql..string.format("and general='%s' ",data.general)
-		elseif data.general==player:getRole() then
-			sql=sql..string.format("and role='%s' ",data.general)
-		elseif data.general==player:getKingdom() then
-			sql=sql..string.format("and kingdom='%s' ",data.general)
-		elseif data.general=="leader" and (role=="lord" or role =="renegade") and mode=="06_3v3" then
+		elseif query.general==room:getOwner():getGeneralName() then
+			sql=sql..string.format("and general='%s' ",query.general)
+		elseif query.general==role then
+			sql=sql..string.format("and role='%s' ",query.general)
+		elseif query.general==room:getOwner():getKingdom() then
+			sql=sql..string.format("and kingdom='%s' ",query.general)
+		elseif query.general=="leader" and (role=="lord" or role =="renegade") and mode=="06_3v3" then
 			sql=sql..string.format("and mode='06_3v3' and (role=='lord' or role =='renegade') ")
-		elseif data.general=="guard" and (role=="loyalist" or role =="rebel") and mode=="06_3v3" then
+		elseif query.general=="guard" and (role=="loyalist" or role =="rebel") and mode=="06_3v3" then
 			sql=sql..string.format("and mode='06_3v3' and (role=='loyalist' or role =='rebel') ")
 		else
 			return false
 		end
 
-		if data.category=="3v3" then sql=sql.."and mode=='06_3v3' " end
-		if data.category=="1v1" then sql=sql.."and mode=='02_1v1' " end
-		if kingdoms[data.category] then 
+		if query.category=="3v3" then sql=sql.."and mode=='06_3v3' " end
+		if query.category=="1v1" then sql=sql.."and mode=='02_1v1' " end
+		if kingdoms[query.category] then 
 			sql=sql.." and hegemony=0 and mode not in ('06_3v3','02_1v1','04_1v3') "
 		end
 		
 		for row in db:rows(sql) do
-			if row.num==data.num then addZhanGong(room,name) end
+			if row.num==query.num then addZhanGong(room,name) end
 		end
 	end
 end
@@ -1335,7 +1335,7 @@ end
 zgfunc[sgs.Damage].wydk=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
 	local damage = data:toDamage()
-	if damage and damage.card and damage.card:hasFlag("drank") then
+	if damage and damage.card and damage.card:hasFlag("drank") and damage.card:isKindOf("Slash") then
 		addGameData(name,1)
 		if getGameData(name)==3 then 			 
 			addZhanGong(room,name)
@@ -1394,7 +1394,7 @@ end
 -- fj :: 飞将 :: 使用吕布在1局游戏中发动方天画戟特效杀死至少2名角色 
 -- 
 zgfunc[sgs.SlashEffected].fj=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="lvbu" then return false end
+	if room:getOwner():getGeneralName()~="lvbu" then return false end
 	if not isowner then return false end
 	local effect= data:toSlashEffect()
 	if  player:isLastHandCard(effect.slash) and player:hasWeapon("Halberd") then
@@ -1403,7 +1403,7 @@ zgfunc[sgs.SlashEffected].fj=function(self, room, event, player, data,isowner,na
 end
 
 zgfunc[sgs.CardFinished].fj=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="lvbu" then return false end
+	if room:getOwner():getGeneralName()~="lvbu" then return false end
 	if not isowner then return false end
 	local use=data:toCardUse()
 	local card=use.card	
@@ -1413,7 +1413,7 @@ zgfunc[sgs.CardFinished].fj=function(self, room, event, player, data,isowner,nam
 end
 
 zgfunc[sgs.Death].fj=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="lvbu" then return false end
+	if room:getOwner():getGeneralName()~="lvbu" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:getGeneralName()=="lvbu" and damage.card:hasFlag(name) then
@@ -1425,7 +1425,7 @@ zgfunc[sgs.Death].fj=function(self, room, event, player, data,isowner,name)
 end
 
 zgfunc[sgs.GameOverJudge].callback.fj=function(room,player,data,name,result)
-	if not room:getOwner():getGeneralName()=="lvbu" then return false end
+	if  room:getOwner():getGeneralName()~="lvbu" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:getGeneralName()=="lvbu" and damage.card:hasFlag(name) then
@@ -1441,7 +1441,7 @@ end
 -- qgqc :: 倾国倾城 :: 使用貂蝉在1局游戏中发动离间造成至少3名角色死亡 
 -- 
 zgfunc[sgs.Death].qgqc=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="diaochan" then return false end
+	if  room:getOwner():getGeneralName()~="diaochan" then return false end
 	local damage=data:toDamageStar()
 	if not damage then return false end
 	if  room:getCurrent():objectName()==room:getOwner():objectName() and damage.card and damage.card:getSkillName()=="lijian" then
@@ -1453,7 +1453,7 @@ zgfunc[sgs.Death].qgqc=function(self, room, event, player, data,isowner,name)
 end
 
 zgfunc[sgs.GameOverJudge].callback.qgqc=function(room,player,data,name,result)
-	if not room:getOwner():getGeneralName()=="diaochan" then return false end
+	if  room:getOwner():getGeneralName()~="diaochan" then return false end
 	local damage=data:toDamageStar()
 	if not damage then return false end
 	if  room:getCurrent():objectName()==room:getOwner():objectName() and damage.card and damage.card:getSkillName()=="lijian" then
@@ -1468,7 +1468,7 @@ end
 -- lsmy :: 乱世名医 :: 使用华佗在1局游戏中发动急救使至少3个不同的角色脱离濒死状态 
 -- 
 zgfunc[sgs.CardFinished].lsmy=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="huatuo" then return false end
+	if  room:getOwner():getGeneralName()~="huatuo" then return false end
 	if not isowner then return false end
 	local use=data:toCardUse()
 	local card=use.card
@@ -1490,7 +1490,7 @@ end
 -- lsdjx :: 乱世的奸雄 :: 使用曹操在1局游戏中发动奸雄得到至少3张南蛮入侵和1张万箭齐发 
 -- 
 zgfunc[sgs.ChoiceMade].lsdjx=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="caocao" then return false end
+	if  room:getOwner():getGeneralName()~="caocao" then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
 	if choices[1]=="skillInvoke"  and  choices[2]=="jianxiong" and choices[3]=="yes" then
@@ -1522,7 +1522,7 @@ end
 -- yqwb :: 掩其无备 :: 使用张辽在1局游戏中发动至少10次突袭 
 -- 
 zgfunc[sgs.ChoiceMade].yqwb=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="zhangliao" then return false end
+	if  room:getOwner():getGeneralName()~="zhangliao" then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
 	if choices[1]=="cardResponsed"  and  choices[2]=="@@tuxi" and choices[#choices]~="_nil_" then
@@ -1537,7 +1537,7 @@ end
 -- nswh :: 你死我活 :: 使用夏侯惇在1局游戏中发动刚烈杀死至少1名角色 
 -- 
 zgfunc[sgs.Death].nswh=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="xiahoudun" then return false end
+	if  room:getOwner():getGeneralName()~="xiahoudun" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:getGeneralName()=="xiahoudun" and  not damage.card then
@@ -1549,7 +1549,7 @@ zgfunc[sgs.Death].nswh=function(self, room, event, player, data,isowner,name)
 end
 
 zgfunc[sgs.GameOverJudge].callback.nswh=function(room,player,data,name,result)
-	if not room:getOwner():getGeneralName()=="xiahoudun" then return false end
+	if  room:getOwner():getGeneralName()~="xiahoudun" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:getGeneralName()=="xiahoudun" and  not damage.card then
@@ -1565,7 +1565,7 @@ end
 -- mwl :: 妈，我冷 :: 使用许褚在1局游戏中发动裸衣至少2次并在裸衣的回合中杀死过至少2名角色 
 -- 
 zgfunc[sgs.ChoiceMade].mwl=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="xuchu" then return false end
+	if  room:getOwner():getGeneralName()~="xuchu" then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
 	if choices[1]=="skillInvoke"  and  choices[2]=="luoyi" and choices[3]=="yes" then
@@ -1574,7 +1574,7 @@ zgfunc[sgs.ChoiceMade].mwl=function(self, room, event, player, data,isowner,name
 end
 
 zgfunc[sgs.Death].mwl=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="xuchu" then return false end
+	if  room:getOwner():getGeneralName()~="xuchu" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:hasFlag("luoyi") and getGameData(name)>=2 and damage.card 
@@ -1587,7 +1587,7 @@ zgfunc[sgs.Death].mwl=function(self, room, event, player, data,isowner,name)
 end
 
 zgfunc[sgs.GameOverJudge].callback.mwl=function(room,player,data,name,result)
-	if not room:getOwner():getGeneralName()=="xuchu" then return false end
+	if  room:getOwner():getGeneralName()~="xuchu" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:hasFlag("luoyi") and getGameData(name)>=2 and damage.card 
@@ -1603,7 +1603,7 @@ end
 -- byyl :: 不遗余力 :: 使用郭嘉在1局游戏中发动遗计发牌至少5次 
 -- 
 zgfunc[sgs.ChoiceMade].byyl=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="guojia" then return false end
+	if  room:getOwner():getGeneralName()~="guojia" then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
 	if choices[1]=="skillInvoke"  and  choices[2]=="yiji" and choices[3]=="yes" then
@@ -1618,7 +1618,7 @@ end
 -- sytt :: 手眼通天 :: 使用司马懿在1局游戏中有至少2次发动反馈都抽到对方1张桃 
 -- 
 zgfunc[sgs.ChoiceMade].sytt=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="simayi" then return false end
+	if  room:getOwner():getGeneralName()~="simayi" then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
 	if choices[1]=="cardChosen" and choices[2]=="fankui" and sgs.Sanguosha:getCard(choices[3]):isKindOf("Peach") then
@@ -1633,7 +1633,7 @@ end
 -- lsf :: 洛神赋 :: 使用甄姬一回合内发动洛神在不被改变判定牌的情况下连续判定黑色花色至少8次 
 -- 
 zgfunc[sgs.FinishRetrial].lsf=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="zhenji" then return false end
+	if  room:getOwner():getGeneralName()~="zhenji" then return false end
 	if not isowner then return false end
 	local judge=data:toJudge()
 	if judge.reason=="luoshen" and judge.who:objectName()==room:getOwner():objectName() then
@@ -1654,7 +1654,7 @@ end
 -- jjzx :: 纠结之心 :: 使用刘备在1局游戏中至少发动5次雌雄双股剑特效 
 -- 
 zgfunc[sgs.ChoiceMade].jjzx=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="liubei" then return false end
+	if  room:getOwner():getGeneralName()~="liubei" then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
 	if choices[1]=="skillInvoke"  and  choices[2]=="DoubleSword" and choices[3]=="yes" then
@@ -1670,7 +1670,7 @@ end
 -- yrdpx :: 燕人的咆哮 :: 使用张飞在1局游戏中发动丈八蛇矛特效杀死至少1名角色 
 -- 
 zgfunc[sgs.Death].yrdpx=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="zhangfei" then return false end
+	if  room:getOwner():getGeneralName()~="zhangfei" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.card and damage.card:getSkillName()=="Spear" then
@@ -1682,7 +1682,7 @@ zgfunc[sgs.Death].yrdpx=function(self, room, event, player, data,isowner,name)
 end
 
 zgfunc[sgs.GameOverJudge].callback.yrdpx=function(room,player,data,name,result)
-	if not room:getOwner():getGeneralName()=="zhangfei" then return false end
+	if  room:getOwner():getGeneralName()~="zhangfei" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.card and damage.card:getSkillName()=="Spear" then
@@ -1697,7 +1697,7 @@ end
 -- qjtj :: 全军突击 :: 使用马超在1局游戏中发动铁骑连续判定红色花色至少5次 
 -- 
 zgfunc[sgs.FinishRetrial].qjtj=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="machao" then return false end
+	if  room:getOwner():getGeneralName()~="machao" then return false end
 	local judge=data:toJudge()
 	if judge.reason=="tieji" and judge.who:objectName()==room:getOwner():objectName() then
 		if judge:isBad() then			
@@ -1716,7 +1716,7 @@ end
 -- wsxl :: 武圣显灵 :: 使用关羽在1局游戏中发动武圣至少杀死3名角色 
 -- 
 zgfunc[sgs.Death].wsxl=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="guanyu" then return false end
+	if  room:getOwner():getGeneralName()~="guanyu" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.card and damage.card:getSkillName()=="wusheng" then
@@ -1728,7 +1728,7 @@ zgfunc[sgs.Death].wsxl=function(self, room, event, player, data,isowner,name)
 end
 
 zgfunc[sgs.GameOverJudge].callback.wsxl=function(room,player,data,name,result)
-	if not room:getOwner():getGeneralName()=="guanyu" then return false end
+	if  room:getOwner():getGeneralName()~="guanyu" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.card and damage.card:getSkillName()=="wusheng" then
@@ -1743,7 +1743,7 @@ end
 -- hssd :: 浑身是胆 :: 使用赵云在1局游戏中发动龙胆至少杀死3名角色 
 -- 
 zgfunc[sgs.Death].hssd=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="zhaoyun" then return false end
+	if  room:getOwner():getGeneralName()~="zhaoyun" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.card and damage.card:getSkillName()=="longdan" then
@@ -1755,7 +1755,7 @@ zgfunc[sgs.Death].hssd=function(self, room, event, player, data,isowner,name)
 end
 
 zgfunc[sgs.GameOverJudge].callback.hssd=function(room,player,data,name,result)
-	if not room:getOwner():getGeneralName()=="zhaoyun" then return false end
+	if  room:getOwner():getGeneralName()~="zhaoyun" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.card and damage.card:getSkillName()=="longdan" then
@@ -1832,7 +1832,7 @@ zgfunc[sgs.CardFinished].wjdbt=function(self, room, event, player, data,isowner,
 	if not isowner or player:getGeneralName()~="huanggai" then return false end
 	local use=data:toCardUse()
 	local card=use.card
-	if card:objectName()=="kurou" then 
+	if card:getSkillName()=="kurou" then 
 		addTurnData(name,1) 
 		if getTurnData(name)==8 then 			 
 			addZhanGong(room,name)
@@ -1855,7 +1855,7 @@ end
 -- yhjm :: 移花接木 :: 使用大乔在一局游戏中连续发动流离至少5次 
 -- 
 zgfunc[sgs.ChoiceMade].yhjm=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="daqiao" then return false end
+	if  room:getOwner():getGeneralName()~="daqiao" then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
 	if choices[1]=="cardResponsed"  and  choices[2]=="@@liuli" then
@@ -1895,7 +1895,7 @@ end
 -- wjdzz :: 无尽的挣扎 :: 使用周瑜在1局游戏中使用反间杀死至少3名角色 
 -- 
 zgfunc[sgs.Death].wjdzz=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="zhouyu" then return false end
+	if  room:getOwner():getGeneralName()~="zhouyu" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:getGeneralName()=="zhouyu" and  not damage.card then
@@ -1907,7 +1907,7 @@ zgfunc[sgs.Death].wjdzz=function(self, room, event, player, data,isowner,name)
 end
 
 zgfunc[sgs.GameOverJudge].callback.wjdzz=function(room,player,data,name,result)
-	if not room:getOwner():getGeneralName()=="zhouyu" then return false end
+	if  room:getOwner():getGeneralName()~="zhouyu" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:getGeneralName()=="zhouyu" and  not damage.card then
@@ -1922,7 +1922,7 @@ end
 -- lmbj :: 连绵不绝 :: 使用陆逊在1个回合内发动至少10次连营 
 -- 
 zgfunc[sgs.ChoiceMade].lmbj=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="luxun" then return false end
+	if  room:getOwner():getGeneralName()~="luxun" then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
 	if choices[1]=="skillInvoke"  and  choices[2]=="lianying" and choices[3]=="yes" then
@@ -1964,7 +1964,7 @@ end
 -- ljdnx :: 老将的逆袭 :: 使用黄忠在1局游戏中，剩余1点体力时累计发动烈弓杀死至少3名角色 
 --  发动烈弓时
 zgfunc[sgs.ChoiceMade].ljdnx=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="huangzhong" then return false end
+	if  room:getOwner():getGeneralName()~="huangzhong" then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
 	if choices[1]=="skillInvoke"  and  choices[2]=="liegong" and choices[3]=="yes" and player:getHp()==1 then
@@ -1976,7 +1976,7 @@ end
 -- ljdnx :: 老将的逆袭 :: 使用黄忠在1局游戏中，剩余1点体力时累计发动烈弓杀死至少3名角色 
 --  发动烈弓后
 zgfunc[sgs.CardFinished].ljdnx=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName() =="huangzhong" then return false end
+	if room:getOwner():getGeneralName() ~="huangzhong" then return false end
 	if not isowner then return false end	
 	local use=data:toCardUse()
 	local card=use.card
@@ -1989,7 +1989,7 @@ end
 -- ljdnx :: 老将的逆袭 :: 使用黄忠在1局游戏中，剩余1点体力时累计发动烈弓杀死至少3名角色 
 -- 
 zgfunc[sgs.Death].ljdnx=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="huangzhong" then return false end
+	if  room:getOwner():getGeneralName()~="huangzhong" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:getGeneralName()=="huangzhong" and damage.card:isKindOf("Slash") 
@@ -2004,7 +2004,7 @@ end
 -- ljdnx :: 老将的逆袭 :: 使用黄忠在1局游戏中，剩余1点体力时累计发动烈弓杀死至少3名角色 
 -- 杀死一个角色
 zgfunc[sgs.GameOverJudge].callback.ljdnx=function(room,player,data,name,result)
-	if not room:getOwner():getGeneralName()=="huangzhong" then return false end
+	if  room:getOwner():getGeneralName()~="huangzhong" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:getGeneralName()=="huangzhong" and damage.card:isKindOf("Slash") 
@@ -2019,7 +2019,7 @@ end
 -- jqbd :: 金枪不倒 :: 使用周泰在1局游戏中拥有过至少9张不屈牌并且未死 
 -- 杀死一个角色
 zgfunc[sgs.DamageComplete].jqbd=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="zhoutai" then return false end
+	if  room:getOwner():getGeneralName()~="zhoutai" then return false end
 	if not isowner then return false end
 	local buqu=sgs.QList2Table(player:getPile("buqu"))
 	if #buqu>=9 and getGameData(name)==0 then
@@ -2031,7 +2031,7 @@ end
 -- sxcx :: 嗜血成性 :: 使用魏延在1回合内发动狂骨回复至少3点体力 
 --  因为我们这个优先级比系统的高，所以先执行我们这个，系统才将 InvokeKuanggu置为false
 zgfunc[sgs.Damage].sxcx=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="weiyan" then return false end
+	if  room:getOwner():getGeneralName()~="weiyan" then return false end
 	if not isowner then return false end
 	local damage=data:toDamage()
 	if player:getTag("InvokeKuanggu"):toBool() and player:isWounded() then
@@ -2047,7 +2047,7 @@ end
 -- grjt :: 固若金汤 :: 使用曹仁在一局游戏中发动至少3次据守，并且在损失体力不多于3点的情况下获胜。 
 -- 
 zgfunc[sgs.ChoiceMade].grjt=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="caoren" then return false end
+	if  room:getOwner():getGeneralName()~="caoren" then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
 	if choices[1]=="skillInvoke"  and  choices[2]=="jushou" and choices[3]=="yes" then
@@ -2056,7 +2056,7 @@ zgfunc[sgs.ChoiceMade].grjt=function(self, room, event, player, data,isowner,nam
 end
 
 zgfunc[sgs.GameOverJudge].callback.grjt=function(room,player,data,name,result)
-	if not room:getOwner():getGeneralName()=="caoren" then return false end
+	if  room:getOwner():getGeneralName()~="caoren" then return false end
 	if result=='win' and getGameData(name)>=3 and room:getOwner():getLostHp()<=3 then
 		addZhanGong(room,name)
 	end		
@@ -2065,7 +2065,7 @@ end
 -- lxxy :: 怜香惜玉 :: 使用小乔在一局游戏中发动天香让某名男性武将摸牌至少15张 
 -- 
 zgfunc[sgs.ChoiceMade].lxxy=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="xiaoqiao" then return false end
+	if  room:getOwner():getGeneralName()~="xiaoqiao" then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
 	if choices[1]=="cardResponsed" and choices[2]=="@@tianxiang" and choices[#choices]~="_nil_" then
@@ -2074,7 +2074,7 @@ zgfunc[sgs.ChoiceMade].lxxy=function(self, room, event, player, data,isowner,nam
 end
 
 zgfunc[sgs.DamageComplete].lxxy=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="xiaoqiao" then return false end
+	if  room:getOwner():getGeneralName()~="xiaoqiao" then return false end
 	if player:hasFlag("TianxiangTarget") and player:isAlive() and getTurnData(name)==1 then
 		addGameData(name,player:getLostHp())
 		if getGameData(name)>=15 then
@@ -2088,7 +2088,7 @@ end
 -- kbdwn :: 狂奔的蜗牛 :: 使用张角在1局游戏发动雷击杀死至少3名角色 
 -- 
 zgfunc[sgs.Death].kbdwn=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="zhangjiao" then return false end
+	if  room:getOwner():getGeneralName()~="zhangjiao" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:getGeneralName()=="zhangjiao" and  not damage.card and damage.nature == sgs.DamageStruct_Thunder then
@@ -2100,7 +2100,7 @@ zgfunc[sgs.Death].kbdwn=function(self, room, event, player, data,isowner,name)
 end
 
 zgfunc[sgs.GameOverJudge].callback.kbdwn=function(room,player,data,name,result)
-	if not room:getOwner():getGeneralName()=="zhangjiao" then return false end
+	if  room:getOwner():getGeneralName()~="zhangjiao" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:getGeneralName()=="zhangjiao" and  not damage.card and damage.nature == sgs.DamageStruct_Thunder then
@@ -2115,8 +2115,8 @@ end
 
 -- sgmc :: 神鬼莫测 :: 使用于吉在1局游戏中累计蛊惑假牌至少成功3次 
 -- 
-zgfunc[sgs.CardFinished].ljdnx=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName() =="yuji" then return false end
+zgfunc[sgs.CardFinished].sgmc=function(self, room, event, player, data,isowner,name)
+	if room:getOwner():getGeneralName() ~="yuji" then return false end
 	if not isowner then return false end	
 	local use=data:toCardUse()
 	local card=use.card
@@ -2137,7 +2137,7 @@ end
 -- sssg :: 四世三公 :: 使用袁术在1回合内消灭场上4个势力中的3个 
 -- 
 zgfunc[sgs.Death].sssg=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="yuanshu" then return false end
+	if  room:getOwner():getGeneralName()~="yuanshu" then return false end
 	local owner=room:getOwner()
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==owner:objectName() then
@@ -2156,7 +2156,7 @@ zgfunc[sgs.Death].sssg=function(self, room, event, player, data,isowner,name)
 end
 
 zgfunc[sgs.GameOverJudge].callback.sssg=function(room,player,data,name,result)
-	if not room:getOwner():getGeneralName()=="yuanshu" then return false end
+	if  room:getOwner():getGeneralName()~="yuanshu" then return false end
 	local owner=room:getOwner()
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==owner:objectName() then
@@ -2177,7 +2177,7 @@ end
 -- bmyc :: 白马义从 :: 使用公孙瓒在体力大于2的情况下杀死至少3名角色，并且在体力1的情况下存活并获胜。 
 -- 
 zgfunc[sgs.Death].bmyc=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="gongsunzhan" then return false end
+	if  room:getOwner():getGeneralName()~="gongsunzhan" then return false end
 	local owner=room:getOwner()
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==owner:objectName() and owner:getHp()>2 then
@@ -2186,7 +2186,7 @@ zgfunc[sgs.Death].bmyc=function(self, room, event, player, data,isowner,name)
 end
 
 zgfunc[sgs.GameOverJudge].callback.bmyc=function(room,player,data,name,result)
-	if not room:getOwner():getGeneralName()=="gongsunzhan" then return false end
+	if  room:getOwner():getGeneralName()~="gongsunzhan" then return false end
 	local owner=room:getOwner()
 	if result=="win" and owner:getHp()==1 and getGameData(name)>=3 then
 		addZhanGong(room,name)
@@ -2197,7 +2197,7 @@ end
 -- yfdg :: 一夫当关 :: 使用典韦在1局游戏中发动至少5次强袭 
 -- 
 zgfunc[sgs.CardFinished].yfdg=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="dianwei" then return false end
+	if  room:getOwner():getGeneralName()~="dianwei" then return false end
 	if not isowner then return false end
 	local use=data:toCardUse()
 	local card=use.card	
@@ -2214,7 +2214,7 @@ end
 -- qhtl :: 驱虎吞狼 :: 使用荀彧在1局游戏中至少发动5次驱虎并拼点成功
 -- 
 zgfunc[sgs.ChoiceMade].qhtl=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="xunyu" then return false end
+	if  room:getOwner():getGeneralName()~="xunyu" then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
 	if choices[1]=="playerChosen"  and  choices[2]=="quhu" then
@@ -2249,7 +2249,7 @@ end
 -- thly :: 天火燎原 :: 使用卧龙诸葛亮在1回合内发动火计造成至少6点伤害 
 -- 
 zgfunc[sgs.Damage].thly=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="wolong" then return false end
+	if  room:getOwner():getGeneralName()~="wolong" then return false end
 	if not isowner then return false end
 	local damage = data:toDamage()
 	if damage and damage.card and damage.card:getSkillName()=="huoji" then
@@ -2265,7 +2265,7 @@ end
 -- jdzh :: 江东之虎 :: 使用太史慈在1回合内发动天义拼点胜利后，使用【杀】杀死至少3名角色 
 -- 
 zgfunc[sgs.Death].jdzh=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="taishici" then return false end
+	if  room:getOwner():getGeneralName()~="taishici" then return false end
 	local owner=room:getOwner()
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==owner:objectName() 
@@ -2278,7 +2278,7 @@ zgfunc[sgs.Death].jdzh=function(self, room, event, player, data,isowner,name)
 end
 
 zgfunc[sgs.GameOverJudge].callback.jdzh=function(room,player,data,name,result)
-	if not room:getOwner():getGeneralName()=="taishici" then return false end
+	if  room:getOwner():getGeneralName()~="taishici" then return false end
 	local owner=room:getOwner()
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==owner:objectName() 
@@ -2309,7 +2309,7 @@ end
 -- qldj :: 其利断金 :: 使用颜良文丑在1局游戏中发动双雄至少3次并在双雄的回合中杀死过至少3名角色 
 -- 
 zgfunc[sgs.ChoiceMade].qldj=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="yanliangwenchou" then return false end
+	if  room:getOwner():getGeneralName()~="yanliangwenchou" then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
 	if choices[1]=="skillInvoke"  and  choices[2]=="shuangxiong" and choices[3]=="yes" then
@@ -2319,7 +2319,7 @@ zgfunc[sgs.ChoiceMade].qldj=function(self, room, event, player, data,isowner,nam
 end
 
 zgfunc[sgs.Death].qldj=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="yanliangwenchou" then return false end
+	if  room:getOwner():getGeneralName()~="yanliangwenchou" then return false end
 	local owner=room:getOwner()
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==owner:objectName() and getTurnData(name)==1 then
@@ -2331,7 +2331,7 @@ zgfunc[sgs.Death].qldj=function(self, room, event, player, data,isowner,name)
 end
 
 zgfunc[sgs.GameOverJudge].callback.qldj=function(room,player,data,name,result)
-	if not room:getOwner():getGeneralName()=="yanliangwenchou" then return false end
+	if  room:getOwner():getGeneralName()~="yanliangwenchou" then return false end
 	local owner=room:getOwner()
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==owner:objectName() and getTurnData(name)==1 then
@@ -2346,7 +2346,7 @@ end
 -- zkzj :: 周苛之节 :: 使用庞德在1局游戏中发动猛进至少5次 
 -- 
 zgfunc[sgs.ChoiceMade].zkzj=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="pande" then return false end
+	if  room:getOwner():getGeneralName()~="pande" then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
 	if choices[1]=="skillInvoke"  and  choices[2]=="mengjin" and choices[3]=="yes" then
