@@ -2996,7 +2996,7 @@ function initZhangong()
 		if pack=="NostalGeneral" then table.insert(packages,"nostal_general") end
 		table.insert(packages,string.lower(pack))
 	end
-	local hidden={"sp_diaochan","sp_sunshangxiang","sp_pangde","sp_caiwenji","sp_machao","sp_jiaxu","anjiang"}	
+	local hidden={"sp_diaochan","sp_sunshangxiang","sp_pangde","sp_caiwenji","sp_machao","sp_jiaxu","anjiang","shenlvbu1","shenlvbu2"}
 	table.insertTable(generalnames,hidden)
 	for _, generalname in ipairs(generalnames) do
 		local general = sgs.Sanguosha:getGeneral(generalname)
