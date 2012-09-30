@@ -1,7 +1,11 @@
 lua 扩展for [太阳神三国杀](https://github.com/gaodayihao/QSanguosha)
 ===========================
 
-本项目svn地址 https://code.google.com/p/qsgsext/
+版本与下载
+--------
+* 本项目的扩展包, 如果没有特别说明，默认只适合新神杀的最新版本(神杀贴吧置顶帖有下载)，不适合踏青版或涅槃版
+* 本项目svn地址 https://code.google.com/p/qsgsext/
+* 扩展包下载地址:  https://github.com/haveatry823/qsgsext/zipball/master
 
 功能
 ----------
@@ -29,8 +33,7 @@ FAQ
 ----
 
 1. 战功成就系统
-   * 本程序只适合新神杀。如果你还是踏青或者涅槃版，需要去 [太阳神三国杀](http://tieba.baidu.com/f?kw=%CC%AB%D1%F4%C9%F1%C8%FD%B9%FA%C9%B1) 贴吧的置顶帖下载最新的太阳神三国杀
-   * [下载](https://github.com/haveatry823/qsgsext/zipball/master)本扩展包,解压后复制所有文件到神杀的游戏目录。
+   * 下载本扩展包,解压后复制所有文件到神杀的游戏目录。
    * 保证 libluasqlite3.dll, lua5.1.dll, lua51.dll 和游戏主程序QSanguosha.exe 在同一个目录就好了
    * 如果上述步骤都OK, 就可用浏览器打开 zhangong.html 来查看战功了.
 
