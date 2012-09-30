@@ -1630,8 +1630,8 @@ end
 
 -- lsf :: 洛神赋 :: 使用甄姬一回合内发动洛神在不被改变判定牌的情况下连续判定黑色花色至少8次 
 -- 
-zgfunc[sgs.FinishRetrial].bmjs=function(self, room, event, player, data,isowner,name)
-	if not room:getOwner():getGeneralName()=="liubei" then return false end
+zgfunc[sgs.FinishRetrial].lsf=function(self, room, event, player, data,isowner,name)
+	if not room:getOwner():getGeneralName()=="zhenji" then return false end
 	if not isowner then return false end
 	local judge=data:toJudge()
 	if judge.reason=="luoshen" and judge.who:objectName()==room:getOwner():objectName() then
