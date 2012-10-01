@@ -2343,10 +2343,10 @@ zgfunc[sgs.GameOverJudge].callback.qldj=function(room,player,data,name,result)
 end
 
 
--- zkzj :: 周苛之节 :: 使用庞德在1局游戏中发动猛进至少5次 
+-- zkzj :: 周苛之节 :: 使用庞德在1局游戏中发动猛进至少5次
 -- 
 zgfunc[sgs.ChoiceMade].zkzj=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~="pande" then return false end
+	if  room:getOwner():getGeneralName()~="pangde" then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
 	if choices[1]=="skillInvoke"  and  choices[2]=="mengjin" and choices[3]=="yes" then
@@ -2799,7 +2799,12 @@ function init_gamestart(self, room, event, player, data, isowner)
 	
 	local count=0
 	for _, p in sgs.qlist(room:getAllPlayers()) do
-		if p:getState() ~= "robot" then count=count+1 end
+		if p:getState() ~= "robot" then 
+			count=count+1
+		else
+			room:detachSkillFromPlayer(p, "#zgzhangong1");
+			room:detachSkillFromPlayer(p, "#zgzhangong2");
+		end
 	end
 	if count>1 then
 		setGameData("enable",0)
@@ -2844,12 +2849,12 @@ end
 
 
 
-zgzhangong = sgs.CreateTriggerSkill{
-	name = "#zgzhangong",
-	events = {sgs.GameStart,sgs.TurnStart,sgs.CardFinished,sgs.Damage,sgs.GameOverJudge,
-			sgs.Death,sgs.EventPhaseEnd,sgs.FinishRetrial,sgs.ChoiceMade,sgs.SlashEffected,
-			sgs.DamageCaused,sgs.EventPhaseStart,sgs.CardsMoveOneTime,sgs.DamageComplete,
-			sgs.HpRecover,sgs.DamageInflicted,sgs.CardEffected,sgs.ConfirmDamage,sgs.Damaged},
+zgzhangong1 = sgs.CreateTriggerSkill{
+	name = "#zgzhangong1",
+	events = {sgs.GameStart,sgs.Damage,sgs.GameOverJudge,
+			sgs.Death,
+			sgs.DamageCaused,sgs.DamageComplete,
+			sgs.HpRecover,sgs.DamageInflicted,sgs.ConfirmDamage,sgs.Damaged},
 	priority = 6,
 	can_trigger = function()
 		return true
@@ -2881,6 +2886,27 @@ zgzhangong = sgs.CreateTriggerSkill{
 			askForGiveUp(room,player)
 		end	
 
+		return false
+	end,
+}
+
+zgzhangong2 = sgs.CreateTriggerSkill{
+	name = "#zgzhangong2",
+	events = {sgs.TurnStart,sgs.CardFinished,sgs.ChoiceMade,sgs.EventPhaseStart,sgs.EventPhaseEnd,
+		sgs.CardEffected,sgs.SlashEffected,sgs.CardsMoveOneTime,sgs.FinishRetrial},
+	priority = 6,
+	on_trigger = function(self, event, player, data)
+		local room = player:getRoom()
+		local owner= room:getOwner():objectName()==player:objectName()
+
+		local callbacks=zgfunc[event]
+		if callbacks and getGameData("enable")==1 then
+			for name, func in pairs(callbacks) do
+				if type(func)=="function" then 						
+					func(self, room, event, player, data, owner,name) 
+				end				
+			end
+		end
 		return false
 	end,
 }
@@ -3003,13 +3029,15 @@ function initZhangong()
 		if general then
 			local packname = string.lower(general:getPackage())		
 			if table.contains(packages,packname) then
-				general:addSkill("#zgzhangong")
+				general:addSkill("#zgzhangong1")
+				general:addSkill("#zgzhangong2")
 			end
 		end
 	end
 end
 
-zganjiang:addSkill(zgzhangong)
+zganjiang:addSkill(zgzhangong1)
+zganjiang:addSkill(zgzhangong2)
 initZhangong()
 
 
