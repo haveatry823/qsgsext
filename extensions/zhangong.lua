@@ -2697,7 +2697,7 @@ function gainSkill(room)
 	if not skillname then return broadcastMsg(room,"#canntGainSkill",row.skillname) end
 	broadcastMsg(room,"#gainSkill",skillname)
 	sqlexec("update skills set gained=gained+1 where skillname='%s'",skillname)
-	room:askForChoice(room:getOwner(),"@addSkill",skillname)
+	room:getOwner():speak(string.format("恭喜获得技能卡【<font color='green'><b>%s</b></font>】",sgs.Sanguosha:translate(skillname)))
 	database2js()
 end
 
@@ -2717,7 +2717,7 @@ function addZhanGong(room,name)
 	setGameData("myzhangong", getGameData("myzhangong","")..name..":")
 	sqlexec("update results set zhangong='%s' where id='%d'",getGameData("myzhangong",""),getGameData("roomid"))
 	broadcastMsg(room,"#zhangong_"..name)	
-	room:askForChoice(room:getOwner(),"@addZhangong",name)
+	room:getOwner():speak(string.format("恭喜获得战功【<font color='yellow'><b>%s</b></font>】",sgs.Sanguosha:translate(name)))
 	database2js()
 end
 
@@ -3060,8 +3060,6 @@ sgs.LoadTranslationTable {
 	["#gainExp"] ="%from获得【%arg】点经验",
 	["#canntGainSkill"]= "【警告】无法获得技能【%arg】",
 	["#gainSkill"]="%from获得了技能卡【%arg】",
-	["@addZhangong"]="恭喜你获得战功:",	
-	["@addSkill"]="奖励技能卡:",	
 	["@chooseskill"]="流失体力获得技能",
 	["cancel"] = "取消",
 	["giveup"] = "立即认输并结束游戏",
