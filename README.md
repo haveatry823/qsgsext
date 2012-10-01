@@ -4,8 +4,8 @@ lua 扩展for [太阳神三国杀](https://github.com/gaodayihao/QSanguosha)
 版本与下载
 --------
 * 本项目的扩展包, 如果没有特别说明，默认只适合新神杀的最新版本(神杀贴吧置顶帖有下载)，不适合踏青版或涅槃版
-* 本项目svn地址 https://code.google.com/p/qsgsext/
-* 扩展包下载地址:  https://github.com/haveatry823/qsgsext/zipball/master
+* 本项目svn地址 https://code.google.com/p/qsgsext/  
+* 扩展包下载地址:  https://github.com/haveatry823/qsgsext/zipball/master  (安装的话，下载这个)
 
 功能
 ----------
