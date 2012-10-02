@@ -419,6 +419,7 @@ $.each(callback,function(name,func){
 	template.helper(name,func)
 });
 
+if (!window.zglist) window.zglist=[];
 var tabLists=$.merge(["overview","results","skills"],zglist);
 
 $(function(){
@@ -455,6 +456,7 @@ $(function(){
 			[ <a href="https://github.com/haveatry823/qsgsext" target="_blank" title="本程序的git开源项目地址">github</a> ] 
 			[ <a href="https://code.google.com/p/qsgsext/" target="_blank" title="本程序的SVN开源项目地址">google code</a> ]
 			[ <a href="mailto:haveatry823@qq.com" target="_blank">联系作者</a> ]
+			[ <a href="#" onclick="javascript:location.reload()">刷新</a> ]
 		</div>
 		<div id="menucontainer">
 			<ul id="menu">              
@@ -468,7 +470,7 @@ $(function(){
 				<li><a id="link_3v3" href="#">3v3</a></li>
 				<li><a id="link_1v1" href="#">1v1</a></li>
 				<li><a id="link_skills" href="#">技能卡</a></li>
-				<li><a id="link_results" href="#">游戏记录</a></li>				
+				<li><a id="link_results" href="#">游戏记录</a></li>					
 			</ul>            
 		</div>
 	</div>
@@ -476,7 +478,11 @@ $(function(){
 		<script type="text/javascript">
 			$.each(tabLists,function(i,tab){
 				document.write('<div id="div_'+tab+'" style="display:none">');
-				document.write(template('t_'+tab, data));
+				try{
+					document.write(template('t_'+tab, data));
+				}catch(x){
+					document.write("请先玩一盘游戏后再刷新本页面看数据。");
+				}
 				document.write('</div>');				
 			});			
 			$("#tbl_results").tablePaging({ pageSize: 15,sorting:false});
