@@ -40,6 +40,7 @@ zgfunc[sgs.GameOverJudge]={}
 zgfunc[sgs.GameOverJudge]["callback"]={}
 zgfunc[sgs.HpRecover]={}
 
+zgfunc[sgs.SlashEffect]={}
 zgfunc[sgs.SlashEffected]={}
 
 zgfunc[sgs.TurnStart]={}
@@ -1401,14 +1402,15 @@ end
 
 -- fj :: 飞将 :: 使用吕布在1局游戏中发动方天画戟特效杀死至少2名角色 
 -- 
-zgfunc[sgs.SlashEffected].fj=function(self, room, event, player, data,isowner,name)
+zgfunc[sgs.SlashEffect].fj=function(self, room, event, player, data,isowner,name)
 	if room:getOwner():getGeneralName()~="lvbu" then return false end
 	if not isowner then return false end
 	local effect= data:toSlashEffect()
-	if  player:isLastHandCard(effect.slash) and player:hasWeapon("Halberd") then
+	if player:isKongcheng() and player:hasWeapon("Halberd") then
 		effect.slash:setFlags(name)		
 	end	
 end
+
 
 zgfunc[sgs.CardFinished].fj=function(self, room, event, player, data,isowner,name)
 	if room:getOwner():getGeneralName()~="lvbu" then return false end
@@ -1419,6 +1421,7 @@ zgfunc[sgs.CardFinished].fj=function(self, room, event, player, data,isowner,nam
 		effect.slash:setFlags("-"..name)	
 	end
 end
+
 
 zgfunc[sgs.Death].fj=function(self, room, event, player, data,isowner,name)
 	if room:getOwner():getGeneralName()~="lvbu" then return false end
@@ -2810,8 +2813,8 @@ function init_gamestart(self, room, event, player, data, isowner)
 		if p:getState() ~= "robot" then 
 			count=count+1
 		else
-			room:detachSkillFromPlayer(p, "#zgzhangong1");
-			room:detachSkillFromPlayer(p, "#zgzhangong2");
+			room:detachSkillFromPlayer(p, "#zgzhangong1")
+			room:detachSkillFromPlayer(p, "#zgzhangong2")
 		end
 	end
 	if count>1 then
@@ -2901,7 +2904,7 @@ zgzhangong1 = sgs.CreateTriggerSkill{
 zgzhangong2 = sgs.CreateTriggerSkill{
 	name = "#zgzhangong2",
 	events = {sgs.TurnStart,sgs.CardFinished,sgs.ChoiceMade,sgs.EventPhaseStart,sgs.EventPhaseEnd,
-		sgs.CardEffected,sgs.SlashEffected,sgs.CardsMoveOneTime,sgs.FinishRetrial},
+		sgs.CardEffected,sgs.SlashEffected,sgs.SlashEffect,sgs.CardsMoveOneTime,sgs.FinishRetrial},
 	priority = 6,
 	on_trigger = function(self, event, player, data)
 		local room = player:getRoom()

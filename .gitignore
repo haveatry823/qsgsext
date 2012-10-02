@@ -19,7 +19,8 @@ scenarios/
 skins/
 etc/
 
-!zhangong/zhangong.data
+zhangong/zhangong.data
+zhangong/js/zg.js
 
 !libluasqlite3.dll
 !sqlite3.dll
