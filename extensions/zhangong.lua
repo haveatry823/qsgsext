@@ -1863,7 +1863,7 @@ zgfunc[sgs.CardsMoveOneTime].sjdf=function(self, room, event, player, data,isown
 end
 
 
--- yhjm :: 移花接木 :: 使用大乔在一局游戏中连续发动流离至少5次 
+-- yhjm :: 移花接木 :: 使用大乔在一局游戏中累计发动3次流离 
 -- 
 zgfunc[sgs.ChoiceMade].yhjm=function(self, room, event, player, data,isowner,name)
 	if  room:getOwner():getGeneralName()~="daqiao" then return false end
@@ -1871,13 +1871,10 @@ zgfunc[sgs.ChoiceMade].yhjm=function(self, room, event, player, data,isowner,nam
 	local choices= data:toString():split(":")
 	if choices[1]=="cardResponsed"  and  choices[2]=="@@liuli" then
 		if choices[#choices]~="_nil_" then			
-			setGameData(name,0)
-		else
 			addGameData(name,1)
 		end
-		if getGameData(name)==5 then
+		if getGameData(name)==3 then
 			addZhanGong(room,name)
-			setGameData(name,-100)
 		end
 	end	
 end
@@ -1973,38 +1970,15 @@ end
 
 
 -- ljdnx :: 老将的逆袭 :: 使用黄忠在1局游戏中，剩余1点体力时累计发动烈弓杀死至少3名角色 
---  发动烈弓时
-zgfunc[sgs.ChoiceMade].ljdnx=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~="huangzhong" then return false end
-	if not isowner then return false end
-	local choices= data:toString():split(":")
-	if choices[1]=="skillInvoke"  and  choices[2]=="liegong" and choices[3]=="yes" and player:getHp()==1 then
-		local target=data:toPlayer()
-		target:setFlags("liegongInvoke")
-	end	
-end
-
--- ljdnx :: 老将的逆袭 :: 使用黄忠在1局游戏中，剩余1点体力时累计发动烈弓杀死至少3名角色 
---  发动烈弓后
-zgfunc[sgs.CardFinished].ljdnx=function(self, room, event, player, data,isowner,name)
-	if room:getOwner():getGeneralName() ~="huangzhong" then return false end
-	if not isowner then return false end	
-	local use=data:toCardUse()
-	local card=use.card
-	local tos=sgs.QList2Table(use.to)
-	for i=1,#tos,1 do		
-		if tos[i]:hasFlag("liegongInvoke") then tos[i]:setFlags("-liegongInvoke") end
-	end		
-end
-
--- ljdnx :: 老将的逆袭 :: 使用黄忠在1局游戏中，剩余1点体力时累计发动烈弓杀死至少3名角色 
--- 
+--  
+-- 这个战功仍然有bug,因为lua无法访问 QVariantList liegongList， 暂且这样
+--
 zgfunc[sgs.Death].ljdnx=function(self, room, event, player, data,isowner,name)
 	if  room:getOwner():getGeneralName()~="huangzhong" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:getGeneralName()=="huangzhong" and damage.card:isKindOf("Slash") 
-		and player:hasFlag("liegongInvoke") and damage.from:getHp()==1 then
+		and player:getTag("Liegong") and damage.from:getHp()==1 then
 		addGameData(name,1)	
 		if getGameData(name)==3 then
 			addZhanGong(room,name)
@@ -2013,13 +1987,13 @@ zgfunc[sgs.Death].ljdnx=function(self, room, event, player, data,isowner,name)
 end
 
 -- ljdnx :: 老将的逆袭 :: 使用黄忠在1局游戏中，剩余1点体力时累计发动烈弓杀死至少3名角色 
--- 杀死一个角色
+-- 
 zgfunc[sgs.GameOverJudge].callback.ljdnx=function(room,player,data,name,result)
 	if  room:getOwner():getGeneralName()~="huangzhong" then return false end
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.from:getGeneralName()=="huangzhong" and damage.card:isKindOf("Slash") 
-		and player:hasFlag("liegongInvoke") and damage.from:getHp()==1 then
+		and player:getTag("Liegong") and damage.from:getHp()==1 then
 		addGameData(name,1)	
 		if getGameData(name)==3 then
 			addZhanGong(room,name)
@@ -2028,7 +2002,7 @@ zgfunc[sgs.GameOverJudge].callback.ljdnx=function(room,player,data,name,result)
 end
 
 -- jqbd :: 金枪不倒 :: 使用周泰在1局游戏中拥有过至少9张不屈牌并且未死 
--- 杀死一个角色
+-- 
 zgfunc[sgs.DamageComplete].jqbd=function(self, room, event, player, data,isowner,name)
 	if  room:getOwner():getGeneralName()~="zhoutai" then return false end
 	if not isowner then return false end

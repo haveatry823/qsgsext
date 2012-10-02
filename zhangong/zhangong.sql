@@ -322,7 +322,7 @@ INSERT INTO "zhangong" VALUES('lbsd', '老不死的', 5, '使用孙权做主公�
 INSERT INTO "zhangong" VALUES('scgm', '神出鬼没', 5, '使用甘宁在1个回合内发动至少6次奇袭', 0, 'wu', '1899-12-30 0:00', 'ganning', 0);
 INSERT INTO "zhangong" VALUES('wjdbt', '无尽的鞭挞', 5, '使用黄盖1个回合内发动至少8次苦肉', 0, 'wu', '1899-12-30 0:00', 'huanggai', 0);
 INSERT INTO "zhangong" VALUES('sjdf', '伺机待发', 5, '使用吕蒙将手牌囤积到20张', 0, 'wu', '1899-12-30 0:00', 'lvmeng', 0);
-INSERT INTO "zhangong" VALUES('yhjm', '移花接木', 5, '使用大乔在一局游戏中连续发动流离至少5次', 0, 'wu', '1899-12-30 0:00', 'daqiao', 0);
+INSERT INTO "zhangong" VALUES('yhjm', '移花接木', 5, '使用大乔在一局游戏中累计发动3次流离', 0, 'wu', '1899-12-30 0:00', 'daqiao', 0);
 INSERT INTO "zhangong" VALUES('yhdf', '因祸得福', 5, '使用孙尚香在1局游戏中累计失去至少5张已装备的装备牌', 0, 'wu', '2012-09-27 13:15:26', 'sunshangxiang', 0);
 INSERT INTO "zhangong" VALUES('wjdzz', '无尽的挣扎', 5, '使用周瑜在1局游戏中使用反间杀死至少3名角色', 0, 'wu', '1899-12-30 0:00', 'zhouyu', 0);
 INSERT INTO "zhangong" VALUES('lmbj', '连绵不绝', 5, '使用陆逊在1个回合内发动至少10次连营', 0, 'wu', '1899-12-30 0:00', 'luxun', 0);
