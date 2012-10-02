@@ -44,8 +44,16 @@ zgfunc[sgs.SlashEffected]={}
 
 zgfunc[sgs.TurnStart]={}
 
+
 require "sqlite3"
 db = sqlite3.open("./zhangong/zhangong.data")
+local tblquery=db:first_row("select count(name) as tblnum from sqlite_master  where type='table';")
+if tblquery.tblnum==0 then
+	local sqltbl = (io.open "./zhangong/zhangong.sql"):read("*a"):split("\n")
+	for _,line in ipairs(sqltbl) do
+		db:exec(line)
+	end
+end
 
 function logmsg(fmt,...)
 	local fp = io.open("zgdebug.log","ab")
