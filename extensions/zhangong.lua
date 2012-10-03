@@ -2669,6 +2669,506 @@ zgfunc[sgs.GameOverJudge].callback.zysq=function(room,player,data,name,result)
 end
 
 
+--[[
+
+
+-- wwd2 :: 魏文帝 :: 使用曹丕在1局游戏中发动行殇获得锦囊牌至少6张 
+--
+zgfunc[sgs.Todo].wwd2=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='caopi' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- djlj :: 粮尽援绝 :: 使用徐晃在1局游戏中用装备区的牌发动断粮至少4次 
+--
+zgfunc[sgs.Todo].djlj=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='xuhuang' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- qqqz :: 七擒七纵 :: 使用孟获在1局游戏中发动再起回复体力至少7点 
+--
+zgfunc[sgs.Todo].qqqz=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='menghuo' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- cmr :: 刺美人 :: 使用祝融在1局游戏中对一名男性发动烈刃并拼点赢至少3次 
+--
+zgfunc[sgs.Todo].cmr=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='zhurong' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- pndjj :: 破虏大将军 :: 使用孙坚连续至少3回合在1体力时发动英魂 
+--
+zgfunc[sgs.Todo].pndjj=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='sunjian' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- zqxz :: 指囷相赠 :: 使用鲁肃在1局游戏中发动好施分给其他角色至少15张牌 
+--
+zgfunc[sgs.Todo].zqxz=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='lusu' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- rs :: 肉山 :: 使用董卓在1局游戏中使用杀杀死至少3名女性角色 
+--
+zgfunc[sgs.Todo].rs=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='dongzhuo' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- wnqk :: 武逆乾坤 :: 使用贾诩发动乱武，并在乱武结算中至少2名敌方角色死于杀造成的伤害 
+--
+zgfunc[sgs.Todo].wnqk=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='jiaxu' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- lsgj :: 乱世歌姬 :: 使用蔡文姬在一局中发动悲歌至少4次 发动断肠并最终获胜 
+--
+zgfunc[sgs.Todo].lsgj=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='caiwenji' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- fwjj :: 辅吴将军 :: 使用张昭&张纮在一局中发动直谏将至少5张装备牌置于吴势力武将装备区 
+--
+zgfunc[sgs.Todo].fwjj=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='erzhang' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- dzry :: 大智若愚 :: 使用刘禅每回合都发动放权并最终获胜 
+--
+zgfunc[sgs.Todo].dzry=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='liushan' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- mrgs :: 猛锐盖世 :: 使用孙策在一局游戏中发动激昂摸牌至少5张并发动技能魂姿 
+--
+zgfunc[sgs.Todo].mrgs=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='sunce' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- bzcq :: 变拙成巧 :: 使用张郃在一局游戏中发动巧变移动判定区的牌及装备区的牌各至少3张 
+--
+zgfunc[sgs.Todo].bzcq=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='zhanghe' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- szzjz :: 蜀之终结者 :: 使用邓艾在一回合内发动急袭至少4次 
+--
+zgfunc[sgs.Todo].szzjz=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='dengai' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- cjww :: 才兼文武 :: 使用姜维在一局游戏中发动挑衅弃掉牌至少4张并发动观星至少2次 
+--
+zgfunc[sgs.Todo].cjww=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='jiangwei' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- dhhs :: 大幻化师 :: 使用左慈在一局游戏中获得化身牌至少10张 
+--
+zgfunc[sgs.Todo].dhhs=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='zuoci' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- lyws :: 炼狱武神 :: 使用神关羽在一局游戏中使用红桃花色的杀杀死至少3名角色 
+--
+zgfunc[sgs.Todo].lyws=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='shenguanyu' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- dcyq :: 洞察一切 :: 使用神吕蒙在一局游戏中发动攻心弃掉无中生有和桃至少各2张 
+--
+zgfunc[sgs.Todo].dcyq=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='shenlvmeng' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- hlyh :: 红莲业火 :: 使用神周瑜在一回合发动业炎造成至少5点伤害 
+--
+zgfunc[sgs.Todo].hlyh=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='shenzhouyu' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- hdyx :: 换斗移星 :: 使用神诸葛亮出场，并且本局游戏中至少一名狂风状态的角色被火攻杀死 
+--
+zgfunc[sgs.Todo].hdyx=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='shenzhugeliang' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- txgx :: 天下归心 :: 使用神曹操在一局游戏中发动归心获得至少10张牌 
+--
+zgfunc[sgs.Todo].txgx=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='shencaocao' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- sgws :: 神鬼无双 :: 使用神吕布在一局游戏中发动神愤至少2次 
+--
+zgfunc[sgs.Todo].sgws=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='shenlvbu' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- xltj :: 西凉铁骑 :: 使用SP马超在一局游戏中至少发动5次铁骑并判定为红色 
+--
+zgfunc[sgs.Todo].xltj=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='sp_machao' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- njnt :: 能进能退 :: 使用☆SP赵云在一局游戏中至少发动冲阵获得6张牌并获胜 
+--
+zgfunc[sgs.Todo].njnt=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='bgm_zhaoyun' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- sll :: 失礼了 :: 使用☆SP貂蝉在一局游戏中至少发动3次离魂并获胜 
+--
+zgfunc[sgs.Todo].sll=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='bgm_diaochan' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- pzzj :: 破阵斩将 :: 使用高顺在一局游戏中发动陷阵拼点赢的情况下杀死至少两名角色并获胜 
+--
+zgfunc[sgs.Todo].pzzj=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='gaoshun' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- bykt :: 霸业可图 :: 使用陈宫在一局游戏中对吕布发动明策至少2次 
+--
+zgfunc[sgs.Todo].bykt=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='chengong' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- djzc :: 大军在此 :: 使用徐盛在一局游戏中对同一角色发动破军至少3次并获胜 
+--
+zgfunc[sgs.Todo].djzc=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='xusheng' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- wgzm :: 吴国之母 :: 使用吴国太在一局游戏中发动补益使至少3名不同的吴国武将脱离频死状态 
+--
+zgfunc[sgs.Todo].wgzm=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='wuguotai' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- xyzj :: 须臾之间 :: 使用凌统在一局游戏中发动旋风至少弃置敌方角色装备区的牌至少8张 
+--
+zgfunc[sgs.Todo].xyzj=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='lingtong' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- wkhn :: 我看好你 :: 使用徐庶在一局游戏中发动举荐至少另其他角色累计回复3点体力 
+--
+zgfunc[sgs.Todo].wkhn=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='xushu' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- txbf :: 通晓兵法 :: 使用马谡在一局游戏中发动心战获得桃和无中生有至少各2张 
+--
+zgfunc[sgs.Todo].txbf=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='masu' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- sbfh :: 十倍奉还 :: 使用法正在一局游戏中发动眩惑获得其他角色至少3张桃 
+--
+zgfunc[sgs.Todo].sbfh=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='fazheng' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- styj :: 身体要紧 :: 在主公是刘备的情况下，使用SP孙尚香做内奸取得胜利 
+--
+zgfunc[sgs.Todo].styj=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='sp_sunshangxiang' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- yjbz :: 饮酒并醉 :: 使用曹植在一局游戏中发动落英获得至少8张牌并发动酒诗翻面至少4次 
+--
+zgfunc[sgs.Todo].yjbz=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='caozhi' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- yzkw :: 严整溃围 :: 使用☆SP曹仁在一局游戏中发动溃围摸牌至少11张并发动严整至少4次 
+--
+zgfunc[sgs.Todo].yzkw=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='bgm_caoren' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- wqzsr :: 无情者伤人 :: 使用张春华在一个回合中发动伤势摸至少8张牌 
+--
+zgfunc[sgs.Todo].wqzsr=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='zhangchunhua' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+-- wjjh :: 文姬归汉 :: 在主公是曹操的情况下，使用SP蔡文姬做内奸取得胜利 
+--
+zgfunc[sgs.Todo].wjjh=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='sp_caiwenji' then return false end
+	if 1 then
+		addGameData(name,1)
+		if getGameData(name)==N then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
+
+]]
+
 
 function gainSkill(room)	
 	local skillname 
