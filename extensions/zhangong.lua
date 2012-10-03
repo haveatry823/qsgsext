@@ -895,9 +895,9 @@ zgfunc[sgs.Death].tdwy=function(self, room, event, player, data,isowner,name)
 	if getGameData("hegemony")==1 then return false end
 	if room:getOwner():isLord() and damage.from and damage.from:objectName()==room:getOwner():objectName() 
 		and (damage.to:getRole()=="rebel" or damage.to:getRole()=="renegade") then
-		local others = room:getOtherPlayers(room:getOwner())
+		local players = room:getPlayers()
 		local loyalist_alive,loyalist_dead=0,0
-		for _, p in sgs.qlist(others) do
+		for _, p in sgs.qlist(players) do
 			if p:getRole()=="loyalist" then
 				if p:isAlive() then loyalist_alive=loyalist_alive+1 else loyalist_dead=loyalist_dead+1 end
 			end
@@ -2466,8 +2466,8 @@ zgfunc[sgs.GameOverJudge].callback.zdhl=function(room,player,data,name,result)
 	local ownerRole = room:getOwner():getRole()
 	local guardRole = (ownerRole=="lord" or ownerRole=="loyalist") and "rebel" or "loyalist"
 	local num=0
-	for _, p in sgs.qlist(room:getAllPlayers()) do
-		if p:getRole()==guardRole and not p:isWounded() then num=num+1 end
+	for _, p in sgs.qlist(room:getPlayers()) do
+		if p:getRole()==guardRole and p:isAlive() and not p:isWounded() then num=num+1 end
 	end
 	if num==2 then
 		addZhanGong(room,name)
