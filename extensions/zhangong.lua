@@ -2899,6 +2899,7 @@ zgfunc[sgs.ChoiceMade].mrgs=function(self, room, event, player, data,isowner,nam
 		setGameData(name..'jiang',math.min(5,getGameData(name..'jiang')+1))
 		if getGameData(name..'jiang')==5 and getGameData(name..'hunzi')==1 then
 			addZhanGong(room,name)
+			setGameData(name..'hunzi',0)
 		end
 	end
 end
@@ -2910,6 +2911,7 @@ zgfunc[sgs.EventPhaseStart].mrgs=function(self, room, event, player, data,isowne
 		setGameData(name..'hunzi',1)
 		if getGameData(name..'jiang')==5 then
 			addZhanGong(room,name)
+			setGameData(name..'hunzi',0)
 		end
 	end		
 end
@@ -2932,6 +2934,7 @@ zgfunc[sgs.CardsMoveOneTime].bzcq=function(self, room, event, player, data,isown
 		end
 		if getGameData(name..'equip')==3 and getGameData(name..'judge')==3 then
 			addZhanGong(room,name)
+			setGameData(name..'judge',-100)
 		end	
 	end
 end
@@ -2963,6 +2966,7 @@ zgfunc[sgs.ChoiceMade].cjww=function(self, room, event, player, data,isowner,nam
 		setGameData(name..'tiaoxin',math.min(4,getGameData(name..'tiaoxin')+1))
 		if getGameData(name..'tiaoxin')==4 and getGameData(name..'guanxing')==2 then
 			addZhanGong(room,name)
+			setGameData(name..'tiaoxin',-100)
 		end
 	end
 end
@@ -2975,6 +2979,7 @@ zgfunc[sgs.ChoiceMade].cjww=function(self, room, event, player, data,isowner,nam
 		setGameData(name..'guanxing',math.min(2,getGameData(name..'guanxing')+1))
 		if getGameData(name..'tiaoxin')==4 and getGameData(name..'guanxing')==2 then
 			addZhanGong(room,name)
+			setGameData(name..'tiaoxin',-100)
 		end
 	end
 end
