@@ -358,9 +358,14 @@ var callback={
 		var arr=v.split(/\:/g);
 		var ret=[];
 		for(var i=0;i<arr.length;i++){
-			if (arr[i]!="") ret.push(trans[arr[i]] || arr[i]);
+			
+			if (arr[i]!="") {
+				var br= (i+1)%6==0 ? ",&nbsp;&nbsp;&nbsp;<br/>" : ",&nbsp;&nbsp;&nbsp;";
+				ret.push((trans[arr[i]] || arr[i])+br);
+			}
+					
 		}
-		return ret.join(",");
+		return ret.join("");
 	},
 	getExpLevel:function(){
 		var ret=["<div style='margin:10px'><table>"];
