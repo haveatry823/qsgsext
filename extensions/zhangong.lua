@@ -3463,7 +3463,7 @@ function init_gamestart(self, room, event, player, data, isowner)
 	for _, p in sgs.qlist(room:getAllPlayers()) do
 		if p:getState() ~= "robot" then 
 			count=count+1
-			room:attachSkillToPlayer(p,"rende")
+			--room:attachSkillToPlayer(p,"rende")
 		else
 			room:detachSkillFromPlayer(p, "#zgzhangong1")
 			room:detachSkillFromPlayer(p, "#zgzhangong2")
