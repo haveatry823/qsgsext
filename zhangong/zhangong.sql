@@ -318,11 +318,11 @@ INSERT INTO "zhangong" VALUES('wsxl', '武圣显灵', 5, '使用关羽在1局游
 INSERT INTO "zhangong" VALUES('hssd', '浑身是胆', 5, '使用赵云在1局游戏中发动龙胆至少杀死3名角色', 0, 'shu', '1899-12-30 0:00:00', 'zhaoyun', 0);
 INSERT INTO "zhangong" VALUES('jnd', '锦囊袋', 5, '使用黄月英在1个回合内发动至少10次集智', 0, 'shu', '1899-12-30 0:00', 'huangyueying', 0);
 INSERT INTO "zhangong" VALUES('kcjc', '空城绝唱', 5, '使用诸葛亮在1局游戏中有至少5个回合结束时是空城状态', 0, 'shu', '1899-12-30 0:00', 'zhugeliang', 0);
-INSERT INTO "zhangong" VALUES('lbsd', '老不死的', 5, '使用孙权做主公在1局游戏中被吴国武将用桃救至少3次', 0, 'wu', '1899-12-30 0:00:00', 'sunquan', 0);
+INSERT INTO "zhangong" VALUES('lbsd', '老不死的', 5, '使用孙权做主公在1局游戏中被吴国武将用桃救活至少3次', 0, 'wu', '1899-12-30 0:00:00', 'sunquan', 0);
 INSERT INTO "zhangong" VALUES('scgm', '神出鬼没', 5, '使用甘宁在1个回合内发动至少6次奇袭', 0, 'wu', '1899-12-30 0:00', 'ganning', 0);
 INSERT INTO "zhangong" VALUES('wjdbt', '无尽的鞭挞', 5, '使用黄盖1个回合内发动至少8次苦肉', 0, 'wu', '1899-12-30 0:00', 'huanggai', 0);
 INSERT INTO "zhangong" VALUES('sjdf', '伺机待发', 5, '使用吕蒙将手牌囤积到20张', 0, 'wu', '1899-12-30 0:00', 'lvmeng', 0);
-INSERT INTO "zhangong" VALUES('yhjm', '移花接木', 5, '使用大乔在一局游戏中累计发动3次流离', 0, 'wu', '1899-12-30 0:00', 'daqiao', 0);
+INSERT INTO "zhangong" VALUES('yhjm', '移花接木', 5, '使用大乔在一局游戏中累计发动5次流离', 0, 'wu', '1899-12-30 0:00', 'daqiao', 0);
 INSERT INTO "zhangong" VALUES('yhdf', '因祸得福', 5, '使用孙尚香在1局游戏中累计失去至少5张已装备的装备牌', 0, 'wu', '2012-09-27 13:15:26', 'sunshangxiang', 0);
 INSERT INTO "zhangong" VALUES('wjdzz', '无尽的挣扎', 5, '使用周瑜在1局游戏中使用反间杀死至少3名角色', 0, 'wu', '1899-12-30 0:00', 'zhouyu', 0);
 INSERT INTO "zhangong" VALUES('lmbj', '连绵不绝', 5, '使用陆逊在1个回合内发动至少10次连营', 0, 'wu', '1899-12-30 0:00', 'luxun', 0);
@@ -481,7 +481,7 @@ INSERT INTO "zhangong" VALUES('zqsh', '最强神话', 20, '使用虎牢关吕布
 INSERT INTO "zhangong" VALUES('bndzs', '暴怒的战神', 20, '使用虎牢关吕布获得30场身份模式游戏胜利', 0, 'god', '1899-12-30 00:00:00', 'shenlvbu2', 30);
 INSERT INTO "zhangong" VALUES('jbzc', '金璧之才', 20, '使用SP蔡文姬获得30场身份模式游戏胜利', 0, 'wei', '1899-12-30 00:00:00', 'sp_caiwenji', 30);
 INSERT INTO "zhangong" VALUES('xldms', '西凉的猛狮', 20, '使用SP马超获得30场身份模式游戏胜利', 0, 'qun', '1899-12-30 00:00:00', 'sp_machao', 30);
-INSERT INTO "zhangong" VALUES('swyc', '算无遗策', 20, '使用贾诩获得30场身份模式游戏胜利', 0, 'wei', '1899-12-30 00:00:00', 'jiaxu', 30);
+INSERT INTO "zhangong" VALUES('swyc', '算无遗策', 20, '使用SP贾诩获得30场身份模式游戏胜利', 0, 'wei', '1899-12-30 00:00:00', 'sp_jiaxu', 30);
 INSERT INTO "zhangong" VALUES('shdfy', '蜀汉的辅翼', 20, '使用法正获得30场身份模式游戏胜利', 0, 'shu', '1899-12-30 00:00:00', 'fazheng', 30);
 INSERT INTO "zhangong" VALUES('wwzg', '魏武之刚', 20, '使用于禁获得30场身份模式游戏胜利', 0, 'wei', '1899-12-30 00:00:00', 'yujin', 30);
 INSERT INTO "zhangong" VALUES('mzly', '梦醉良缘', 20, '使用SP孙尚香获得30场身份模式游戏胜利', 0, 'shu', '1899-12-30 00:00:00', 'sp_sunshangxiang', 30);
@@ -500,4 +500,13 @@ INSERT INTO "zhangong" VALUES('bzcq', '变拙成巧', 5, '使用张郃在一局�
 INSERT INTO "zhangong" VALUES('szzjz', '蜀之终结者', 5, '使用邓艾在一回合内发动急袭至少4次', 0, 'wei', '1999-12-31 00:00', 'dengai', 0);
 INSERT INTO "zhangong" VALUES('cjww', '才兼文武', 5, '使用姜维在一局游戏中发动挑衅弃掉牌至少4张并发动观星至少2次', 0, 'shu', '1999-12-31 00:00', 'jiangwei', 0);
 INSERT INTO "zhangong" VALUES('dhhs', '大幻化师', 5, '使用左慈在一局游戏中获得化身牌至少10张', 0, 'qun', '1999-12-31 00:00', 'zuoci', 0);
+INSERT INTO "zhangong" VALUES('lyws', '炼狱武神', 5, '使用神关羽在一局游戏中使用红桃花色的杀杀死至少3名角色', 0, 'god', '1999-12-31 00:00', 'shenguanyu', 0);
+INSERT INTO "zhangong" VALUES('dcyq', '洞察一切', 5, '使用神吕蒙在一局游戏中发动攻心将至少5张无中生有或桃置于牌堆顶', 0, 'god', '1999-12-31 00:00', 'shenlvmeng', 0);
+INSERT INTO "zhangong" VALUES('hlyh', '红莲业火', 5, '使用神周瑜在一回合发动业炎造成至少5点伤害', 0, 'god', '1999-12-31 00:00', 'shenzhouyu', 0);
+INSERT INTO "zhangong" VALUES('hdyx', '换斗移星', 5, '使用神诸葛在一局游戏中让至少一名狂风状态的角色被火攻杀死', 0, 'god', '1999-12-31 00:00', 'shenzhugeliang', 0);
+INSERT INTO "zhangong" VALUES('txgx', '天下归心', 5, '使用神曹操在一局游戏中发动归心获得至少10张牌', 0, 'god', '1999-12-31 00:00', 'shencaocao', 0);
+INSERT INTO "zhangong" VALUES('sgws', '神鬼无双', 5, '使用神吕布在一局游戏中发动神愤至少2次', 0, 'god', '1999-12-31 00:00', 'shenlvbu', 0);
+INSERT INTO "zhangong" VALUES('xltj', '西凉铁骑', 5, '使用SP马超在一局游戏中至少发动5次铁骑并判定为红色', 0, 'qun', '1999-12-31 00:00', 'sp_machao', 0);
+INSERT INTO "zhangong" VALUES('njnt', '能进能退', 5, '使用☆SP赵云在一局游戏中至少发动冲阵获得6张牌并获胜', 0, 'qun', '1999-12-31 00:00', 'bgm_zhaoyun', 0);
+INSERT INTO "zhangong" VALUES('sll', '失礼了', 5, '使用☆SP貂蝉在一局游戏中至少发动3次离魂并获胜', 0, 'qun', '1999-12-31 00:00', 'bgm_diaochan', 0);
 COMMIT;
