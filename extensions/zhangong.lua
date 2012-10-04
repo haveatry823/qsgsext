@@ -2495,6 +2495,7 @@ zgfunc[sgs.GameStart].mlgr=function(self, room, event, player, data,isowner,name
 		local general = sgs.Sanguosha:getGeneral(generalname)
 		if general:getMaxHp()==3 then n=n+1 end
 	end
+	if player:getMaxHp()==3 then n=n+1 end
 	if n==3 then
 		setGameData(name,1)
 	end
@@ -2517,6 +2518,7 @@ zgfunc[sgs.GameStart].ymgr=function(self, room, event, player, data,isowner,name
 		local general = sgs.Sanguosha:getGeneral(generalname)
 		if general:getMaxHp()==4 then n=n+1 end
 	end
+	if player:getMaxHp()==4 then n=n+1 end
 	if n==3 then
 		setGameData(name,1)
 	end
