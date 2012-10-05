@@ -1266,7 +1266,8 @@ zgfunc[sgs.GameOverJudge].callback.zszm=function(room,player,data,name,result)
 			and damage.from:objectName()==room:getOwner():objectName() and damage.from:isLord() then
 		addGameData(name,1)
 	end
-	if sgs.Sanguosha:getPlayerCount(room:getMode())- room:alivePlayerCount()==getGameData(name) then
+	if sgs.Sanguosha:getPlayerCount(room:getMode())- room:alivePlayerCount()==getGameData(name) 
+			and string.match(sgs.Sanguosha:getRoles(room:getMode()),"C") then
 		addZhanGong(room,name)
 	end	
 end
