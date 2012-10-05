@@ -509,4 +509,15 @@ INSERT INTO "zhangong" VALUES('sgws', '神鬼无双', 5, '使用神吕布在一�
 INSERT INTO "zhangong" VALUES('xltj', '西凉铁骑', 5, '使用SP马超在一局游戏中至少发动5次铁骑并判定为红色', 0, 'qun', '1999-12-31 00:00', 'sp_machao', 0);
 INSERT INTO "zhangong" VALUES('njnt', '能进能退', 5, '使用☆SP赵云在一局游戏中至少发动冲阵获得6张牌并获胜', 0, 'qun', '1999-12-31 00:00', 'bgm_zhaoyun', 0);
 INSERT INTO "zhangong" VALUES('sll', '失礼了', 5, '使用☆SP貂蝉在一局游戏中至少发动3次离魂并获胜', 0, 'qun', '1999-12-31 00:00', 'bgm_diaochan', 0);
+INSERT INTO "zhangong" VALUES('pzzj', '破阵斩将', 5, '使用高顺在一局游戏中发动陷阵拼点赢的情况下杀死至少两名角色并获胜', 0, 'qun', '1999-12-31 00:00', 'gaoshun', 0);
+INSERT INTO "zhangong" VALUES('bykt', '霸业可图', 5, '使用陈宫在一局游戏中对吕布发动明策至少2次', 0, 'qun', '1999-12-31 00:00', 'chengong', 0);
+INSERT INTO "zhangong" VALUES('djzc', '大军在此', 5, '使用徐盛在一局游戏中发动破军至少3次并获胜', 0, 'wu', '1999-12-31 00:00', 'xusheng', 0);
+INSERT INTO "zhangong" VALUES('wgzm', '吴国之母', 5, '使用吴国太在一局游戏中发动补益使至少3名不同的吴国武将脱离频死状态', 0, 'wu', '1999-12-31 00:00', 'wuguotai', 0);
+INSERT INTO "zhangong" VALUES('xyzj', '须臾之间', 5, '使用凌统在一局游戏中发动旋风至少弃置敌方角色装备区的牌至少8张', 0, 'wu', '1999-12-31 00:00', 'lingtong', 0);
+INSERT INTO "zhangong" VALUES('wkhn', '我看好你', 5, '使用徐庶在一局游戏中发动举荐至少6次', 0, 'shu', '1999-12-31 00:00', 'xushu', 0);
+INSERT INTO "zhangong" VALUES('txbf', '通晓兵法', 5, '使用马谡在一局游戏中发动心战获得桃和无中生有至少各2张', 0, 'shu', '1999-12-31 00:00', 'masu', 0);
+INSERT INTO "zhangong" VALUES('sbfh', '十倍奉还', 5, '使用法正在一局游戏中发动眩惑获得其他角色至少3张桃', 0, 'shu', '1999-12-31 00:00', 'fazheng', 0);
+INSERT INTO "zhangong" VALUES('styj', '身体要紧', 5, '在主公是刘备的情况下，使用SP孙尚香做内奸取得胜利', 0, 'shu', '1999-12-31 00:00', 'sp_sunshangxiang', 0);
+INSERT INTO "zhangong" VALUES('yzkw', '严整溃围', 5, '使用☆SP曹仁在一局游戏中发动溃围摸牌至少11张并发动严整至少4次', 0, 'wei', '1999-12-31 00:00', 'bgm_caoren', 0);
+INSERT INTO "zhangong" VALUES('wjjh', '文姬归汉', 5, '在主公是曹操的情况下，使用SP蔡文姬做内奸取得胜利', 0, 'wei', '1999-12-31 00:00', 'sp_caiwenji', 0);
 COMMIT;
