@@ -720,7 +720,7 @@ zgfunc[sgs.GameOverJudge].tongji=function(self, room, event, player, data,isowne
 	
 	local callbacks=zgfunc[sgs.GameOverJudge]["callback"]
 	for name, func in pairs(callbacks) do
-		if type(func)=="function" then func(room,player,data,name,result) end				
+		if type(func)=="function" then func(room,player,data,name,result) end
 	end
 	for row in db:rows("select * from results where id= "..getGameData("roomid")) do
 		broadcastMsg(room,"#gainWen",row.wen)
@@ -979,7 +979,7 @@ for query in db:rows("select id,category,general,num,description from zhangong w
 		if kingdoms[query.category] then 
 			sql=sql.." and hegemony=0 and mode not in ('06_3v3','02_1v1','04_1v3') "
 		end
-		
+
 		for row in db:rows(sql) do
 			if row.num==query.num then addZhanGong(room,name) end
 		end
@@ -2340,32 +2340,31 @@ end
 -- 
 zgfunc[sgs.Death].bsyz=function(self, room, event, player, data,isowner,name)
 	if room:getMode()~="06_3v3" then return false end	
-	local roles=sgs.QList2Table(room:aliveRoles())
-	local owner=room:getOwner()
-	local roleslist=table.concat(roles, ",")
-	table.sort(roles)
-	if  (owner:isLord() and roleslist=="lord,rebel,rebel,renegade") or 
-			(owner:getRole()=="renegade" and roleslist=="lord,loyalist,loyalist,renegade") then	
-		setGameData(name,1)
-		return false
-	end		
-
-	if #roles<=3 and getGameData(name)==1 then
-		addGameData(name,"killed",1)
+	local alives=sgs.QList2Table(room:getAlivePlayers())
+	local isLastAlive=true
+	local myRole=room:getOwner():getRole()
+	if myRole=='loyalist' or myRole=='rebel' then return false end
+	for i=1,#alives,1 do
+		if myRole=='lord' and alives[i]:getRole()=='loyalist'  then isLastAlive=false end
+		if myRole=='renegade' and alives[i]:getRole()=='rebel' then isLastAlive=false end
 	end
+	if isLastAlive and #alives==4 then setGameData(name,1) end
 end
+
 
 zgfunc[sgs.GameOverJudge].callback.bsyz=function(room,player,data,name,result)
 	if room:getMode()~="06_3v3" then return false end	
 	if not result=="win" then return false end
-	local roles=sgs.QList2Table(room:aliveRoles())
-	if #roles<=3 and getGameData(name)==1 then
-		addGameData(name,"killed",1)
-	end
-	if getGameData(name,"killed")==3 then
+	local myRole=room:getOwner():getRole()
+	if myRole=='loyalist' or myRole=='rebel' then return false end
+	
+	local alives=sgs.QList2Table(room:getAlivePlayers())
+	
+	if getGameData(name)==1 and #alives==1 then
 		addZhanGong(room,name)
 	end	
 end
+
 
 
 -- ygzq :: 一鼓作气 :: 一回合内杀死对方3名角色 (3v3)
@@ -2377,8 +2376,8 @@ zgfunc[sgs.Death].ygzq=function(self, room, event, player, data,isowner,name)
 	local role1=owner:getRole()
 	local role2=player:getRole()
 	if ((string.find("lord,loyalist",role1) and role2=="rebel") or (string.find("rebel,renegade",role1) and role2=="loyalist"))
-			and room:getCurrent():objectName()==owner:objectName() 
-			and damage.from and damage.from:objectName()==owner:objectName() then
+			and room:getCurrent():objectName()==room:getOwner():objectName() 
+			and damage and damage.from and damage.from:objectName()==owner:objectName() then
 		addTurnData(name,1)
 	end
 end
@@ -2387,8 +2386,8 @@ zgfunc[sgs.GameOverJudge].callback.ygzq=function(room,player,data,name,result)
 	if room:getMode()~="06_3v3" then return false end	
 	if not result=="win" then return false end
 	local damage=data:toDamageStar()
-	if room:getCurrent():objectName()==owner:objectName() and getTurnData(name)==2
-			and damage.from and damage.from:objectName()==owner:objectName() then
+	if room:getCurrent():objectName()==room:getOwner():objectName() and getTurnData(name)==2
+			and damage and damage.from and damage.from:objectName()==owner:objectName() then
 		addZhanGong(room,name)
 	end
 end
@@ -3490,6 +3489,39 @@ function getTurnData(key,...)
 	return zgturndata[key]
 end
 
+
+function useSkillCard(room,owner)
+	local zgquery=db:first_row("select count(id) as num from zhangong where gained>0")
+	local limitnum= math.ceil(zgquery.num / 20)
+	local skilldata=db:rows("select skillname from skills where gained-used>0 order by random() limit "..limitnum)
+	local skills={}
+	for row in skilldata do
+		if row.skillname and sgs.Sanguosha:getSkill(row.skillname) then table.insert(skills,row.skillname) end
+	end
+	if #skills>0 then
+		local choice=room:askForChoice(owner,"@chooseskill","cancel+"..table.concat(skills,"+"))
+		if choice ~= "cancel" then
+			room:acquireSkill(owner,choice)
+			room:loseHp(owner)
+			sqlexec("update skills set  used=used+1 where skillname='%s'",choice)
+		end
+	end
+end
+
+function useLuckyCard(room,owner)
+	local zgquery=db:first_row("select count(id) as num from zhangong where gained>0")
+	local limitnum= math.ceil(zgquery.num / 20)
+	for i=math.max(1,limitnum),1,-1 do
+		if owner:askForSkillInvoke("LuckyCard") then
+			owner:throwAllHandCards()
+			owner:drawCards(4,true)
+			broadcastMsg(room,"#LuckyCardNum",i-1)
+		else
+			break
+		end
+	end
+end
+
 function init_gamestart(self, room, event, player, data, isowner)
 	local config=sgs.Sanguosha:getSetupString():split(":")
 	local mode=config[2]
@@ -3535,33 +3567,11 @@ function init_gamestart(self, room, event, player, data, isowner)
 				player:getKingdom(),getGameData("hegemony"),room:getMode())
 	end	
 
-	local zgquery=db:first_row("select count(id) as num from zhangong where gained>0")
-	local limitnum= math.ceil(zgquery.num / 20)
-	local skilldata=db:rows("select skillname from skills where gained-used>0 order by random() limit "..limitnum)
-	local skills={}
-	for row in skilldata do
-		if row.skillname and sgs.Sanguosha:getSkill(row.skillname) then table.insert(skills,row.skillname) end
-	end
-	if #skills>0 then
-		local choice=room:askForChoice(owner,"@chooseskill","cancel+"..table.concat(skills,"+"))
-		if choice ~= "cancel" then
-			room:acquireSkill(owner,choice)
-			room:loseHp(owner)
-			sqlexec("update skills set  used=used+1 where skillname='%s'",choice)
-		end
-	end
-	for i=math.max(1,limitnum),1,-1 do
-		if owner:askForSkillInvoke("LuckyCard") then
-			owner:throwAllHandCards()
-			owner:drawCards(4,true)
-			broadcastMsg(room,"#LuckyCardNum",i-1)
-		else
-			break
-		end
-	end
+	useSkillCard(room,owner)
+	useLuckyCard(room,owner)
+
 	return true
 end
-
 
 
 zgzhangong1 = sgs.CreateTriggerSkill{
