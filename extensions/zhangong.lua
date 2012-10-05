@@ -1,3 +1,7 @@
+enableSkillCard = 1		-- 是否开启技能卡， 1:开启, 0:不开启 
+enableLuckyCard = 1		-- 是否开启手气卡,  1:开启, 0:不开启
+enableHulaoCard = 1		-- 是否开启虎牢关点将卡,  1:开启, 0:不开启
+
 dofile "lua/config.lua"
 dofile "lua/sgs_ex.lua"
 
@@ -3395,6 +3399,7 @@ function gainSkill(room)
 	local skillname 
 	local count=0
 	local row
+	if enableSkillCard==0 then return false end
 	repeat
 		row=db:first_row("select skillname from skills where 1 order by random() limit 1")
 		if sgs.Sanguosha:getSkill(row.skillname) then skillname=row.skillname end
@@ -3512,14 +3517,64 @@ function useLuckyCard(room,owner)
 	local zgquery=db:first_row("select count(id) as num from zhangong where gained>0")
 	local limitnum= math.ceil(zgquery.num / 20)
 	for i=math.max(1,limitnum),1,-1 do
-		if owner:askForSkillInvoke("LuckyCard") then
+		if owner:askForSkillInvoke("useLuckyCard") then
+			local n=owner:getHandcardNum()
 			owner:throwAllHandCards()
-			owner:drawCards(4,true)
+			owner:drawCards(n,true)
 			broadcastMsg(room,"#LuckyCardNum",i-1)
 		else
 			break
 		end
 	end
+end
+
+function useHulaoCard(room,owner)
+	if room:getMode()~='04_1v3' or not owner:askForSkillInvoke("useHulaoCrad") then return false end
+	local generalnames=sgs.Sanguosha:getRandomGenerals(999)
+	
+	local banlist={"shenguanyu", "shenzhugeliang","shenzhouyu","shenlvbu","bgm_diaochan","sp_pangde"}
+	for _,p in sgs.qlist(room:getAllPlayers()) do
+		table.insert(banlist,p:getGeneralName())
+	end
+	table.removeTable(generalnames, banlist)
+
+	local shuffle=function(arr)
+		local count = #arr
+		math.randomseed(os.time())
+		for i = 1, count do
+			local j = math.random( 1, count )
+			arr[j], arr[i] = arr[i], arr[j]
+		end
+		return arr
+	end
+	
+	local count=1
+	local choice
+	shuffle(generalnames)
+	for _,p in sgs.qlist(room:getAllPlayers()) do
+		if p:isLord() then
+			local names=table.concat(generalnames,"+",1,10)
+			local namslist= names:split("+")
+			local choice=room:askForChoice(owner,"@chooseGeneral0","cancel+randSelect+"..names)
+			if choice=="randSelect" then choice=namslist[ 1 + (os.time() % 10)] end
+			if choice ~= "cancel" then
+				room:detachSkillFromPlayer(p, "wushuang")
+				room:changeHero(p,choice,false,false,true,true)
+			end
+		else
+			local names=table.concat(generalnames,"+",1,10)
+			local choice=room:askForChoice(owner,"@chooseGeneral"..count,"cancel+"..names)
+			if choice ~= "cancel" then
+				room:changeHero(p,choice,true,false,false,true)
+			end
+			count=count+1
+		end
+		if choice ~= "cancel" then			
+			table.removeTable(generalnames, {choice})
+			shuffle(generalnames)
+		end
+	end
+
 end
 
 function init_gamestart(self, room, event, player, data, isowner)
@@ -3567,8 +3622,9 @@ function init_gamestart(self, room, event, player, data, isowner)
 				player:getKingdom(),getGameData("hegemony"),room:getMode())
 	end	
 
-	useSkillCard(room,owner)
-	useLuckyCard(room,owner)
+	if enableSkillCard==1 then useSkillCard(room,owner) end
+	if enableLuckyCard==1 then useLuckyCard(room,owner) end
+	if enableHulaoCard==1 then useHulaoCard(room,owner) end
 
 	return true
 end
@@ -3788,9 +3844,17 @@ sgs.LoadTranslationTable {
 	["@chooseskill"]="流失体力获得技能",
 	["cancel"] = "取消",
 	["giveup"] = "立即认输并结束游戏",
-	["#enableZhangong"]="【<b><font color='green'>提示</font></b>】: 本局游戏开启了战功统计.",
-	["#disableZhangong"]="【<b><font color='red'>提示</font></b>】: 本局游戏禁止了战功统计.",
-	["LuckyCard"]  ="手气卡",
-	["#LuckyCardNum"]  ="【<b><font color='yellow'>手气卡</font></b>】: 你本局还有【%arg】次换牌机会.",
+	["#enableZhangong"]="【<b><font color='green'>提示</font></b>】: 本局游戏开启了战功统计",
+	["#disableZhangong"]="【<b><font color='red'>提示</font></b>】: 本局游戏禁止了战功统计",
+	["useLuckyCard"]  ="手气卡",
+	["useHulaoCrad"]  ="点将卡",
+	["@chooseGeneral0"]  ="请为主公选将",
+	["@chooseGeneral1"]  ="请为先锋选将",
+	["@chooseGeneral2"]  ="请为中坚选将",
+	["@chooseGeneral3"]  ="请为大将选将",
+	["randSelect"]  ="随机选择",
+	
+
+	["#LuckyCardNum"]  ="【<b><font color='yellow'>手气卡</font></b>】: 本局还有【%arg】次换牌机会",
 	
 }
