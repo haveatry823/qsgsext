@@ -3549,6 +3549,15 @@ function init_gamestart(self, room, event, player, data, isowner)
 			sqlexec("update skills set  used=used+1 where skillname='%s'",choice)
 		end
 	end
+	for i=math.max(1,limitnum),1,-1 do
+		if owner:askForSkillInvoke("LuckyCard") then
+			owner:throwAllHandCards()
+			owner:drawCards(4,true)
+			broadcastMsg(room,"#LuckyCardNum",i-1)
+		else
+			break
+		end
+	end
 	return true
 end
 
@@ -3770,4 +3779,7 @@ sgs.LoadTranslationTable {
 	["giveup"] = "立即认输并结束游戏",
 	["#enableZhangong"]="【<b><font color='green'>提示</font></b>】: 本局游戏开启了战功统计.",
 	["#disableZhangong"]="【<b><font color='red'>提示</font></b>】: 本局游戏禁止了战功统计.",
+	["LuckyCard"]  ="手气卡",
+	["#LuckyCardNum"]  ="【<b><font color='yellow'>手气卡</font></b>】: 你本局还有【%arg】次换牌机会.",
+	
 }
