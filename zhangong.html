@@ -412,7 +412,7 @@ var callback={
 			}
 		}
 		var enableStr= info.gained !=="0" ? "" : " class='graycolor'";
-		var numStr = info.gained>0 ? "<br/><font color='#cccccc'>x</font>&nbsp; "+info.gained : "<br/>&nbsp; ";
+		var numStr = info.gained>0 ? "<br/><font color='#888888'>x</font>&nbsp; "+info.gained : "<br/>&nbsp; ";
 		var tipcss = colindex>8 ? " style='left:-8em' " : "";
 		return "<div style='text-align:center;margin:3px'><a href='#' onclick='return false' class='s'><img height='53' src='"+imgsrc+"' "+enableStr
 				+"/><span"+tipcss+">"+info.name+"<font size='1'>(战功值:"+info.score+")</font>:&nbsp;&nbsp;"+info.description

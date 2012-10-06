@@ -3394,6 +3394,29 @@ zgfunc[sgs.CardFinished].yzkw=function(self, room, event, player, data,isowner,n
 end
 
 
+-- gsy :: 狗屎运 :: 当你的开局4牌的颜色相同时,清除你的N盘逃跑记录(N为4牌点数之和)
+--
+zgfunc[sgs.GameStart].gsy=function(self, room, event, player, data,isowner,name)
+	if not isowner or getGameData("turncount",0)>0 or player:isKongcheng() then return false end
+	local cards=sgs.QList2Table(player:getHandcards())
+	local color=cards[1]:isRed() and 'red' or 'black'
+	local num=0
+	for i=1,#cards,1 do
+		local cc=cards[i]:isRed() and 'red' or 'black'
+		if cc~=color then return false end
+		num = num + cards[i]:getNumber()
+	end
+	--sqlexec("delete from results where result='-' and id<>%d limit %d",getGameData("roomid"),num)
+	local sql=string.format("select id from results where result='-' and id<>%d order by id asc limit %d",getGameData("roomid"),num)
+	local count=0
+	for row in db:rows(sql) do
+		sqlexec("delete from results where id=%d",row.id)
+		count = count +1
+	end
+	addZhanGong(room,name)
+	broadcastMsg(room,"#gsyNum",count)
+end
+
 
 function gainSkill(room)	
 	local skillname 
@@ -3841,6 +3864,7 @@ sgs.LoadTranslationTable {
 	["#gainExp"] ="%from获得【%arg】点经验",
 	["#canntGainSkill"]= "【警告】无法获得技能【%arg】",
 	["#gainSkill"]="%from获得了技能卡【%arg】",
+	["#gsyNum"]="%from清除了【%arg】盘逃跑记录",
 	["@chooseskill"]="流失体力获得技能",
 	["cancel"] = "取消",
 	["giveup"] = "立即认输并结束游戏",

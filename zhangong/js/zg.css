@@ -358,9 +358,9 @@ div.divtitle{
 	filter:gray(enabled=1);
 	FILTER: Alpha(Opacity=100, FinishOpacity=40, Style=2, StartX=0, StartY=0, FinishX=0, FinishY=0) gray;
 	color: #aaaaaa;
-	-moz-opacity:0.2;
-	-khtml-opacity: 0.2;
-	opacity: 0.2;
+	-moz-opacity:0.15;
+	-khtml-opacity: 0.15;
+	opacity: 0.15;
 	zoom: 1;
 }
 
