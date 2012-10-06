@@ -103,7 +103,7 @@ function database2js()
 
 	for _,zgcat in ipairs(zglist) do
 		local sql = "select * from zhangong where category='"..zgcat.."' order by general asc";
-		local collist="id,name,description,score,gained,category,lasttime,general,num";
+		local collist="id,name,description,score,gained,category,lasttime,general,num,count";
 		table.insert(ret,string.format("data['zg"..zgcat.."']=[%s];",dbquery(sql,collist)))
 	end
 	local zgtrans="$.each(zglist,function(i,val){$.each(data['zg'+val],function(index,item){trans[item.id]=[item.name];})});"
@@ -986,6 +986,7 @@ for query in db:rows("select id,category,general,num,description from zhangong w
 
 		for row in db:rows(sql) do
 			if row.num==query.num then addZhanGong(room,name) end
+			sqlexec("update zhangong set count=%d where id='%s'",row.num,query.id)
 		end
 	end
 end

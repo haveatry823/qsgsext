@@ -414,8 +414,9 @@ var callback={
 		var enableStr= info.gained !=="0" ? "" : " class='graycolor'";
 		var numStr = info.gained>0 ? "<br/><font color='#888888'>x</font>&nbsp; "+info.gained : "<br/>&nbsp; ";
 		var tipcss = colindex>8 ? " style='left:-8em' " : "";
+		var wincount= info.num>0 ? "<div class='sp'>&nbsp;</div>"+info.count+"&nbsp;of&nbsp;"+info.num+" :&nbsp;目前已获得"+info.count+"场胜利" : "";
 		return "<div style='text-align:center;margin:3px'><a href='#' onclick='return false' class='s'><img height='53' src='"+imgsrc+"' "+enableStr
-				+"/><span"+tipcss+">"+info.name+"<font size='1'>(战功值:"+info.score+")</font>:&nbsp;&nbsp;"+info.description
+				+"/><span"+tipcss+">"+info.name+"<font size='1'>(战功值:"+info.score+")</font>:&nbsp;&nbsp;"+info.description+wincount
 				+"</span></a><div style='margin-top:6px;font-size:11px;color:black'"+enableStr+">"+info.name+numStr+"</div></div>";
 	}
 };
@@ -461,7 +462,7 @@ $(function(){
 			[ <a href="https://github.com/haveatry823/qsgsext" target="_blank" title="本程序的git开源项目地址">github</a> ] 
 			[ <a href="https://code.google.com/p/qsgsext/" target="_blank" title="本程序的SVN开源项目地址">google code</a> ]
 			[ <a href="mailto:haveatry823@qq.com" target="_blank">联系作者</a> ]
-			[ <a href="#" onclick="javascript:location.reload()">刷新</a> ]
+			[ <a href="#" onclick="javascript:location.reload();return false">刷新</a> ]
 		</div>
 		<div id="menucontainer">
 			<ul id="menu">              
