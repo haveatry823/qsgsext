@@ -520,5 +520,5 @@ INSERT INTO "zhangong" VALUES('sbfh', '十倍奉还', 5, '使用法正在一局�
 INSERT INTO "zhangong" VALUES('styj', '身体要紧', 5, '在主公是刘备的情况下，使用SP孙尚香做内奸取得胜利', 0, 'shu', '1999-12-31 00:00:00', 'sp_sunshangxiang', 0, 0);
 INSERT INTO "zhangong" VALUES('yzkw', '严整溃围', 5, '使用☆SP曹仁在一局游戏中发动溃围摸牌至少11张并发动严整至少4次', 0, 'wei', '1999-12-31 00:00:00', 'bgm_caoren', 0, 0);
 INSERT INTO "zhangong" VALUES('wjjh', '文姬归汉', 5, '在主公是曹操的情况下，使用SP蔡文姬做内奸取得胜利', 0, 'wei', '1999-12-31 00:00:00', 'sp_caiwenji', 0, 0);
-INSERT INTO "zhangong" VALUES('gsy', '狗屎运', 5, '当你的开局4牌的颜色相同时,清除你的N盘逃跑记录(N为4牌点数之和)', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
+INSERT INTO "zhangong" VALUES('gsy', '狗屎运', 5, '当你的开局4牌全为黑色时,清除你的N盘逃跑记录(N为4牌点数之和)', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
 COMMIT;

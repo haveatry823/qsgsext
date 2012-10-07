@@ -3395,16 +3395,14 @@ zgfunc[sgs.CardFinished].yzkw=function(self, room, event, player, data,isowner,n
 end
 
 
--- gsy :: 狗屎运 :: 当你的开局4牌的颜色相同时,清除你的N盘逃跑记录(N为4牌点数之和)
+-- gsy :: 狗屎运 :: 当你的开局4牌的颜色全为黑色时,清除你的N盘逃跑记录(N为4牌点数之和)
 --
 zgfunc[sgs.GameStart].gsy=function(self, room, event, player, data,isowner,name)
 	if not isowner or getGameData("turncount",0)>0 or player:isKongcheng() then return false end
 	local cards=sgs.QList2Table(player:getHandcards())
-	local color=cards[1]:isRed() and 'red' or 'black'
 	local num=0
 	for i=1,#cards,1 do
-		local cc=cards[i]:isRed() and 'red' or 'black'
-		if cc~=color then return false end
+		if cards[i]:isRed() then return false end
 		num = num + cards[i]:getNumber()
 	end
 	--sqlexec("delete from results where result='-' and id<>%d limit %d",getGameData("roomid"),num)
