@@ -7,10 +7,9 @@
 <script type="text/javascript" language="javascript" src="./zhangong/js/jquery.table.js"></script>
 <script type="text/javascript" language="javascript" src="./zhangong/js/template.min.js"></script>
 <script type="text/javascript" language="javascript" src="./zhangong/js/trans.js"></script>	
-<script type="text/javascript" language="javascript" src="./zhangong/js/zg.js"></script>	
+<script type="text/javascript" language="javascript" src="./zhangong/js/zg.js"></script>
 </head>
 <body>
-
 <script id="t_overview" type="text/html">
 	<div class="divtitle">
 		本系统启用日期: <%= info.total.starttime %>
@@ -415,13 +414,14 @@ var callback={
 		var numStr = info.gained>0 ? "<br/><font color='#888888'>x</font>&nbsp; "+info.gained : "<br/>&nbsp; ";
 		var tipcss = colindex>8 ? " style='left:-8em' " : "";
 		var wincount= info.num>0 ? "<div class='sp'>&nbsp;</div>"+info.count+"&nbsp;of&nbsp;"+info.num+" :&nbsp;目前已获得"+info.count+"场胜利" : "";
+		var enableStr2 = /MSIE 9/.test(navigator.userAgent) ? "" : enableStr;
 		return "<div style='text-align:center;margin:3px'><a href='#' onclick='return false' class='s'><img height='53' src='"+imgsrc+"' "+enableStr
 				+"/><span"+tipcss+">"+info.name+"<font size='1'>(战功值:"+info.score+")</font>:&nbsp;&nbsp;"+info.description+wincount
-				+"</span></a><div style='margin-top:6px;font-size:11px;color:black'"+enableStr+">"+info.name+numStr+"</div></div>";
+				+"</span></a><div style='margin-top:6px;font-size:11px;color:black'"+enableStr2+">"+info.name+numStr+"</div></div>";
 	}
 };
 
-$.each(callback,function(name,func){	
+$.each(callback,function(name,func){
 	template.helper(name,func)
 });
 
@@ -431,7 +431,7 @@ var tabLists=$.merge(["overview","results","skills"],zglist);
 $(function(){
 	$("a").click(function(){
 		$(this).blur();
-	});		
+	});
 
 	$("a.t").click(function(){
 		return false;
@@ -448,15 +448,15 @@ $(function(){
 			return false;
 		})
 		$("#tbl_"+tab +" tr").each(function(i){
-			if (i%2==0) $(this).css("background","#f5f5f5");			
+			if (i%2==0) $(this).css("background","#f5f5f5");
 		})
 	});
-	$("#link_overview").trigger("click");		
+	$("#link_overview").trigger("click");
 });
 </script>
 
 <div class="page">
-	<div id="header">		
+	<div id="header">
 		<div id="nav">
 			[ <a href="http://qsanguosha.org/forum.php?mod=viewthread&tid=3897" target="_blank">论坛讨论贴</a> ] 
 			[ <a href="https://github.com/haveatry823/qsgsext" target="_blank" title="本程序的git开源项目地址">github</a> ] 
@@ -465,7 +465,7 @@ $(function(){
 			[ <a href="#" onclick="javascript:location.reload();return false">刷新</a> ]
 		</div>
 		<div id="menucontainer">
-			<ul id="menu">              
+			<ul id="menu">
 				<li><a id="link_overview" href="#">概况总结</a></li>
 				<li><a id="link_zhonghe" href="#">综合</a></li>
 				<li><a id="link_wei" href="#">魏</a></li>
@@ -476,8 +476,8 @@ $(function(){
 				<li><a id="link_3v3" href="#">3v3</a></li>
 				<li><a id="link_1v1" href="#">1v1</a></li>
 				<li><a id="link_skills" href="#">技能卡</a></li>
-				<li><a id="link_results" href="#">游戏记录</a></li>					
-			</ul>            
+				<li><a id="link_results" href="#">游戏记录</a></li>
+			</ul>
 		</div>
 	</div>
     <div id="main">
@@ -485,14 +485,16 @@ $(function(){
 			$.each(tabLists,function(i,tab){
 				document.write('<div id="div_'+tab+'" style="display:none">');
 				try{
-					document.write(template('t_'+tab, data));
+					var content=template('t_'+tab, data);
+					if (content=="{Template Error}") throw new Error(content);
+					document.write(content);
 				}catch(x){
 					document.write("请先玩一盘游戏后再刷新本页面看数据。");
 				}
-				document.write('</div>');				
-			});			
+				document.write('</div>');
+			});
 			$("#tbl_results").tablePaging({ pageSize: 15,sorting:false});
-		</script>		
+		</script>
     </div>
 </div>
 </body>

@@ -75,44 +75,68 @@ function sqlexec(sql,...)
 	db:exec(sqlstr)
 end
 
+
 function database2js()
+	local debugMode=false
+
+
 	local zglist={'zhonghe','wei','shu','wu','qun','god','3v3','1v1'}
 	local ret={}
 	table.insert(ret,"var zglist=['zhonghe','wei','shu','wu','qun','god','3v3','1v1'];")
-	table.insert(ret,"var data={};")	
+	table.insert(ret,"var data={};")
 
 	local dbquery=function(sql,collist)
 		local arr={}
 		for row in db:rows(sql) do
 			local item={}
-			for _,col in ipairs(collist:split(",")) do
+			for _,col in ipairs(collist) do
 				table.insert(item,string.format('"%s":"%s"',col,row[col]))
 			end
 			table.insert(arr,string.format("{%s}",table.concat(item,",")))
 		end
-		return table.concat(arr,",")
+		return table.concat(arr,",\r\n")
 	end
 
+	if debugMode then logmsg("start dump table results") end
+
 	local sql = "select datetime(id,'unixepoch','localtime') as gametime,* from results order by id desc limit 300";
-	local collist="gametime,id,general,role,kingdom,hegemony,mode,turncount,alive,result,wen,wu,expval,zhangong";
+	local collist={'gametime','id','general','role','kingdom','hegemony','mode','turncount','alive','result','wen','wu','expval','zhangong'}
 	table.insert(ret,string.format("data.results=[%s];",dbquery(sql,collist)))
 
+	if debugMode then logmsg("end dump table results\r\n") end
+
+	if debugMode then logmsg("start dump table skills") end
+
 	local sql = "select skillname,gained,used,gained-used as remainnum from skills order by remainnum desc"
-	local collist="skillname,gained,used,remainnum"
+	local collist={'skillname','gained','used','remainnum'}
 	table.insert(ret,string.format("data.skills=[%s];",dbquery(sql,collist)))
 
+	if debugMode then logmsg("end dump table skills\r\n") end
+
+	if debugMode then logmsg("start dump table gongxun") end
+
+	local sql = "select level,name,score,category as cat from gongxun where level>0 order by category,level"
+	local collist={'level','name','score','cat'}
+	table.insert(ret,string.format("data.gongxun=[%s];",dbquery(sql,collist)))
+
+	if debugMode then logmsg("end dump table gongxun\r\n") end
+
+	if debugMode then logmsg("start dump table zhangong") end
+
 	for _,zgcat in ipairs(zglist) do
-		local sql = "select * from zhangong where category='"..zgcat.."' order by general asc";
-		local collist="id,name,description,score,gained,category,lasttime,general,num,count";
+		local sql = "select * from zhangong where category='"..zgcat.."' order by general asc"
+		local collist={'id','name','description','score','gained','category','lasttime','general','num','count'}
 		table.insert(ret,string.format("data['zg"..zgcat.."']=[%s];",dbquery(sql,collist)))
 	end
 	local zgtrans="$.each(zglist,function(i,val){$.each(data['zg'+val],function(index,item){trans[item.id]=[item.name];})});"
 	table.insert(ret,zgtrans)
 
+	if debugMode then logmsg("end dump table zhangong\r\n") end
+
 	local getinfodata=function()
 		local arr={""}		
 		table.insert(arr,"var info={v3:{},role:{},hegemony:{},v1:{},hulao:{},total:{},wen:{},wu:{},expval:{},zg:{}};")
-		
+
 		local getVal=function(sql,...)
 			local query=db:first_row(string.format(sql, unpack(arg)))
 			if not query then return 0 end
@@ -151,12 +175,18 @@ function database2js()
 			end			
 		end
 
+		if debugMode then logmsg("start run getResult") end
+
 		getResult("hulao","mode='04_1v3' and hegemony=0",{"role='lord'","role='rebel'"})
 		getResult("v3",  "mode='06_3v3' and hegemony=0",{"role in ('lord','renegade')","role in ('loyalist','rebel')"})
 		getResult("v1",  "mode='02_1v1' and hegemony=0",{"role='renegade'","role='lord'"})
 		getResult("role","mode like '__p%' and hegemony=0",{"role='lord'","role='loyalist'","role='renegade'","role='rebel'"})
 		getResult("hegemony","hegemony=1",{"kingdom='wei'","kingdom='shu'","kingdom='wu'","kingdom='qun'"})
 		getResult("total","1",{})
+
+		if debugMode then logmsg("end run getResult\r\n") end
+
+		if debugMode then logmsg("start run getData") end
 
 		local wen=getVal("select sum(wen) from results")
 		local wu=getVal("select sum(wu) from results")
@@ -178,21 +208,20 @@ function database2js()
 		local starttime=getVal("select datetime(min(id),'unixepoch','localtime') from results")
 		if starttime==0 then starttime="尚未开始统计" end
 		getData("total.starttime",starttime,"str")
+
+		if debugMode then logmsg("end run getData\r\n") end
 		
 		table.insert(arr,"return info;")
-		return table.concat(arr,"")
+		return table.concat(arr,"\r\n")
 	end
 	table.insert(ret,string.format("data.info=(function(){%s})();",getinfodata()))
 
-	local sql = "select level,name,score,category as cat from gongxun where level>0 and category in ('wen','wu') order by category,level"
-	local collist="level,name,score,cat"
-	table.insert(ret,string.format("data.gongxun=[%s];",dbquery(sql,collist)))
-	
 	local fp = io.open("./zhangong/js/zg.js","wb")
-	fp:write(table.concat(ret,""))
+	fp:write(table.concat(ret,"\r\n"))
 	fp:close()
-end
 
+
+end
 
 -- srxsm :: 射人先射马 :: 一局游戏中发动麒麟弓特效至少3次
 -- 
@@ -1009,8 +1038,6 @@ zgfunc[sgs.TurnStart].init=function(self, room, event, player, data,isowner,name
 	end	
 	database2js()
 end
-
-
 
 -- dqbr :: 刀枪不入 :: 一局游戏中发动仁王盾特效3次
 -- 
@@ -3434,7 +3461,6 @@ function gainSkill(room)
 	database2js()
 end
 
-
 function broadcastMsg(room,info,...)
 	local log= sgs.LogMessage()
 	log.type = info
@@ -3520,7 +3546,7 @@ end
 function useSkillCard(room,owner)
 	local zgquery=db:first_row("select count(id) as num from zhangong where gained>0")
 	local limitnum= math.ceil(zgquery.num / 20)
-	local skilldata=db:rows("select skillname from skills where gained-used>0 order by random() limit "..limitnum)
+	local skilldata=db:rows("select skillname from skills where gained>used order by random() limit "..limitnum)
 	local skills={}
 	for row in skilldata do
 		if row.skillname and sgs.Sanguosha:getSkill(row.skillname) then table.insert(skills,row.skillname) end
