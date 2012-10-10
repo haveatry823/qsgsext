@@ -174,7 +174,7 @@ zgdataskill = sgs.CreateTriggerSkill{
 	events = {sgs.TurnStart},
 	on_trigger = function(self, event, player, data)
 		local room = player:getRoom()
-		database2js()		
+		database2js()
 		return false
 	end,
 }
