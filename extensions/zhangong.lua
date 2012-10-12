@@ -77,6 +77,8 @@ end
 
 
 function database2js()
+--[[
+
 	local debugMode=false
 
 
@@ -219,7 +221,7 @@ function database2js()
 	local fp = io.open("./zhangong/js/zg.js","wb")
 	fp:write(table.concat(ret,"\r\n"))
 	fp:close()
-
+]]
 
 end
 

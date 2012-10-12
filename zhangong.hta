@@ -1,0 +1,511 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link href="./zhangong/js/zg.css" rel="stylesheet" type="text/css">
+<title>成就系统for太阳神三国杀</title> 
+<hta:application id="ohta" applicationname="qsgsext" border="thin" borderstyle="normal" caption="yes" icon="./QSanguosha.exe" maximizebutton="no" 	minimizebutton="yes" showintaskbar="yes" ingleinstance="no" sysmenu="yes" version="1.0" windowstate="normal" />
+<script type="text/javascript" language="javascript" src="./zhangong/js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" language="javascript" src="./zhangong/js/jquery.table.js"></script>
+<script type="text/javascript" language="javascript" src="./zhangong/js/template.min.js"></script>
+<script type="text/javascript" language="javascript" src="./zhangong/js/trans.js"></script>	
+<script type="text/javascript" language="javascript" src="./zhangong/js/sqlite.js"></script>
+</head>
+<body>
+<script id="t_overview" type="text/html">
+	<div class="divtitle">
+		本系统启用日期: <%= info.total.starttime %>
+	</div>
+	<br/>		
+	<table border width="40%">
+		<tr>
+			<th style="text-align:center"><a href='#' class='t'>经验值(?)
+				<span>你每造成1点伤害,经验加1</span></a></th>
+			<th style="text-align:center"><a href='#' class='t'>经验等级(?)
+				<span style="width:500px"><%= getExpLevel() %></span></a></th>
+			<th style="text-align:center"><a href='#' class='t'>战功数(?)
+				<span>你已完成的战功数<br/>(同一战功多次拿到只计算为1个)</span></a></th>
+			<th style="text-align:center"><a href='#' class='t'>战功值(?)
+				<span>已完成战功*每个战功的战功值<br/>(同一战功多次拿到可累计)</span></a></th>
+		</tr>
+		<tr>
+			<td align="center"><%= info.expval.score %></td>
+			<td align="center"><%= info.expval.level %></td>
+			<td align="center"><%= info.zg.num %></td>
+			<td align="center"><%= info.zg.score %></td>
+		</tr>
+	</table>
+	<br/><br/>
+
+	<table border width="60%">
+		<tr>
+			<th align="center" style="text-align:center"><a href='#' class='t'>文功(?)
+				<span style="width:220px">你每打出或使用1张【锦囊牌】,文功加1</span></a></th>
+			<th align="center" style="text-align:center"><a href='#' class='t'>文功等级(?)
+				<span style="width:800px;left:-5em;top:0em;cursor:default"><%= getGongxun('wen') %></span></a></th>
+			<th align="center" style="text-align:center">文功官职</th>
+			<th align="center" style="text-align:center"><a href='#' class='t'>武功(?)
+				<span>你每打出或使用1张【杀】,武功加1</span></a></th>
+			<th align="center" style="text-align:center"><a href='#' class='t'>武功等级(?)
+				<span style="width:800px;left:-20em;top:0em;cursor:default"><%= getGongxun('wu') %></span></a></th>
+			<th align="center" style="text-align:center">武功官职</th>
+		</tr>
+		<tr>
+			<td align="center"><%= info.wen.score %></td>
+			<td align="center"><%= info.wen.level %></td>
+			<td align="center"><%= info.wen.name %></td>
+			<td align="center"><%= info.wu.score %></td>
+			<td align="center"><%= info.wu.level %></td>
+			<td align="center"><%= info.wu.name %></td>
+		</tr>
+	</table>
+	<br/><br/>
+
+	<table border width="100%" id="tbl_overview">
+	<tr>
+		<th align="center" style="text-align:center">模式</th>
+		<th align="center" style="text-align:center">胜利</th>
+		<th align="center" style="text-align:center">败北</th>
+		<th align="center" style="text-align:center">逃跑</th>
+		<th align="center" style="text-align:center">胜率</th>		
+		<th align="center" style="text-align:center">主胜率</th>
+		<th align="center" style="text-align:center">忠胜率</th>
+		<th align="center" style="text-align:center">内胜率</th>
+		<th align="center" style="text-align:center">反胜率</th>
+	</tr>	
+	<tr>
+		<td align="center">身份局</td>
+		<td align="center"><%= info.role.winnum %></td>
+		<td align="center"><%= info.role.losenum %></td>
+		<td align="center"><%= info.role.escnum %></td>
+		<td align="center"><%= info.role.winrate %></td>
+		<td title="主公胜率" align="center"><img src="./image/system/roles/lord-1.png" height="23"/><%= info.role.winrate_1 %></td>
+		<td title="忠臣胜率" align="center"><img src="./image/system/roles/loyalist-1.png" height="23"/><%= info.role.winrate_2 %></td>
+		<td title="内奸胜率" align="center"><img src="./image/system/roles/renegade-1.png" height="23"/><%= info.role.winrate_3 %></td>
+		<td title="反贼胜率" align="center"><img src="./image/system/roles/rebel-1.png" height="23"/><%= info.role.winrate_4 %></td>
+	</tr>
+	<tr>
+		<td align="center">虎牢关</td>
+		<td align="center"><%= info.hulao.winnum %></td>
+		<td align="center"><%= info.hulao.losenum %></td>
+		<td align="center"><%= info.hulao.escnum %></td>
+		<td align="center"><%= info.hulao.winrate %></td>
+		<td  align="center" title="吕布胜率"><img src="./image/system/roles/lord.png" height="23"/><%= info.hulao.winrate_1 %></td>
+		<td align="center">&nbsp;</td>
+		<td align="center">&nbsp;</td>
+		<td  align="center" title="联军胜率"><img src="./image/system/roles/rebel.png" height="23"/><%= info.hulao.winrate_2 %></td>
+
+	</tr>
+	<tr>
+		<td align="center">3v3</td>
+		<td align="center"><%= info.v3.winnum %></td>
+		<td align="center"><%= info.v3.losenum %></td>
+		<td align="center"><%= info.v3.escnum %></td>
+		<td align="center"><%= info.v3.winrate %></td>
+		<td title="主帅胜率" align="center">
+			<img src="./image/system/roles/lord-4.png" height="23"/>
+			<img src="./image/system/roles/renegade-4.png" height="23"/>
+			<%= info.v3.winrate_1 %>
+		</td>
+		<td title="前锋胜率" align="center">
+			<img src="./image/system/roles/loyalist-4.png" height="23"/>
+			<img src="./image/system/roles/rebel-4.png" height="23"/>
+			<%= info.v3.winrate_2 %>
+		</td>
+		<td>&nbsp;</td>				
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
+		<td align="center">国战</td>
+		<td align="center"><%= info.hegemony.winnum %></td>
+		<td align="center"><%= info.hegemony.losenum %></td>
+		<td align="center"><%= info.hegemony.escnum %></td>
+		<td align="center"><%= info.hegemony.winrate %></td>
+		<td title="魏国胜率" align="center"><img src="./image/system/roles/lord-5.png" height="23"/><%= info.hegemony.winrate_1 %></td>
+		<td title="蜀国胜率" align="center"><img src="./image/system/roles/loyalist-5.png" height="23"/><%= info.hegemony.winrate_2 %></td>
+		<td title="吴国胜率" align="center"><img src="./image/system/roles/rebel-5.png" height="23"/><%= info.hegemony.winrate_3 %></td>
+		<td title="群雄胜率" align="center"><img src="./image/system/roles/renegade-5.png" height="23"/><%= info.hegemony.winrate_4 %></td>
+	</tr>
+
+	<tr>
+		<td align="center">1v1</td>
+		<td align="center"><%= info.v1.winnum %></td>
+		<td align="center"><%= info.v1.losenum %></td>
+		<td align="center"><%= info.v1.escnum %></td>
+		<td align="center"><%= info.v1.winrate %></td>
+		<td title="后手胜率" align="center"><img src="./image/system/roles/lord.png" height="23"/><%= info.v1.winrate_2 %></td>
+		<td>&nbsp;</td>	
+		<td title="先手胜率" align="center"><img src="./image/system/roles/renegade.png" height="23"/><%= info.v1.winrate_1 %></td>			
+		<td>&nbsp;</td>
+	</tr>
+	
+	<tr>
+		<th align="center" style="text-align:center">综合统计</th>
+		<th align="center" style="text-align:center"><%= info.total.winnum %></th>
+		<th align="center" style="text-align:center"><%= info.total.losenum %></th>
+		<th align="center" style="text-align:center"><%= info.total.escnum %></th>
+		<th align="center" style="text-align:center"><%= info.total.winrate %></th>		
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+	</tr>
+	</table>		
+</script>
+
+<script id="t_skills" type="text/html">
+<div style="height:45px">
+获得:&nbsp;游戏中，你杀死任意角色都可以获得随机的一张技能卡。<br/>
+使用:&nbsp;游戏开始时,系统从你拥有技能卡中，随机列出&nbsp;X (X=已完成战功数&divide;20)&nbsp;张技能卡，你可选择流失一点体力并使用其中的一张技能卡
+</div>
+<table border width="100%" id="tbl_skills">
+<thead>
+	<tr>
+	<th>技能卡</th><th>总数</th><th>剩余</th>
+	<th>技能卡</th><th>总数</th><th>剩余</th>
+	<th>技能卡</th><th>总数</th><th>剩余</th>
+	<th>技能卡</th><th>总数</th><th>剩余</th>
+	<th>技能卡</th><th>总数</th><th>剩余</th>
+	</tr>
+</thead>
+<tbody>
+    <% for (i = 0; i<skills.length; i+=5) { %>
+        <tr height="15">
+		<td><%= getTrans(skills[i].skillname) %></td><td><%= skills[i].gained %></td><td><%= skills[i].remainnum %></td>
+		<td><%= getTrans(skills[i+1].skillname) %></td><td><%= skills[i+1].gained %></td><td><%= skills[i+1].remainnum %></td>
+		<td><%= getTrans(skills[i+2].skillname) %></td><td><%= skills[i+2].gained %></td><td><%= skills[i+2].remainnum %></td>
+		<td><%= getTrans(skills[i+3].skillname) %></td><td><%= skills[i+3].gained %></td><td><%= skills[i+3].remainnum %></td>
+		<td><%= getTrans(skills[i+4].skillname) %></td><td><%= skills[i+4].gained %></td><td><%= skills[i+4].remainnum %></td>
+		</tr>
+    <% } %>
+</tbody>
+</table>
+</script>
+
+<script id="t_results" type="text/html">
+<div class="divtitle">显示最近300场游戏记录:</div>
+<table border width="100%" id="tbl_results">
+<thead>	
+	<tr>
+		<th>游戏时间</th>
+		<th>武将</th>
+		<th>角色</th>
+		<th>国战</th>
+		<th>游戏模式</th>		
+		<th>回合数</th>
+		<th>存活</th>
+		<th>结果</th>
+		<th>文功</th>
+		<th>武功</th>
+		<th>经验</th>
+		<th>获得战功</th>
+	</tr>
+</thead>	
+<tbody>
+    <% for (i = 0; i<results.length; i ++) { %>
+	<tr>
+		<td nowrap="nowrap"><%= getTime(results[i].gametime) %></td>
+		<td nowrap="nowrap"><%= getGeneral(results[i].general) %></td>
+		<td nowrap="nowrap"><%= getRole(results[i].role) %></td>
+		<td nowrap="nowrap" align="center"><%= getStatus(results[i].hegemony) %></td>
+		<td nowrap="nowrap"><%= getTrans(results[i].mode) %></td>
+		<td nowrap="nowrap"><%= results[i].turncount %></td>
+		<td nowrap="nowrap" align="center"><%= getStatus(results[i].alive) %></td>
+		<td nowrap="nowrap"><%= getTrans(results[i].result) %></td>
+		<td nowrap="nowrap"><%= results[i].wen %></td>
+		<td nowrap="nowrap"><%= results[i].wu %></td>
+		<td nowrap="nowrap"><%= results[i].expval %></td>
+		<td><%= getZhangong(results[i].zhangong) %></td>
+	</tr>
+    <% } %>	
+</tbody>
+</table>
+</script>
+
+
+<script id='t_zhonghe' type='text/html'>
+<table border width='100%' id='tbl_zhonghe'>
+<tbody>
+    <% for (i = 0; i<zgzhonghe.length; i+=10) { %>		
+    <tr>
+		<% for (j = 0; j<10; j++) { %>
+			<td><%= getZgInfo(zgzhonghe[i+j],j) %></td>
+		<% } %>			
+	</tr>
+    <% } %>	
+</tbody>
+</table>
+</script>
+
+<script id='t_wei' type='text/html'>
+<table border width='100%' id='tbl_wei'>
+<tbody>
+    <% for (i = 0; i<zgwei.length; i+=9) { %>		
+    <tr>
+		<% for (j = 0; j<9; j++) { %>
+			<td><%= getZgInfo(zgwei[i+j],j) %></td>
+		<% } %>			
+	</tr>
+    <% } %>	
+</tbody>
+</table>
+</script>
+
+<script id='t_shu' type='text/html'>
+<table border width='100%' id='tbl_shu'>
+<tbody>
+    <% for (i = 0; i<zgshu.length; i+=9) { %>		
+    <tr>
+		<% for (j = 0; j<9; j++) { %>
+			<td><%= getZgInfo(zgshu[i+j],j) %></td>
+		<% } %>			
+	</tr>
+    <% } %>	
+</tbody>
+</table>
+</script>
+
+<script id='t_wu' type='text/html'>
+<table border width='100%' id='tbl_wu'>
+<tbody>
+    <% for (i = 0; i<zgwu.length; i+=9) { %>		
+    <tr>
+		<% for (j = 0; j<9; j++) { %>
+			<td><%= getZgInfo(zgwu[i+j],j) %></td>
+		<% } %>			
+	</tr>
+    <% } %>	
+</tbody>
+</table>
+</script>
+
+<script id='t_qun' type='text/html'>
+<table border width='100%' id='tbl_qun'>
+<tbody>
+    <% for (i = 0; i<zgqun.length; i+=9) { %>		
+    <tr>
+		<% for (j = 0; j<9; j++) { %>
+			<td><%= getZgInfo(zgqun[i+j],j) %></td>
+		<% } %>			
+	</tr>
+    <% } %>	
+</tbody>
+</table>
+</script>
+
+<script id='t_god' type='text/html'>
+<table border width='100%' id='tbl_god'>
+<tbody>
+    <% for (i = 0; i<zggod.length; i+=9) { %>		
+    <tr>
+		<% for (j = 0; j<9; j++) { %>
+			<td><%= getZgInfo(zggod[i+j],j) %></td>
+		<% } %>			
+	</tr>
+    <% } %>	
+</tbody>
+</table>
+</script>
+
+<script id='t_3v3' type='text/html'>
+<table border width='100%' id='tbl_3v3'>
+<tbody>
+    <% for (i = 0; i<zg3v3.length; i+=9) { %>		
+    <tr>
+		<% for (j = 0; j<9; j++) { %>
+			<td><%= getZgInfo(zg3v3[i+j],j) %></td>
+		<% } %>			
+	</tr>
+    <% } %>	
+</tbody>
+</table>
+</script>
+
+<script id='t_1v1' type='text/html'>
+<table border width='100%' id='tbl_1v1'>
+<tbody>
+    <% for (i = 0; i<zg1v1.length; i+=9) { %>		
+    <tr>
+		<% for (j = 0; j<9; j++) { %>
+			<td><%= getZgInfo(zg1v1[i+j],j) %></td>
+		<% } %>			
+	</tr>
+    <% } %>	
+</tbody>
+</table>
+</script>
+
+
+<script type="text/javascript">
+var callback={
+	getTrans:function(v){
+		return trans[v] || v;
+	},
+	getTime:function(v){
+		if (/^\d{4}\-\d\d\-\d\d \d\d\:\d\d:\d\d$/) return v.slice(5,-3);
+		return v;
+	},
+	getGeneral:function(v){
+		return "<img height='20' src='./image/generals/tiny/"+v+".png'/>"+(trans[v] || v);
+	},	
+	getRole:function(v){
+		return "<img height='20' src='./image/system/roles/"+v+"-1.png'/>"+(trans[v] || v);
+	},
+	getStatus:function(v){
+		return v==1 ? "<font color='green'>是</font>":"<font color='#cccccc'>否</font>";
+	},
+	getZhangong:function(v){
+		var arr=v.split(/\:/g);
+		var ret=[];
+		for(var i=0;i<arr.length;i++){
+			
+			if (arr[i]!="") {
+				var br= (i+1)%6==0 ? ",&nbsp;&nbsp;&nbsp;<br/>" : ",&nbsp;&nbsp;&nbsp;";
+				ret.push((trans[arr[i]] || arr[i])+br);
+			}
+					
+		}
+		return ret.join("");
+	},
+	getExpLevel:function(){
+		var ret=["<div style='margin:10px'><table>"];
+		ret.push("<tr><td>等级</td><td>所需经验</td><td>等级</td><td>所需经验</td><td>等级</td><td>所需经验</td><td>等级</td><td>所需经验</td><td>等级</td><td>所需经验</td></tr>")
+		for(var i=1;i<=50;i+=5){
+			ret.push("<tr>")
+			for(var j=0;j<5;j++){
+				ret.push("<td>"+(i+j)+"</td><td>"+(i+j)*(i+j)*(i+j)+"</td>")
+			}
+			ret.push("</tr>");
+		}
+		ret.push("</table></div>")
+		return ret.join("\r\n");
+	},
+	getGongxun:function(cat){
+		var ret=["<div style='margin:10px'><table>"];
+		var arr=[];
+		for(var i=0,n=data.gongxun.length;i<n;i++){
+			if (data.gongxun[i].cat==cat) arr.push(data.gongxun[i])
+		}
+		ret.push("<tr>");
+		var gongxun= cat=='wen' ? "所需文功" : "所需武功";
+		for(var i=0;i<5;i++){
+			ret.push("<td>等级</td><td>官职</td><td>"+gongxun+"</td>");
+		}
+		ret.push("</tr>");
+		for(var i=0;i<50;i+=5){
+			ret.push("<tr>")
+			for(var j=0;j<5;j++){
+				ret.push("<td>"+arr[i+j].level+"</td><td>"+arr[i+j].name+"</td><td>"+arr[i+j].score+"</td>")
+			}
+			ret.push("</tr>");
+		}
+		ret.push("</table></div>");
+		return ret.join("\r\n");
+	},
+	getZgInfo:function(info,colindex){
+		if (!info)	return "<div style='width:53px'>&nbsp;</div>";
+		var imgsrc="./zhangong/img/"+info.id+".png";
+		if ($.inArray(info.category,["wei","shu","wu","qun","god"])!=-1 && info.general!=='-'){
+			imgsrc="./image/generals/avatar/"+info.general+".png";
+			if ($.inArray(info.general,["guanxingzhangbao","erzhang","yanliangwenchou"])!=-1){
+				imgsrc="./image/generals/big/"+info.general+".png";
+			}
+		}
+		var enableStr= info.gained !==0 ? "" : " class='graycolor'";
+		var numStr = info.gained>0 ? "<br/><font color='#888888'>x</font>&nbsp; "+info.gained : "<br/>&nbsp; ";
+		var tipcss = colindex>=8 ? " style='left:-8em' " : "";
+		var wincount= info.num>0 ? "<div class='sp'>&nbsp;</div>"+info.count+"&nbsp;of&nbsp;"+info.num+" :&nbsp;目前已获得"+info.count+"场胜利" : "";
+		var enableStr2 = /MSIE 9/.test(navigator.userAgent) ? "" : enableStr;
+		return "<div style='text-align:center;margin:3px'><a href='#' onclick='return false' class='s'><img border=1 height='53' src='"+imgsrc+"' "+enableStr
+				+"/><span"+tipcss+">"+info.name+"<font size='1'>(战功值:"+info.score+")</font>:&nbsp;&nbsp;"+info.description+wincount
+				+"</span></a><div style='margin-top:6px;font-size:11px;color:black'"+enableStr2+">"+info.name+numStr+"</div></div>";
+	}
+};
+
+$.each(callback,function(name,func){
+	template.helper(name,func)
+});
+
+if (!window.zglist) window.zglist=[];
+var tabLists=$.merge(["overview","results","skills"],zglist);
+
+$(function(){
+	$("a").click(function(){
+		$(this).blur();
+	});
+
+	$("a.t").click(function(){
+		return false;
+	});
+	
+	$.each(tabLists,function(i,tab){
+		$("#link_"+tab).click(function(){
+			$.each(tabLists,function(i,val){
+				$("#div_"+val).hide();
+				$("#link_"+val).css("color","highlight");
+			});
+			$("#div_"+tab).show();
+			$("#link_"+tab).css("color","red");
+			return false;
+		})
+		$("#tbl_"+tab +" tr").each(function(i){
+			if (i%2==0) $(this).css("background","#f5f5f5");
+		})
+	});
+	$("#link_overview").trigger("click");
+
+	
+	try{
+		var w=1010,h=750;
+		var x=(screen.width-w)/2;
+		var y=(screen.height-h)/2;
+		window.resizeTo(w,h);
+		window.moveTo(x,y);
+	}catch(x){}
+	
+});
+</script>
+
+<div class="page">
+	<div id="header">
+		<div id="nav">
+			[ <a href="http://qsanguosha.org/forum.php?mod=viewthread&tid=3897" target="_blank">论坛讨论贴</a> ] 
+			[ <a href="https://github.com/haveatry823/qsgsext" target="_blank" title="本程序的git开源项目地址">github</a> ] 
+			[ <a href="https://code.google.com/p/qsgsext/" target="_blank" title="本程序的SVN开源项目地址">google code</a> ]
+			[ <a href="mailto:haveatry823@qq.com" target="_blank">联系作者</a> ]
+			[ <a href="#" onclick="javascript:location.reload();return false">刷新</a> ]
+		</div>
+		<div id="menucontainer">
+			<ul id="menu">
+				<li><a id="link_overview" href="#">概况总结</a></li>
+				<li><a id="link_zhonghe" href="#">综合</a></li>
+				<li><a id="link_wei" href="#">魏</a></li>
+				<li><a id="link_shu" href="#">蜀</a></li>
+				<li><a id="link_wu" href="#">吴</a></li>
+				<li><a id="link_qun" href="#">群</a></li>
+				<li><a id="link_god" href="#">神</a></li>
+				<li><a id="link_3v3" href="#">3v3</a></li>
+				<li><a id="link_1v1" href="#">1v1</a></li>
+				<li><a id="link_skills" href="#">技能卡</a></li>
+				<li><a id="link_results" href="#">游戏记录</a></li>
+			</ul>
+		</div>
+	</div>
+    <div id="main">
+		<script type="text/javascript">
+			$.each(tabLists,function(i,tab){
+				document.write('<div id="div_'+tab+'" style="display:none">');
+				try{
+					var content=template('t_'+tab, data);
+					if (content=="{Template Error}") throw new Error(content);
+					document.write(content);
+				}catch(x){
+					document.write("请先玩一盘游戏后再刷新本页面看数据。");
+				}
+				document.write('</div>');
+			});
+			$("#tbl_results").tablePaging({ pageSize: 15,sorting:false});
+		</script>
+    </div>
+</div>
+</body>
+</html>
