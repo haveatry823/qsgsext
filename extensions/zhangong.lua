@@ -3681,8 +3681,8 @@ function init_gamestart(self, room, event, player, data, isowner)
 				player:getKingdom(),getGameData("hegemony"),room:getMode())
 	end	
 
-	if enableSkillCard==1 then useSkillCard(room,owner) end
 	if enableLuckyCard==1 then useLuckyCard(room,owner) end
+	if enableSkillCard==1 then useSkillCard(room,owner) end
 	if enableHulaoCard==1 then useHulaoCard(room,owner) end
 
 	return true
