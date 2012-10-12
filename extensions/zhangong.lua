@@ -3567,10 +3567,20 @@ function useLuckyCard(room,owner)
 	if owner:hasSkill("tuntian") then return false end
 	local zgquery=db:first_row("select count(id) as num from zhangong where gained>0")
 	local limitnum= math.ceil(zgquery.num / 20)
+
+	--防止使用手气卡的时候触发【落英】
+	local reason=sgs.CardMoveReason()
+	reason.m_reason   = sgs.CardMoveReason_S_REASON_PUT
+	reason.m_playerId = owner:objectName()
+	reason.m_targetId = owner:objectName()
+
 	for i=math.max(1,limitnum),1,-1 do
 		if owner:askForSkillInvoke("useLuckyCard") then
 			local n=owner:getHandcardNum()
-			owner:throwAllHandCards()
+			if owner:hasSkill("lianying") then n=n-1 end
+			for j=n,1,-1 do
+				room:moveCardTo(owner:getRandomHandCard(), nil, nil, sgs.Player_DiscardPile, reason)
+			end
 			owner:drawCards(n,true)
 			broadcastMsg(room,"#LuckyCardNum",i-1)
 		else
@@ -3673,8 +3683,8 @@ function init_gamestart(self, room, event, player, data, isowner)
 				player:getKingdom(),getGameData("hegemony"),room:getMode())
 	end	
 
-	if enableSkillCard==1 then useSkillCard(room,owner) end
 	if enableLuckyCard==1 then useLuckyCard(room,owner) end
+	if enableSkillCard==1 then useSkillCard(room,owner) end
 	if enableHulaoCard==1 then useHulaoCard(room,owner) end
 
 	return true
