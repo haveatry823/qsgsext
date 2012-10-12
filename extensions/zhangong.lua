@@ -3555,13 +3555,14 @@ function useSkillCard(room,owner)
 		local choice=room:askForChoice(owner,"@chooseskill","cancel+"..table.concat(skills,"+"))
 		if choice ~= "cancel" then
 			room:acquireSkill(owner,choice)
-			room:loseHp(owner)
+			if not owner:hasSkill("ruoyu") then room:loseHp(owner) end
 			sqlexec("update skills set  used=used+1 where skillname='%s'",choice)
 		end
 	end
 end
 
 function useLuckyCard(room,owner)
+	if owner:hasSkill("tuntian") then return false end
 	local zgquery=db:first_row("select count(id) as num from zhangong where gained>0")
 	local limitnum= math.ceil(zgquery.num / 20)
 	for i=math.max(1,limitnum),1,-1 do
