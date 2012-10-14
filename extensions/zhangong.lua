@@ -77,9 +77,6 @@ end
 
 
 function database2js()
-	local debugMode=false
-
-
 	local zglist={'zhonghe','wei','shu','wu','qun','god','3v3','1v1'}
 	local ret={}
 	table.insert(ret,"var zglist=['zhonghe','wei','shu','wu','qun','god','3v3','1v1'];")
@@ -97,31 +94,17 @@ function database2js()
 		return table.concat(arr,",\r\n")
 	end
 
-	if debugMode then logmsg("start dump table results") end
-
 	local sql = "select datetime(id,'unixepoch','localtime') as gametime,* from results order by id desc limit 300";
 	local collist={'gametime','id','general','role','kingdom','hegemony','mode','turncount','alive','result','wen','wu','expval','zhangong'}
 	table.insert(ret,string.format("data.results=[%s];",dbquery(sql,collist)))
-
-	if debugMode then logmsg("end dump table results\r\n") end
-
-	if debugMode then logmsg("start dump table skills") end
 
 	local sql = "select skillname,gained,used,gained-used as remainnum from skills order by remainnum desc"
 	local collist={'skillname','gained','used','remainnum'}
 	table.insert(ret,string.format("data.skills=[%s];",dbquery(sql,collist)))
 
-	if debugMode then logmsg("end dump table skills\r\n") end
-
-	if debugMode then logmsg("start dump table gongxun") end
-
 	local sql = "select level,name,score,category as cat from gongxun where level>0 order by category,level"
 	local collist={'level','name','score','cat'}
 	table.insert(ret,string.format("data.gongxun=[%s];",dbquery(sql,collist)))
-
-	if debugMode then logmsg("end dump table gongxun\r\n") end
-
-	if debugMode then logmsg("start dump table zhangong") end
 
 	for _,zgcat in ipairs(zglist) do
 		local sql = "select * from zhangong where category='"..zgcat.."' order by general asc"
@@ -130,8 +113,6 @@ function database2js()
 	end
 	local zgtrans="$.each(zglist,function(i,val){$.each(data['zg'+val],function(index,item){trans[item.id]=[item.name];})});"
 	table.insert(ret,zgtrans)
-
-	if debugMode then logmsg("end dump table zhangong\r\n") end
 
 	local getinfodata=function()
 		local arr={""}		
@@ -175,18 +156,12 @@ function database2js()
 			end			
 		end
 
-		if debugMode then logmsg("start run getResult") end
-
 		getResult("hulao","mode='04_1v3' and hegemony=0",{"role='lord'","role='rebel'"})
 		getResult("v3",  "mode='06_3v3' and hegemony=0",{"role in ('lord','renegade')","role in ('loyalist','rebel')"})
 		getResult("v1",  "mode='02_1v1' and hegemony=0",{"role='renegade'","role='lord'"})
 		getResult("role","mode like '__p%' and hegemony=0",{"role='lord'","role='loyalist'","role='renegade'","role='rebel'"})
 		getResult("hegemony","hegemony=1",{"kingdom='wei'","kingdom='shu'","kingdom='wu'","kingdom='qun'"})
 		getResult("total","1",{})
-
-		if debugMode then logmsg("end run getResult\r\n") end
-
-		if debugMode then logmsg("start run getData") end
 
 		local wen=getVal("select sum(wen) from results")
 		local wu=getVal("select sum(wu) from results")
@@ -208,8 +183,6 @@ function database2js()
 		local starttime=getVal("select datetime(min(id),'unixepoch','localtime') from results")
 		if starttime==0 then starttime="尚未开始统计" end
 		getData("total.starttime",starttime,"str")
-
-		if debugMode then logmsg("end run getData\r\n") end
 		
 		table.insert(arr,"return info;")
 		return table.concat(arr,"\r\n")
@@ -219,7 +192,6 @@ function database2js()
 	local fp = io.open("./zhangong/js/zg.js","wb")
 	fp:write(table.concat(ret,"\r\n"))
 	fp:close()
-
 
 end
 
@@ -3444,6 +3416,35 @@ zgfunc[sgs.GameStart].gsy=function(self, room, event, player, data,isowner,name)
 end
 
 
+zgfunc[sgs.TurnStart].hulao=function(self, room, event, player, data,isowner,name)
+	if room:getMode()=="04_1v3" and player:isLord() and player:getMark("secondMode")==1 and player:getGeneral2() and player:getMark("changeHulao2")==0 then
+		if player:hasSkill("wushuang") then room:detachSkillFromPlayer(player, "wushuang") end
+		room:setPlayerMark(player, "changeHulao2", 1)
+
+		if player:getMaxHp()~=4 then
+			room:setPlayerProperty(player, "maxhp", sgs.QVariant(4))
+			room:setPlayerProperty(player, "hp", sgs.QVariant(4))
+		end
+		local reason=sgs.CardMoveReason()
+		reason.m_reason   = sgs.CardMoveReason_S_REASON_NATURAL_ENTER
+		reason.m_playerId = player:objectName()
+		reason.m_targetId = player:objectName()
+
+		local weapon=player:getWeapon()
+		if weapon and not weapon:isKindOf("Crossbow") then
+			room:moveCardTo(weapon, nil, nil, sgs.Player_DiscardPile, reason)
+		end
+	end
+
+	if room:getMode()=="04_1v3" and player:isLord() and player:getMark("secondMode")==1 and not player:faceUp() then
+		player:turnOver()
+	end
+end
+
+
+
+
+
 function gainSkill(room)	
 	local skillname 
 	local count=0
@@ -3619,6 +3620,10 @@ function useHulaoCard(room,owner)
 			if choice ~= "cancel" then
 				room:detachSkillFromPlayer(p, "wushuang")
 				room:changeHero(p,choice,false,false,true,true)
+				if p:getMaxHp()~=8 then
+					room:setPlayerProperty(p, "maxhp", sgs.QVariant(8))
+					room:setPlayerProperty(p, "hp", sgs.QVariant(8))
+				end
 			end
 		else
 			local names=table.concat(generalnames,"+",1,10)
@@ -3633,7 +3638,6 @@ function useHulaoCard(room,owner)
 			shuffle(generalnames)
 		end
 	end
-
 end
 
 function init_gamestart(self, room, event, player, data, isowner)
@@ -3693,7 +3697,7 @@ zgzhangong1 = sgs.CreateTriggerSkill{
 	name = "#zgzhangong1",
 	events = {sgs.GameStart,sgs.Damage,sgs.GameOverJudge,
 			sgs.Death,
-			sgs.DamageCaused,sgs.DamageComplete,
+			sgs.DamageCaused,sgs.DamageComplete,sgs.TurnStart,
 			sgs.HpRecover,sgs.DamageInflicted,sgs.ConfirmDamage,sgs.Damaged},
 	priority = 6,
 	can_trigger = function()
@@ -3703,7 +3707,9 @@ zgzhangong1 = sgs.CreateTriggerSkill{
 	on_trigger = function(self, event, player, data)
 		local room = player:getRoom()
 		local owner= room:getOwner():objectName()==player:objectName()
-		if event ==sgs.GameStart and owner then
+		
+		if event ==sgs.GameStart and owner and room:getTag("zg_init_game"):toBool()==false then
+			room:setTag("zg_init_game",sgs.QVariant(true))
 			local log= sgs.LogMessage()
 				if init_gamestart(self, room, event, player, data, owner) then
 				log.type = "#enableZhangong"
@@ -3732,7 +3738,7 @@ zgzhangong1 = sgs.CreateTriggerSkill{
 
 zgzhangong2 = sgs.CreateTriggerSkill{
 	name = "#zgzhangong2",
-	events = {sgs.TurnStart,sgs.CardFinished,sgs.ChoiceMade,sgs.EventPhaseStart,sgs.EventPhaseEnd,sgs.Pindian,sgs.CardEffect,
+	events = {sgs.CardFinished,sgs.ChoiceMade,sgs.EventPhaseStart,sgs.EventPhaseEnd,sgs.Pindian,sgs.CardEffect,
 		sgs.CardEffected,sgs.SlashEffected,sgs.SlashEffect,sgs.CardsMoveOneTime,sgs.FinishRetrial},
 	priority = 6,
 	on_trigger = function(self, event, player, data)
