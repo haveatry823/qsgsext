@@ -37,7 +37,7 @@ var db=null;
 	});
 	$.each(zglist,function(i,val){$.each(data['zg'+val],function(index,item){trans[item.id]=[item.name];})});
 	
-	var info={v3:{},role:{},hegemony:{},v1:{},hulao:{},total:{},wen:{},wu:{},expval:{},zg:{}};
+	var info={v3:{},role:{},hegemony:{},v1:{},hulao:{},total:{},wen:{},wu:{},expval:{},zg:{},luckycard:{}};
 	
 	function getResult(mode,cond,ratearr){
 		info[mode].winnum=db.execute("select count(id) from results where " + cond +" and result='win'");
@@ -73,6 +73,9 @@ var db=null;
 	
 	info.wu.level=db.execute("select level from gongxun where category='wu' and score>=? order by score asc limit 1",info.wu.score)
 	info.wu.name=db.execute("select name from gongxun where category='wu' and score>=? order by score asc limit 1",info.wu.score)
+
+	info.luckycard.gained=db.execute("select gained from zgcard where id='luckycard'")
+	info.luckycard.used=db.execute("select used from zgcard where id='luckycard'")
 	
 	info.total.starttime=db.execute("select datetime(min(id),'unixepoch','localtime') from results") || "尚未开始统计";
 
