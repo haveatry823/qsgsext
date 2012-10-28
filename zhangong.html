@@ -17,36 +17,39 @@
 	<br/>		
 	<table border width="30%">
 		<tr>
-			<th style="text-align:center"><a href='#' class='t'>经验值(?)
+			<th style="text-align:center"><a href='#' class='t'><nobr>经验值(?)</nobr>
 				<span>你每造成1点伤害,经验加1</span></a></th>
-			<th style="text-align:center"><a href='#' class='t'>经验等级(?)
+			<th style="text-align:center"><a href='#' class='t'><nobr>经验等级(?)</nobr>
 				<span style="width:500px"><%= getExpLevel() %></span></a></th>
-			<th style="text-align:center"><a href='#' class='t'>战功数(?)
+			<th style="text-align:center"><a href='#' class='t'><nobr>战功数(?)</nobr>
 				<span>你已完成的战功数<br/>(同一战功多次拿到只计算为1个)</span></a></th>
-			<th style="text-align:center"><a href='#' class='t'>战功值(?)
+			<th style="text-align:center"><a href='#' class='t'><nobr>战功值(?)</nobr>
 				<span>已完成战功*每个战功的战功值<br/>(同一战功多次拿到可累计)</span></a></th>
+			<th style="text-align:center"><a href='#' class='t'><nobr>手气卡(?)</nobr>
+				<span>每胜利一盘可随机获得1~3张手气卡<br><div style="height:1px;overflow:hidden;background-color:gray">&nbsp;</div> 总数 - 已使用数 = 剩余数</span></a></th>
 		</tr>
 		<tr>
 			<td align="center"><%= info.expval.score %></td>
 			<td align="center"><%= info.expval.level %></td>
 			<td align="center"><%= info.zg.num %></td>
 			<td align="center"><%= info.zg.score %></td>
+			<td align="center" nowrap><%= getLuckyCard(info) %></td>
 		</tr>
 	</table>
-	<br/><br/>
+	<br/><br/> 
 
 	<table border width="60%">
 		<tr>
-			<th align="center" style="text-align:center"><a href='#' class='t'>文功(?)
+			<th align="center" style="text-align:center"><a href='#' class='t'><nobr>文功(?)</nobr>
 				<span style="width:220px">你每打出或使用1张【锦囊牌】,文功加1</span></a></th>
-			<th align="center" style="text-align:center"><a href='#' class='t'>文功等级(?)
+			<th align="center" style="text-align:center"><a href='#' class='t'><nobr>文功等级(?)</nobr>
 				<span style="width:800px;left:-5em;top:0.6em;cursor:default"><%= getGongxun('wen') %></span></a></th>
-			<th align="center" style="text-align:center">文功官职</th>
-			<th align="center" style="text-align:center"><a href='#' class='t'>武功(?)
+			<th align="center" style="text-align:center"><nobr>文功官职</nobr></th>
+			<th align="center" style="text-align:center"><a href='#' class='t'><nobr>武功(?)</nobr>
 				<span>你每打出或使用1张【杀】,武功加1</span></a></th>
-			<th align="center" style="text-align:center"><a href='#' class='t'>武功等级(?)
+			<th align="center" style="text-align:center"><a href='#' class='t'><nobr>武功等级(?)</nobr>
 				<span style="width:800px;left:-5em;top:0.6em;cursor:default"><%= getGongxun('wu') %></span></a></th>
-			<th align="center" style="text-align:center">武功官职</th>
+			<th align="center" style="text-align:center"><nobr>武功官职</nobr></th>
 		</tr>
 		<tr>
 			<td align="center"><%= info.wen.score %></td>
@@ -186,18 +189,18 @@
 <table border width="100%" id="tbl_results">
 <thead>	
 	<tr>
-		<th>游戏时间</th>
-		<th>武将</th>
-		<th>角色</th>
-		<th>国战</th>
-		<th>游戏模式</th>		
-		<th>回合数</th>
-		<th>存活</th>
-		<th>结果</th>
-		<th>文功</th>
-		<th>武功</th>
-		<th>经验</th>
-		<th>获得战功</th>
+		<th nowrap="nowrap" style="width:90px">游戏时间</th>
+		<th nowrap="nowrap" style="width:85px">武将</th>
+		<th nowrap="nowrap" style="width:45px">角色</th>
+		<th nowrap="nowrap" style="width:35px">国战</th>
+		<th nowrap="nowrap" style="width:65px">游戏模式</th>		
+		<th nowrap="nowrap" style="width:45px">回合数</th>
+		<th nowrap="nowrap" style="width:35px">存活</th>
+		<th nowrap="nowrap" style="width:35px">结果</th>
+		<th nowrap="nowrap" style="width:35px">文功</th>
+		<th nowrap="nowrap" style="width:35px">武功</th>
+		<th nowrap="nowrap" style="width:35px">经验</th>
+		<th nowrap="nowrap" style="width:auto">获得战功</th>
 	</tr>
 </thead>	
 <tbody>
@@ -208,12 +211,12 @@
 		<td nowrap="nowrap"><%= getRole(results[i].role) %></td>
 		<td nowrap="nowrap" align="center"><%= getStatus(results[i].hegemony) %></td>
 		<td nowrap="nowrap"><%= getTrans(results[i].mode) %></td>
-		<td nowrap="nowrap"><%= results[i].turncount %></td>
+		<td nowrap="nowrap" align="center"><%= results[i].turncount %></td>
 		<td nowrap="nowrap" align="center"><%= getStatus(results[i].alive) %></td>
 		<td nowrap="nowrap"><%= getTrans(results[i].result) %></td>
-		<td nowrap="nowrap"><%= results[i].wen %></td>
-		<td nowrap="nowrap"><%= results[i].wu %></td>
-		<td nowrap="nowrap"><%= results[i].expval %></td>
+		<td nowrap="nowrap" align="center"><%= results[i].wen %></td>
+		<td nowrap="nowrap" align="center"><%= results[i].wu %></td>
+		<td nowrap="nowrap" align="center"><%= results[i].expval %></td>
 		<td><%= getZhangong(results[i].zhangong) %></td>
 	</tr>
     <% } %>	
@@ -337,6 +340,11 @@
 
 <script type="text/javascript">
 var callback={
+	getLuckyCard:function(v){
+		if (!v["luckycard"]) return "&nbsp;";
+		var ret=[v.luckycard.gained,"-",v.luckycard.used,"=",v.luckycard.gained-v.luckycard.used]
+		return ret.join("&nbsp;&nbsp;")
+	},
 	getTrans:function(v){
 		return trans[v] || v;
 	},
@@ -359,7 +367,7 @@ var callback={
 		for(var i=0;i<arr.length;i++){
 			
 			if (arr[i]!="") {
-				var br= (i+1)%6==0 ? ",&nbsp;&nbsp;&nbsp;<br/>" : ",&nbsp;&nbsp;&nbsp;";
+				var br= (i+1)%6==0 ? ",&nbsp;&nbsp;&nbsp;" : ",&nbsp;&nbsp;&nbsp;";
 				ret.push((trans[arr[i]] || arr[i])+br);
 			}
 					
@@ -458,11 +466,14 @@ $(function(){
 <div class="page">
 	<div id="header">
 		<div id="nav">
-			[ <a href="http://qsanguosha.org/forum.php?mod=viewthread&tid=3897" target="_blank">论坛讨论贴</a> ] 
-			[ <a href="https://github.com/haveatry823/qsgsext" target="_blank" title="本程序的git开源项目地址">github</a> ] 
-			[ <a href="https://code.google.com/p/qsgsext/" target="_blank" title="本程序的SVN开源项目地址">google code</a> ]
-			[ <a href="mailto:haveatry823@qq.com" target="_blank">联系作者</a> ]
+			[ <a href="http://tieba.baidu.com/p/1922424820"  target="_blank">贴吧讨论贴</a> ]
+			[ <a href="https://github.com/haveatry823/qsgsext" target="_blank">项目源代码</a> ] 
+			[ <a href="mailto:haveatry823@qq.com" title="给作者发邮件">联系作者</a> ]
+			[ <a href="http://qsanguosha.org/forum.php?mod=viewthread&tid=3897&page=1#pid157923" target="_blank"  style="color:red">FAQ</a> ]
 			[ <a href="#" onclick="javascript:location.reload();return false">刷新</a> ]
+			
+
+			
 		</div>
 		<div id="menucontainer">
 			<ul id="menu">
@@ -493,7 +504,7 @@ $(function(){
 				}
 				document.write('</div>');
 			});
-			$("#tbl_results").tablePaging({ pageSize: 15,sorting:false});
+			$("#tbl_results").tablePaging({ pageSize: 12,sorting:false});
 		</script>
     </div>
 </div>
