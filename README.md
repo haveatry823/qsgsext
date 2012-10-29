@@ -4,11 +4,11 @@ lua 扩展for [太阳神三国杀](https://github.com/gaodayihao/QSanguosha)
 战功包
 --------
 *  OL的将近300个战功移植到太阳神三国杀, sqlite保存战功数据, hta/html查看战功
-*
+*  
 *  说明,安装以及发布贴:  http://tieba.baidu.com/p/1922424820
-*
+*  
 *  XP安装包:   https://github.com/haveatry823/qsgsext/zipball/master
-*
+*  
 *  win7安装包: https://github.com/haveatry823/qsgsext/zipball/win7
 
 
@@ -16,11 +16,11 @@ lua 扩展for [太阳神三国杀](https://github.com/gaodayihao/QSanguosha)
 ----------
 
 *  1v1 普通2人局的无尽模式, 玩家3条命 VS 电脑 99条命， 提供存盘及读取进度等功能
-*
+*  
 *  说明,安装以及发布贴:   http://tieba.baidu.com/p/1929665238
-*
+*  
 *  下载: https://github.com/haveatry823/qsgsext/zipball/endless
-*
+*  
 *  分支: https://github.com/haveatry823/qsgsext/tree/endless
     
 
