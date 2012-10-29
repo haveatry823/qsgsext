@@ -1,54 +1,30 @@
 lua 扩展for [太阳神三国杀](https://github.com/gaodayihao/QSanguosha)
 ===========================
 
-版本与下载
+战功包
 --------
-* 本项目的扩展包, 如果没有特别说明，默认只适合新神杀的最新版本(神杀贴吧置顶帖有下载)，不适合踏青版或涅槃版
-* 扩展包下载地址:  
-*  XP,linux: https://github.com/haveatry823/qsgsext/zipball/master
-*  win7:   https://github.com/haveatry823/qsgsext/zipball/win7
+*  OL的将近300个战功移植到太阳神三国杀, sqlite保存战功数据, hta/html查看战功
+*
+*  说明,安装以及发布贴:  http://tieba.baidu.com/p/1922424820
+*
+*  XP安装包:   https://github.com/haveatry823/qsgsext/zipball/master
+*
+*  win7安装包: https://github.com/haveatry823/qsgsext/zipball/win7
 
 
-功能
+无尽模式包
 ----------
 
-1. 战功成就系统
-    * OL的289的战功全部用lua实现并移植到新神杀(刘备,关羽,赵云等少数N(N<5)个战功因为技术问题对战功做了修改)
-    * 文功,武功,经验值,等级,官职系统的实现.
-    * 技能卡: 游戏中每杀死一个人可随机获得一个武将技能，这些技能可以在以后的游戏开始时使用
-    * 投降: 如果你阵亡,在死亡事件结算完毕后,系统会询问你是否投降并立即结束游戏,此举旨在降低逃跑率.
-    * 游戏记录: 系统将记录你所有的游戏成绩,并显示最近300盘游戏成绩
-    * 本系统用sqlite3作为数据库保存保存所有相关数据
-    * 用 html/hta 作为前端结果显示与查看界面
+*  1v1 普通2人局的无尽模式, 玩家3条命 VS 电脑 99条命， 提供存盘及读取进度等功能
+*
+*  说明,安装以及发布贴:   http://tieba.baidu.com/p/1929665238
+*
+*  下载: https://github.com/haveatry823/qsgsext/zipball/endless
+*
+*  分支: https://github.com/haveatry823/qsgsext/tree/endless
     
 
-FAQ
-----
-
-1. 战功成就系统
-   * 战功系统启用的前提是: 除了房主自己外，要求其他玩家均为AI. 战功系统只记录房主的成就
-   * 以下情况下，战功系统不会被启用:  多人联机对战,  多开, 自定义小场景, 情景模式
-   * 目前因为程序不完善需要测试，允许以作弊的方式(开启自由选将)取得战功,以后开启作弊将禁止战功
-   * 战功系统支持游戏原生所有武将(测试包除外), 玩家自己DIY的武将不计算战功(指lua的武将)
-   
-
-安装
-----
-
-1. 战功成就系统
-   * 下载本扩展包,解压后复制所有文件到神杀的游戏目录。
-   * 保证 libluasqlite3.dll, lua5.1.dll, lua51.dll 和游戏主程序QSanguosha.exe 在同一个目录就好了
-   * 如果上述步骤都OK, 就可用浏览器打开 zhangong.html (win7的是zhangong.hta) 来查看战功了.
-
-2. 对于win7用户
-   * 需手工将 litex_sqlite3.dll复制到windows安装目录下的system32目录，(通常情况下是C:\Windows\System32)
-   * 以管理员身份运行一下 reg_sqlite.bat
-
-3. 如果上述操作过程中有360提示安全问题是否操作，请选择允许/信任本程序，让操作继续进行。
-
-
-
-截图
+战功包截图
 ------
 1. 战功成就系统
    * ![战功1](https://qsgsext.googlecode.com/svn-history/r23/wiki/overview.jpg)
