@@ -2884,7 +2884,7 @@ end
 
 zgfunc[sgs.GameOverJudge].callback.lsgj=function(room,player,data,name,result)
 	if  room:getOwner():getGeneralName()~='caiwenji' then return false end
-	if result=='win' and getGameData(name)==4 and getGameData(name.."duanchang")==1 then			 
+	if result=='win' and getGameData(name)>=4 and getGameData(name.."duanchang")==1 then
 		addZhanGong(room,name)
 	end		
 end
