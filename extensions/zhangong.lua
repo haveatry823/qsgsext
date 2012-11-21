@@ -2747,10 +2747,10 @@ end
 -- 
 for zgname, count in pairs({ccml=1,csss=5,xsnd=10,xymq=20,fmbl=30}) do
 	zgfunc[sgs.GameOverJudge].callback[zgname]=function(room,player,data,name,result)
-		
-		local sql=string.format("select count(id) as num from results where result<>'-'")	
+		local zgquery=db:first_row("select gained from zhangong where id='"..zgname.."'")
+		local sql=string.format("select count(id) as num from results where result<>'-'")
 		for row in db:rows(sql) do
-			if row.num==count then 			 
+			if row.num>=count and zgquery.gained==0 then
 				addZhanGong(room,name)
 			end
 		end
