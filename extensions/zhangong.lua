@@ -5716,12 +5716,13 @@ function initDB()
 			db:exec(line)
 		end
 	end
-
-	if not string.find(content,"--new-zhangong--") thrn return false end
+	
+	if not string.find(content,"%-%-new%-zhangong%-%-") then return false end
 	local rowquery=db:first_row("select count(*) as rowcount from zhangong;")
 	if rowquery.rowcount<300 then
-		local arr=content:split("/*--new-zhangong--*/")
-		for _,line in ipairs(arr[2]) do
+		local arr=content:split("%/%*%-%-new%-zhangong%-%-%*%/")
+		local sqlarr = arr[2]:split("\n")
+		for _,line in ipairs(sqlarr) do
 			db:exec(line)
 		end
 		db:exec("update zgcard set gained=gained+200 where id='luckycard'")

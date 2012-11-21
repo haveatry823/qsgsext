@@ -3,7 +3,7 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <link href="./zhangong/js/zg.css" rel="stylesheet" type="text/css">
 <title>成就系统for太阳神三国杀</title> 
-<hta:application id="ohta" applicationname="qsgsext" border="thin" borderstyle="normal" caption="yes" icon="./QSanguosha.exe" maximizebutton="no" 	minimizebutton="yes" showintaskbar="yes" ingleinstance="no" sysmenu="yes" version="1.0" windowstate="normal" />
+<hta:application id="ohta" applicationname="qsgsext" border="thin" borderstyle="normal" caption="yes" icon="./QSanguosha.exe" maximizebutton="yes" 	minimizebutton="yes" showintaskbar="yes" ingleinstance="no" sysmenu="yes" version="1.0" windowstate="normal" />
 <script type="text/javascript" language="javascript" src="./zhangong/js/jquery-1.4.2.min.js"></script>
 <script type="text/javascript" language="javascript" src="./zhangong/js/jquery.table.js"></script>
 <script type="text/javascript" language="javascript" src="./zhangong/js/template.min.js"></script>
@@ -463,11 +463,10 @@ $(function(){
 
 	
 	try{
-		var w=1010,h=730;
-		var x=(screen.width-w)/2;
-		var y=(screen.height-h)/2;
+		var w=screen.width;
+		var h=screen.height-30;
+		window.moveTo(0,0);
 		window.resizeTo(w,h);
-		window.moveTo(x,y);
 	}catch(x){}
 	
 });
