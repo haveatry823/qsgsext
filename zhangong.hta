@@ -228,9 +228,9 @@
 <script id='t_zhonghe' type='text/html'>
 <table border width='100%' id='tbl_zhonghe'>
 <tbody>
-    <% for (i = 0; i<zgzhonghe.length; i+=10) { %>		
+    <% for (i = 0; i<zgzhonghe.length; i+=13) { %>
     <tr>
-		<% for (j = 0; j<10; j++) { %>
+		<% for (j = 0; j<13; j++) { %>
 			<td><%= getZgInfo(zgzhonghe[i+j],j) %></td>
 		<% } %>			
 	</tr>
@@ -242,9 +242,9 @@
 <script id='t_wei' type='text/html'>
 <table border width='100%' id='tbl_wei'>
 <tbody>
-    <% for (i = 0; i<zgwei.length; i+=9) { %>		
+    <% for (i = 0; i<zgwei.length; i+=10) { %>
     <tr>
-		<% for (j = 0; j<9; j++) { %>
+		<% for (j = 0; j<10; j++) { %>
 			<td><%= getZgInfo(zgwei[i+j],j) %></td>
 		<% } %>			
 	</tr>
@@ -256,9 +256,9 @@
 <script id='t_shu' type='text/html'>
 <table border width='100%' id='tbl_shu'>
 <tbody>
-    <% for (i = 0; i<zgshu.length; i+=9) { %>		
+    <% for (i = 0; i<zgshu.length; i+=10) { %>
     <tr>
-		<% for (j = 0; j<9; j++) { %>
+		<% for (j = 0; j<10; j++) { %>
 			<td><%= getZgInfo(zgshu[i+j],j) %></td>
 		<% } %>			
 	</tr>
@@ -270,9 +270,9 @@
 <script id='t_wu' type='text/html'>
 <table border width='100%' id='tbl_wu'>
 <tbody>
-    <% for (i = 0; i<zgwu.length; i+=9) { %>		
+    <% for (i = 0; i<zgwu.length; i+=10) { %>
     <tr>
-		<% for (j = 0; j<9; j++) { %>
+		<% for (j = 0; j<10; j++) { %>
 			<td><%= getZgInfo(zgwu[i+j],j) %></td>
 		<% } %>			
 	</tr>
@@ -284,9 +284,9 @@
 <script id='t_qun' type='text/html'>
 <table border width='100%' id='tbl_qun'>
 <tbody>
-    <% for (i = 0; i<zgqun.length; i+=9) { %>		
+    <% for (i = 0; i<zgqun.length; i+=10) { %>
     <tr>
-		<% for (j = 0; j<9; j++) { %>
+		<% for (j = 0; j<10; j++) { %>
 			<td><%= getZgInfo(zgqun[i+j],j) %></td>
 		<% } %>			
 	</tr>
@@ -298,9 +298,9 @@
 <script id='t_god' type='text/html'>
 <table border width='100%' id='tbl_god'>
 <tbody>
-    <% for (i = 0; i<zggod.length; i+=9) { %>		
+    <% for (i = 0; i<zggod.length; i+=10) { %>
     <tr>
-		<% for (j = 0; j<9; j++) { %>
+		<% for (j = 0; j<10; j++) { %>
 			<td><%= getZgInfo(zggod[i+j],j) %></td>
 		<% } %>			
 	</tr>
@@ -312,9 +312,9 @@
 <script id='t_3v3' type='text/html'>
 <table border width='100%' id='tbl_3v3'>
 <tbody>
-    <% for (i = 0; i<zg3v3.length; i+=9) { %>		
+    <% for (i = 0; i<zg3v3.length; i+=10) { %>
     <tr>
-		<% for (j = 0; j<9; j++) { %>
+		<% for (j = 0; j<10; j++) { %>
 			<td><%= getZgInfo(zg3v3[i+j],j) %></td>
 		<% } %>			
 	</tr>
@@ -326,9 +326,9 @@
 <script id='t_1v1' type='text/html'>
 <table border width='100%' id='tbl_1v1'>
 <tbody>
-    <% for (i = 0; i<zg1v1.length; i+=9) { %>		
+    <% for (i = 0; i<zg1v1.length; i+=10) { %>
     <tr>
-		<% for (j = 0; j<9; j++) { %>
+		<% for (j = 0; j<10; j++) { %>
 			<td><%= getZgInfo(zg1v1[i+j],j) %></td>
 		<% } %>			
 	</tr>
@@ -420,7 +420,7 @@ var callback={
 		}
 		var enableStr= info.gained !==0 ? "" : " class='graycolor'";
 		var numStr = info.gained>0 ? "<br/><font color='#888888'>x</font>&nbsp; "+info.gained : "<br/>&nbsp; ";
-		var tipcss = colindex>=8 ? " style='left:-8em' " : "";
+		var tipcss = colindex>=9 ? " style='left:-8em' " : "";
 		var wincount= info.num>0 ? "<div class='sp'>&nbsp;</div>"+info.count+"&nbsp;of&nbsp;"+info.num+" :&nbsp;目前已获得"+info.count+"场胜利" : "";
 		var enableStr2 = /MSIE 9/.test(navigator.userAgent) ? "" : enableStr;
 		return "<div style='text-align:center;margin:3px'><a href='#' onclick='return false' class='s'><img style='border:1px solid gray' height='53' src='"
