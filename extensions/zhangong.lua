@@ -2,7 +2,7 @@ enableSkillCard = 1		-- 是否开启技能卡， 1:开启, 0:不开启
 enableLuckyCard = 1		-- 是否开启手气卡,  1:开启, 0:不开启
 enableHulaoCard = 1		-- 是否开启虎牢关点将卡,  1:开启, 0:不开启
 
-version='20121121'
+zgver='20121121'
 
 dofile "lua/config.lua"
 dofile "lua/sgs_ex.lua"
@@ -62,6 +62,34 @@ zgfunc[sgs.Predamage]={}
 
 require "sqlite3"
 db = sqlite3.open("./zhangong/zhangong.data")
+
+local tblquery=db:first_row("select count(name) as tblnum from sqlite_master  where type='table' and name='card';")
+if tblquery.tblnum==0 then
+	db:exec("CREATE TABLE zgcard([id] varchar(20) NOT NULL,[gained] int(11) NOT NULL,[used] int(11) NOT NULL, Primary Key(id) ON CONFLICT Ignore);")
+	db:exec("insert into zgcard values('luckycard',100,0);")
+end
+
+local content=(io.open "./zhangong/zhangong.sql"):read("*a")
+
+local zgquery=db:first_row("select count(name) as tblnum from sqlite_master  where type='table' and name='zhangong';")
+if zgquery.tblnum==0 then
+	local sqltbl = content:split("\n")
+	for _,line in ipairs(sqltbl) do
+		db:exec(line)
+	end
+end
+
+if not string.find(content,"%-%-new%-zhangong%-%-") then 
+	local rowquery=db:first_row("select count(*) as rowcount from zhangong;")
+	if rowquery.rowcount<300 then
+		local arr=content:split("%/%*%-%-new%-zhangong%-%-%*%/")
+		local sqlarr = arr[2]:split("\n")
+		for _,line in ipairs(sqlarr) do
+			db:exec(line)
+		end
+		db:exec("update zgcard set gained=gained+200 where id='luckycard'")
+	end
+end
 
 function logmsg(fmt,...)
 	local fp = io.open("zgdebug.log","ab")
@@ -4120,29 +4148,6 @@ zgfunc[sgs.CardFinished].sgmc=function(self, room, event, player, data,isowner,n
 	end
 end
 
-zgfunc[sgs.CardResponsed].sgmc=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~='yuji' then return false end
-	if not isowner then return false end
-	local use=data:toResponsed()
-	local card=use.m_card
-	local part=card:toString():split(":")
-	if part and #part==3 and string.find(part[2],"guhuo%[") then
-		local card2 = nil
-		local arr=part[3]:split("=")
-		if arr[2]=="." then
-			return false
-		else
-			card2=sgs.Sanguosha:getCard(arr[2])
-		end
-		if card2 and part[1]~=card2:objectName()  then
-			addGameData(name,1)
-			if getGameData(name)==3 then
-				addZhanGong(room,name)
-			end
-		end
-	end
-end
-
 
 -- sssg :: 四世三公 :: 使用袁术在1回合内消灭场上4个势力中的3个 
 -- 
@@ -5700,35 +5705,6 @@ function useHulaoCard(room,owner)
 	end
 end
 
-function initDB()
-	local tblquery=db:first_row("select count(name) as tblnum from sqlite_master  where type='table' and name='card';")
-	if tblquery.tblnum==0 then
-		db:exec("CREATE TABLE zgcard([id] varchar(20) NOT NULL,[gained] int(11) NOT NULL,[used] int(11) NOT NULL, Primary Key(id) ON CONFLICT Ignore);")
-		db:exec("insert into zgcard values('luckycard',100,0);")
-	end
-
-	local content=(io.open "./zhangong/zhangong.sql"):read("*a")
-
-	local zgquery=db:first_row("select count(name) as tblnum from sqlite_master  where type='table' and name='zhangong';")
-	if zgquery.tblnum==0 then
-		local sqltbl = content:split("\n")
-		for _,line in ipairs(sqltbl) do
-			db:exec(line)
-		end
-	end
-	
-	if not string.find(content,"%-%-new%-zhangong%-%-") then return false end
-	local rowquery=db:first_row("select count(*) as rowcount from zhangong;")
-	if rowquery.rowcount<300 then
-		local arr=content:split("%/%*%-%-new%-zhangong%-%-%*%/")
-		local sqlarr = arr[2]:split("\n")
-		for _,line in ipairs(sqlarr) do
-			db:exec(line)
-		end
-		db:exec("update zgcard set gained=gained+200 where id='luckycard'")
-	end
-end
-
 function init_gamestart(self, room, event, player, data, isowner)
 	local config=sgs.Sanguosha:getSetupString():split(":")
 	local count=0
@@ -5815,10 +5791,10 @@ zgzhangong1 = sgs.CreateTriggerSkill{
 			local log= sgs.LogMessage()
 			if init_gamestart(self, room, event, player, data, owner) then
 				log.type = "#enableZhangong"
-				player:speak(string.format("战功包 ver:%s 已开启",version))
+				player:speak(string.format("<font color='green'>战功包已开启 ver:%s</font>",zgver))
 			else
 				log.type = "#disableZhangong"
-				player:speak(string.format("战功包 ver:%s 已禁用",version))
+				player:speak(string.format("<font color='red'>战功包已禁用 ver:%s</font>",zgver))
 			end
 			room:sendLog(log)
 		end
@@ -6001,10 +5977,11 @@ function initZhangong()
 	end
 end
 
+
 zganjiang:addSkill(zgzhangong1)
 zganjiang:addSkill(zgzhangong2)
 
-initDB()
+
 initZhangong()
 
 
