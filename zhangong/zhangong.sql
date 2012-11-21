@@ -614,5 +614,5 @@ INSERT INTO zhangong VALUES('hyhs', '红颜祸水', 10, '使用SP貂蝉在一局
 INSERT INTO zhangong VALUES('wzsh', '威震四海', 15, '一次对另外一名角色造成至少5点伤害', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
 INSERT INTO zhangong VALUES('dsdnx', '屌丝的逆袭', 15, '身为虎牢关联军的先锋，第一回合就爆了虎牢布的菊花', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
 INSERT INTO zhangong VALUES('kdzz', '坑爹自重', 15, '使用刘禅，孙权&孙策，曹丕&曹植坑了自己的老爹', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
-INSERT INTO zhangong VALUES('yfnzmk', '元芳，你怎么看', 15, '元芳，你怎么看？大人，这不科学。', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
+INSERT INTO zhangong VALUES('yfnzmk', '元芳你怎么看', 15, '元芳，你怎么看？大人，这不科学。', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
 COMMIT;
