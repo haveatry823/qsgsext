@@ -1186,7 +1186,7 @@ zgfunc[sgs.ChoiceMade].jsbc=function(self, room, event, player, data,isowner,nam
 		local arr=string.sub(getGameData(name),1,-2):split(",")
 		if #arr>=8 then
 			for i=#arr,#arr-6,-1 do
-				if arr[i]-arr[i-1]~=1 or arr[i]-arr[i-1]~=2 then return false end
+				if arr[i]-arr[i-1]~=1 and arr[i]-arr[i-1]~=2 then return false end
 			end
 			addZhanGong(room,name)
 			setGameData(name,'')
