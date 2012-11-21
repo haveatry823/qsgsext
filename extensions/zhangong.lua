@@ -3444,6 +3444,7 @@ end
 --
 zgfunc[sgs.GameStart].gsy=function(self, room, event, player, data,isowner,name)
 	if not isowner or getGameData("turncount",0)>0 or player:isKongcheng() then return false end
+	if getGameData(name,0)==1 then return false end
 	local cards=sgs.QList2Table(player:getHandcards())
 	local num= 5 + (os.time() % 6)
 	for i=1,#cards,1 do
@@ -3458,6 +3459,7 @@ zgfunc[sgs.GameStart].gsy=function(self, room, event, player, data,isowner,name)
 	local desc="当你的开局4牌的颜色全为黑色时,清除你的N盘逃跑记录(N为5-10的随机数)"
 	sqlexec("update zhangong set description='%s' where id='%s'",desc,name)
 	addZhanGong(room,name)
+	setGameData(name,1)
 	broadcastMsg(room,"#gsyNum",count)
 end
 
