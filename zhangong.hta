@@ -423,9 +423,9 @@ var callback={
 		var tipcss = colindex>=8 ? " style='left:-8em' " : "";
 		var wincount= info.num>0 ? "<div class='sp'>&nbsp;</div>"+info.count+"&nbsp;of&nbsp;"+info.num+" :&nbsp;目前已获得"+info.count+"场胜利" : "";
 		var enableStr2 = /MSIE 9/.test(navigator.userAgent) ? "" : enableStr;
-		return "<div style='text-align:center;margin:3px'><a href='#' onclick='return false' class='s'><img border=1 height='53' src='"+imgsrc+"' "+enableStr
-				+"/><span"+tipcss+">"+info.name+"<font size='1'>(战功值:"+info.score+")</font>:&nbsp;&nbsp;"+info.description+wincount
-				+"</span></a><div style='margin-top:6px;font-size:11px;color:black'"+enableStr2+">"+info.name+numStr+"</div></div>";
+		return "<div style='text-align:center;margin:3px'><a href='#' onclick='return false' class='s'><img style='border:1px solid gray' height='53' src='"
+				+imgsrc+"' "+enableStr +"/><span"+tipcss+">"+info.name+"<font size='1'>(战功值:"+info.score+")</font>:&nbsp;&nbsp;"
+				+info.description+wincount+"</span></a><div style='margin-top:6px;font-size:11px;color:black'"+enableStr2+">"+info.name+numStr+"</div></div>";
 	}
 };
 
