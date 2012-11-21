@@ -1186,7 +1186,7 @@ zgfunc[sgs.ChoiceMade].jsbc=function(self, room, event, player, data,isowner,nam
 		local arr=string.sub(getGameData(name),1,-2):split(",")
 		if #arr>=8 then
 			for i=#arr,#arr-6,-1 do
-				if arr[i]-arr[i-1]~=1 then return false end
+				if arr[i]-arr[i-1]~=1 or arr[i]-arr[i-1]~=2 then return false end
 			end
 			addZhanGong(room,name)
 			setGameData(name,'')
@@ -2777,7 +2777,7 @@ end
 
 -- 完成N盘游戏获得战功
 -- 
-for zgname, count in pairs({ccml=1,csss=5,xsnd=10,xymq=20,fmbl=30}) do
+for zgname, count in pairs({ccml=1,csss=5,xsnd=10,xymq=20,fmbl=30,xysc=100,xlfm=1000}) do
 	zgfunc[sgs.GameOverJudge].callback[zgname]=function(room,player,data,name,result)
 		local zgquery=db:first_row("select gained from zhangong where id='"..zgname.."'")
 		local sql=string.format("select count(id) as num from results where result<>'-'")
