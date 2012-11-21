@@ -365,7 +365,10 @@ zgfunc[sgs.CardResponsed].bqbr=function(self, room, event, player, data,isowner,
 	if not isowner then return false end
 	if player:getHp() == 1 and data:toResponsed().m_card:isKindOf("Jink") then
 		addGlobalData(name,1)
-		if getGlobalData(name)==100 then addZhanGong(room,name) end
+		local zgquery=db:first_row("select gained from zhangong where id='"..name.."'")
+		if getGlobalData(name)>=100 and zgquery and zgquery.gained==0 then
+			addZhanGong(room,name)
+		end
 	end
 end
 
@@ -397,7 +400,10 @@ zgfunc[sgs.Death].brz=function(self, room, event, player, data,isowner,name)
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() then
 		addGlobalData(name,1)
-		if getGlobalData(name)==100 then addZhanGong(room,name) end
+		local zgquery=db:first_row("select gained from zhangong where id='"..name.."'")
+		if getGlobalData(name)>=100 and zgquery and zgquery.gained==0 then
+			addZhanGong(room,name)
+		end
 	end
 end
 
@@ -406,7 +412,10 @@ zgfunc[sgs.GameOverJudge].callback.brz=function(room,player,data,name,result)
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() then
 		addGlobalData(name,1)
-		if getGlobalData(name)==100 then addZhanGong(room,name) end
+		local zgquery=db:first_row("select gained from zhangong where id='"..name.."'")
+		if getGlobalData(name)>=100 and zgquery and zgquery.gained==0 then
+			addZhanGong(room,name)
+		end
 	end
 end
 
@@ -553,7 +562,10 @@ zgfunc[sgs.Death].qrz=function(self, room, event, player, data,isowner,name)
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() then
 		addGlobalData(name,1)
-		if getGlobalData(name)==1000 then addZhanGong(room,name) end
+		local zgquery=db:first_row("select gained from zhangong where id='"..name.."'")
+		if getGlobalData(name)>=1000 and zgquery and zgquery.gained==0 then
+			addZhanGong(room,name)
+		end
 	end
 end
 
@@ -562,7 +574,10 @@ zgfunc[sgs.GameOverJudge].callback.qrz=function(room,player,data,name,result)
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() then
 		addGlobalData(name,1)
-		if getGlobalData(name)==1000 then addZhanGong(room,name) end
+		local zgquery=db:first_row("select gained from zhangong where id='"..name.."'")
+		if getGlobalData(name)>=1000 and zgquery and zgquery.gained==0 then
+			addZhanGong(room,name)
+		end
 	end
 end
 
@@ -2750,7 +2765,7 @@ for zgname, count in pairs({ccml=1,csss=5,xsnd=10,xymq=20,fmbl=30}) do
 		local zgquery=db:first_row("select gained from zhangong where id='"..zgname.."'")
 		local sql=string.format("select count(id) as num from results where result<>'-'")
 		for row in db:rows(sql) do
-			if row.num>=count and zgquery.gained==0 then
+			if row.num>=count and zgquery and zgquery.gained==0 then
 				addZhanGong(room,name)
 			end
 		end
@@ -3030,7 +3045,7 @@ zgfunc[sgs.HpRecover].gycc=function(self, room, event, player, data,isowner,name
 	local recov = data:toRecover()
 	if recov.recover>=1 and player:getHp()==0  then
 		addGameData(name,1)
-		if getGameData(name)==5 then 			 
+		if getGameData(name)==5 then
 			addZhanGong(room,name)
 		end
 	end
@@ -3043,7 +3058,8 @@ zgfunc[sgs.Death].ph=function(self, room, event, player, data,isowner,name)
 	if not damage then return false end
 	if player:objectName()==room:getOwner():objectName() and damage.card and damage.card:isKindOf("AOE") then
 		addGlobalData(name,1)
-		if getGlobalData(name)==10 then
+		local zgquery=db:first_row("select gained from zhangong where id='"..name.."'")
+		if getGlobalData(name)>=10 and zgquery and zgquery.gained==0 then
 			addZhanGong(room,name)
 		end
 	end		
@@ -3054,7 +3070,8 @@ zgfunc[sgs.GameOverJudge].callback.ph=function(room,player,data,name,result)
 	if not damage then return false end
 	if player:objectName()==room:getOwner():objectName() and damage.card and damage.card:isKindOf("AOE") then
 		addGlobalData(name,1)
-		if getGlobalData(name)==10 then
+		local zgquery=db:first_row("select gained from zhangong where id='"..name.."'")
+		if getGlobalData(name)>=10 and zgquery and zgquery.gained==0 then
 			addZhanGong(room,name)
 		end
 	end	
@@ -3069,7 +3086,8 @@ zgfunc[sgs.Death].gddph=function(self, room, event, player, data,isowner,name)
 	if not damage then return false end
 	if player:objectName()==room:getOwner():objectName() and damage.card and damage.card:isKindOf("AOE") then
 		addGlobalData(name,1)
-		if getGlobalData(name)==50 then
+		local zgquery=db:first_row("select gained from zhangong where id='"..name.."'")
+		if getGlobalData(name)>=50 and zgquery and zgquery.gained==0 then
 			addZhanGong(room,name)
 		end
 	end		
@@ -3080,7 +3098,8 @@ zgfunc[sgs.GameOverJudge].callback.gddph=function(room,player,data,name,result)
 	if not damage then return false end
 	if player:objectName()==room:getOwner():objectName() and damage.card and damage.card:isKindOf("AOE") then
 		addGlobalData(name,1)
-		if getGlobalData(name)==50 then
+		local zgquery=db:first_row("select gained from zhangong where id='"..name.."'")
+		if getGlobalData(name)>=50 and zgquery and zgquery.gained==0 then
 			addZhanGong(room,name)
 		end
 	end	
@@ -3094,7 +3113,8 @@ zgfunc[sgs.ConfirmDamage].yqt=function(self, room, event, player, data,isowner,n
 	local damage = data:toDamage()
 	if damage and damage.card and damage.card:isKindOf("Duel") and player:objectName()==damage.from:objectName() then
 		addGlobalData(name,1)
-		if getGlobalData(name)==30 then
+		local zgquery=db:first_row("select gained from zhangong where id='"..name.."'")
+		if getGlobalData(name)>=30 and zgquery and zgquery.gained==0 then
 			addZhanGong(room,name)
 		end
 	end	
@@ -3107,7 +3127,8 @@ zgfunc[sgs.ConfirmDamage].bszj=function(self, room, event, player, data,isowner,
 	local damage = data:toDamage()
 	if damage and damage.card and damage.card:isKindOf("Duel") and damage.to:objectName()==room:getOwner():objectName() and player:objectName()==damage.from:objectName() then
 		addGlobalData(name,1)
-		if getGlobalData(name)==10 then
+		local zgquery=db:first_row("select gained from zhangong where id='"..name.."'")
+		if getGlobalData(name)>=10 and zgquery and zgquery.gained==0 then
 			addZhanGong(room,name)
 		end
 	end	
@@ -3123,7 +3144,8 @@ zgfunc[sgs.CardsMoveOneTime].dtj=function(self, room, event, player, data,isowne
 	local reason=move.reason.m_reason	
 	if reason==sgs.CardMoveReason_S_REASON_RECAST then 
 		addGlobalData(name,1) 
-		if getGlobalData(name)==30 then 			 
+		local zgquery=db:first_row("select gained from zhangong where id='"..name.."'")
+		if getGlobalData(name)>=30 and zgquery and zgquery.gained==0 then
 			addZhanGong(room,name)
 		end	
 	end
@@ -4463,7 +4485,8 @@ zgfunc[sgs.Death].ssqy=function(self, room, event, player, data,isowner,name)
 	if (player:getRole()=="loyalist" and (killerRole=="lord" or killerRole=="loyalist")) or 
 			(player:getRole()=="rebel" and (killerRole=="rebel" or killerRole=="renegade")) then
 		addGlobalData(name,1)
-		if getGlobalData(name)==10 then
+		local zgquery=db:first_row("select gained from zhangong where id='"..name.."'")
+		if getGlobalData(name)>=10 and zgquery and zgquery.gained==0 then
 			addZhanGong(room,name)
 		end
 	end
