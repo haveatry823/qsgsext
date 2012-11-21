@@ -79,7 +79,7 @@ if zgquery.tblnum==0 then
 	end
 end
 
-if not string.find(content,"%-%-new%-zhangong%-%-") then 
+if string.find(content,"%-%-new%-zhangong%-%-") then
 	local rowquery=db:first_row("select count(*) as rowcount from zhangong;")
 	if rowquery.rowcount<300 then
 		local arr=content:split("%/%*%-%-new%-zhangong%-%-%*%/")
