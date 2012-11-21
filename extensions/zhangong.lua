@@ -18,12 +18,14 @@ zggamedata.roomid=0
 zggamedata.enable=0
 zggamedata.hegemony=0
 
-
 zgfunc[sgs.CardEffect]={}
 zgfunc[sgs.CardEffected]={}
 zgfunc[sgs.CardFinished]={}
 zgfunc[sgs.CardsMoveOneTime]={}
+zgfunc[sgs.CardDiscarded]={}
+zgfunc[sgs.CardResponsed]={}
 zgfunc[sgs.ChoiceMade]={}
+zgfunc[sgs.CardDrawing]={}
 
 
 zgfunc[sgs.ConfirmDamage]={}
@@ -44,12 +46,15 @@ zgfunc[sgs.GameStart]={}
 zgfunc[sgs.GameOverJudge]={}
 zgfunc[sgs.GameOverJudge]["callback"]={}
 zgfunc[sgs.HpRecover]={}
+zgfunc[sgs.HpChanged]={}
 
 zgfunc[sgs.SlashEffect]={}
 zgfunc[sgs.SlashEffected]={}
+zgfunc[sgs.SlashMissed]={}
 
 zgfunc[sgs.TurnStart]={}
 zgfunc[sgs.Pindian]={}
+zgfunc[sgs.Predamage]={}
 
 
 
@@ -2143,6 +2148,29 @@ zgfunc[sgs.CardFinished].sgmc=function(self, room, event, player, data,isowner,n
 	end
 end
 
+zgfunc[sgs.CardResponsed].sgmc=function(self, room, event, player, data,isowner,name)
+	if  room:getOwner():getGeneralName()~='yuji' then return false end
+	if not isowner then return false end
+	local use=data:toResponsed()
+	local card=use.m_card
+	local part=card:toString():split(":")
+	if part and #part==3 and string.find(part[2],"guhuo%[") then
+		local card2 = nil
+		local arr=part[3]:split("=")
+		if arr[2]=="." then
+			return false
+		else
+			card2=sgs.Sanguosha:getCard(arr[2])
+		end
+		if card2 and part[1]~=card2:objectName()  then
+			addGameData(name,1)
+			if getGameData(name)==3 then
+				addZhanGong(room,name)
+			end
+		end
+	end
+end
+
 
 -- sssg :: 四世三公 :: 使用袁术在1回合内消灭场上4个势力中的3个 
 -- 
@@ -3756,10 +3784,21 @@ end
 
 zgzhangong1 = sgs.CreateTriggerSkill{
 	name = "#zgzhangong1",
-	events = {sgs.GameStart,sgs.Damage,sgs.GameOverJudge,
+	events ={
+			sgs.ConfirmDamage,
+			sgs.Damage,
+			sgs.DamageCaused,
+			sgs.DamageComplete,
+			sgs.Damaged,
+			sgs.DamageInflicted,
 			sgs.Death,
-			sgs.DamageCaused,sgs.DamageComplete,sgs.TurnStart,
-			sgs.HpRecover,sgs.DamageInflicted,sgs.ConfirmDamage,sgs.Damaged},
+			sgs.FinishRetrial,
+			sgs.GameStart,
+			sgs.GameOverJudge,
+			sgs.HpChanged,
+			sgs.HpRecover,
+			sgs.TurnStart,
+			},
 	priority = 6,
 	can_trigger = function()
 		return true
@@ -3799,8 +3838,23 @@ zgzhangong1 = sgs.CreateTriggerSkill{
 
 zgzhangong2 = sgs.CreateTriggerSkill{
 	name = "#zgzhangong2",
-	events = {sgs.CardFinished,sgs.ChoiceMade,sgs.EventPhaseStart,sgs.EventPhaseEnd,sgs.Pindian,sgs.CardEffect,
-		sgs.CardEffected,sgs.SlashEffected,sgs.SlashEffect,sgs.CardsMoveOneTime,sgs.FinishRetrial},
+	events = {
+		sgs.CardEffect,
+		sgs.CardEffected,
+		sgs.CardFinished,
+		sgs.CardDiscarded,
+		sgs.CardDrawing,
+		sgs.CardResponsed,
+		sgs.CardsMoveOneTime,
+		sgs.ChoiceMade,
+		sgs.EventPhaseStart,
+		sgs.EventPhaseEnd,
+		sgs.Pindian,
+		sgs.Predamage,
+		sgs.SlashEffected,
+		sgs.SlashEffect,
+		sgs.SlashMissed,
+		},
 	priority = 6,
 	on_trigger = function(self, event, player, data)
 		local room = player:getRoom()
