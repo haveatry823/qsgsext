@@ -74,8 +74,13 @@ var db=null;
 	info.wu.level=db.execute("select level from gongxun where category='wu' and score>=? order by score asc limit 1",info.wu.score)
 	info.wu.name=db.execute("select name from gongxun where category='wu' and score>=? order by score asc limit 1",info.wu.score)
 
-	info.luckycard.gained=db.execute("select gained from zgcard where id='luckycard'")
-	info.luckycard.used=db.execute("select used from zgcard where id='luckycard'")
+	try{
+		info.luckycard.gained=db.execute("select gained from zgcard where id='luckycard'")
+		info.luckycard.used=db.execute("select used from zgcard where id='luckycard'")
+	}catch(x){
+		info.luckycard.gained=0
+		info.luckycard.used=0
+	}
 	
 	info.total.starttime=db.execute("select datetime(min(id),'unixepoch','localtime') from results") || "尚未开始统计";
 
