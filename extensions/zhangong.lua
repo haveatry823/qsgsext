@@ -1,6 +1,8 @@
-enableSkillCard = 1		-- 是否开启技能卡， 1:开启, 0:不开启 
+enableSkillCard = 1		-- 是否开启技能卡， 1:开启, 0:不开启
 enableLuckyCard = 1		-- 是否开启手气卡,  1:开启, 0:不开启
 enableHulaoCard = 1		-- 是否开启虎牢关点将卡,  1:开启, 0:不开启
+
+version='20121121'
 
 dofile "lua/config.lua"
 dofile "lua/sgs_ex.lua"
@@ -60,19 +62,6 @@ zgfunc[sgs.Predamage]={}
 
 require "sqlite3"
 db = sqlite3.open("./zhangong/zhangong.data")
-local tblquery=db:first_row("select count(name) as tblnum from sqlite_master  where type='table';")
-if tblquery.tblnum==0 then
-	local sqltbl = (io.open "./zhangong/zhangong.sql"):read("*a"):split("\n")
-	for _,line in ipairs(sqltbl) do
-		db:exec(line)
-	end
-end
-
-local tblquery=db:first_row("select count(name) as tblnum from sqlite_master  where type='table' and name='card';")
-if tblquery.tblnum==0 then
-	db:exec("CREATE TABLE zgcard([id] varchar(20) NOT NULL,[gained] int(11) NOT NULL,[used] int(11) NOT NULL, Primary Key(id) ON CONFLICT Ignore);")
-	db:exec("insert into zgcard values('luckycard',100,0);")
-end
 
 function logmsg(fmt,...)
 	local fp = io.open("zgdebug.log","ab")
@@ -133,9 +122,9 @@ function database2js()
 		local getVal=function(sql,...)
 			local query=db:first_row(string.format(sql, unpack(arg)))
 			if not query then return 0 end
-			for _,p in pairs(query) do 
+			for _,p in pairs(query) do
 				return p
-			end			
+			end
 			return 0
 		end	
 
@@ -153,18 +142,18 @@ function database2js()
 			local escnum = getVal("select count(id) from results where %s and result='-'",cond)
 			local totalnum= winnum+losenum+escnum
 			if totalnum==0 then totalnum=1 end
-			table.insert(arr,string.format("info['%s'].winnum=%d;",mode,winnum))	
-			table.insert(arr,string.format("info['%s'].losenum=%d;",mode,losenum))	
+			table.insert(arr,string.format("info['%s'].winnum=%d;",mode,winnum))
+			table.insert(arr,string.format("info['%s'].losenum=%d;",mode,losenum))
 			table.insert(arr,string.format("info['%s'].escnum=%d;",mode,escnum))
 			table.insert(arr,string.format("info['%s'].totalnum=%d;",mode,totalnum))
-			table.insert(arr,string.format("info['%s'].winrate='%.1f%%';",mode,100*winnum/totalnum))	
+			table.insert(arr,string.format("info['%s'].winrate='%.1f%%';",mode,100*winnum/totalnum))
 			for i,ratecond in ipairs(ratearr) do 
 				local win=getVal("select count(id) from results where %s and result='win' and %s",cond,ratecond)
 				local total=getVal("select count(id) from results where %s and 1 and %s",cond,ratecond)
 				if total==0 then total=1 end
 				table.insert(arr,string.format("info['%s']['winnum_%d']=%d;",mode,i,win))
 				table.insert(arr,string.format("info['%s']['totalnum_%d']=%d;",mode,i,total))
-				table.insert(arr,string.format("info['%s']['winrate_%d']='%.1f%%';",mode,i,100*win/total))	
+				table.insert(arr,string.format("info['%s']['winrate_%d']='%.1f%%';",mode,i,100*win/total))
 			end			
 		end
 
@@ -299,7 +288,7 @@ zgfunc[sgs.GameOverJudge].tongji=function(self, room, event, player, data,isowne
 		broadcastMsg(room,"#gainExp",row.expval)
 	end
 
-	setGameData("enable",0)
+	setGameData("status",0)
 	database2js()
 end
 
@@ -5711,22 +5700,42 @@ function useHulaoCard(room,owner)
 	end
 end
 
+function initDB()
+	local tblquery=db:first_row("select count(name) as tblnum from sqlite_master  where type='table' and name='card';")
+	if tblquery.tblnum==0 then
+		db:exec("CREATE TABLE zgcard([id] varchar(20) NOT NULL,[gained] int(11) NOT NULL,[used] int(11) NOT NULL, Primary Key(id) ON CONFLICT Ignore);")
+		db:exec("insert into zgcard values('luckycard',100,0);")
+	end
+
+	local content=(io.open "./zhangong/zhangong.sql"):read("*a")
+
+	local zgquery=db:first_row("select count(name) as tblnum from sqlite_master  where type='table' and name='zhangong';")
+	if zgquery.tblnum==0 then
+		local sqltbl = content:split("\n")
+		for _,line in ipairs(sqltbl) do
+			db:exec(line)
+		end
+	end
+
+	if not string.find(content,"--new-zhangong--") thrn return false end
+	local rowquery=db:first_row("select count(*) as rowcount from zhangong;")
+	if rowquery.rowcount<300 then
+		local arr=content:split("/*--new-zhangong--*/")
+		for _,line in ipairs(arr[2]) do
+			db:exec(line)
+		end
+		db:exec("update zgcard set gained=gained+200 where id='luckycard'")
+	end
+end
+
 function init_gamestart(self, room, event, player, data, isowner)
 	local config=sgs.Sanguosha:getSetupString():split(":")
+	local count=0
 	local mode=config[2]
 	local flags=config[5]
 	local owner=room:getOwner()
-
-	if not isowner or getGameData("enable")==1 then return false end
+	if not isowner or getGameData("status")==1 then return false end
 	
-	
-	if  not string.find(mode,"^[01]%d[p_]") or string.find(flags,"[F]") then
-		setGameData("enable",0)
-		return false
-	end
-	
-	
-	local count=0
 	for _, p in sgs.qlist(room:getAllPlayers()) do
 		if p:getState() ~= "robot" then 
 			count=count+1
@@ -5736,7 +5745,15 @@ function init_gamestart(self, room, event, player, data, isowner)
 		end
 	end
 	if count>1 then
-		setGameData("enable",0)
+		setGameData("status",0)
+		return false
+	end
+	if string.find(config[2],"mini") or string.find(config[2],"custom") then
+		setGameData("status",0)
+		return false
+	end
+	if string.find(config[5],"F") then
+		setGameData("status",0)
 		return false
 	end
 
@@ -5744,7 +5761,7 @@ function init_gamestart(self, room, event, player, data, isowner)
 		zggamedata[key]=0
 	end
 
-	setGameData("enable",1)
+	setGameData("status",1)
 	setGameData("myzhangong","")
 	if string.find(flags,"H") then setGameData("hegemony",1) end
 
@@ -5795,27 +5812,28 @@ zgzhangong1 = sgs.CreateTriggerSkill{
 		if event ==sgs.GameStart and owner and room:getTag("zg_init_game"):toBool()==false then
 			room:setTag("zg_init_game",sgs.QVariant(true))
 			local log= sgs.LogMessage()
-				if init_gamestart(self, room, event, player, data, owner) then
+			if init_gamestart(self, room, event, player, data, owner) then
 				log.type = "#enableZhangong"
+				player:speak(string.format("战功包 ver:%s 已开启",version))
 			else
 				log.type = "#disableZhangong"
+				player:speak(string.format("战功包 ver:%s 已禁用",version))
 			end
 			room:sendLog(log)
 		end
 
 		local callbacks=zgfunc[event]
-		if callbacks and getGameData("enable")==1 then
+		if callbacks and getGameData("status")==1 then
 			for name, func in pairs(callbacks) do
-				if type(func)=="function" then 						
-					func(self, room, event, player, data, owner,name) 
-				end				
+				if type(func)=="function" then
+					func(self, room, event, player, data, owner,name)
+				end
 			end
 		end
 		
 		if event ==sgs.Death then
 			if owner then askForGiveUp(room,player) end
-		end	
-
+		end
 		return false
 	end,
 }
@@ -5845,7 +5863,7 @@ zgzhangong2 = sgs.CreateTriggerSkill{
 		local owner= room:getOwner():objectName()==player:objectName()
 
 		local callbacks=zgfunc[event]
-		if callbacks and getGameData("enable")==1 then
+		if callbacks and getGameData("status")==1 then
 			for name, func in pairs(callbacks) do
 				if type(func)=="function" then 						
 					func(self, room, event, player, data, owner,name) 
@@ -5984,6 +6002,8 @@ end
 
 zganjiang:addSkill(zgzhangong1)
 zganjiang:addSkill(zgzhangong2)
+
+initDB()
 initZhangong()
 
 
