@@ -533,7 +533,7 @@ INSERT INTO zhangong VALUES('dkzz', '杜康之子', 10, '使用曹植在一局�
 INSERT INTO zhangong VALUES('dqzw', '大权在握', 10, '使用钟会在一局游戏中有超过8张权', 0, 'wei', '1999-12-31 00:00:00', 'zhonghui', 0, 0);
 INSERT INTO zhangong VALUES('dgxl', '东宫西略', 15, '在一局游戏中，身份为男性主公，而忠臣为两名女性武将并在女性忠臣全部存活的情况下获胜', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
 INSERT INTO zhangong VALUES('dym', '大姨妈', 10, '使用甄姬连续5回合洛神的第一次结果都是红色，不包括改判', 0, 'wei', '1999-12-31 00:00:00', 'zhenji', 0, 0);
-INSERT INTO zhangong VALUES('dyzh', '当阳之吼', 10, '在一局游戏中，使用☆SP张飞累计发动大喝与一名角色拼点成功的回合中用红“杀”手刃该角色', 0, 'shu', '1999-12-31 00:00:00', 'bgm_zhangfei', 0, 0);
+INSERT INTO zhangong VALUES('dyzh', '当阳之吼', 10, '在一局游戏中，使用☆SP张飞累计两次发动大喝与一名角色拼点成功的回合中用红“杀”手刃该角色', 0, 'shu', '1999-12-31 00:00:00', 'bgm_zhangfei', 0, 0);
 INSERT INTO zhangong VALUES('fynd', '愤勇难当', 10, '使用☆SP夏侯惇在一局游戏中，至少发动四次愤勇', 0, 'wei', '1999-12-31 00:00:00', 'bgm_xiahoudun', 0, 0);
 INSERT INTO zhangong VALUES('gjcc', '诡计重重', 15, '在一局游戏中，累计使用锦囊牌至少20次', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
 INSERT INTO zhangong VALUES('glnc', '刚烈难存', 10, '使用夏侯惇在一局游戏中连续4次刚烈判定均为红桃', 0, 'wei', '1999-12-31 00:00:00', 'xiahoudun', 0, 0);
