@@ -1,16 +1,13 @@
 package.path = package.path .. ";./lua/lib/?.lua"
 package.cpath = package.cpath .. ";./lua/clib/?.dll"
 
-
 enableSkillCard = 1		-- 是否开启技能卡， 1:开启, 0:不开启
 enableLuckyCard = 1		-- 是否开启手气卡,  1:开启, 0:不开启
-enableHulaoCard = 1		-- 是否开启虎牢关点将卡,  1:开启, 0:不开启
 
 zgver='20121121'
 
 dofile "lua/config.lua"
 dofile "lua/sgs_ex.lua"
-
 
 module("extensions.zhangong", package.seeall)
 extension = sgs.Package("zhangong")
@@ -20,12 +17,15 @@ zgfunc={}
 zgturndata={}
 zggamedata={}
 
-sgs.ConfirmDamage = sgs.Predamage
+--涅槃新增
+sgs.DamageCaused = sgs.Predamage
+sgs.DamageInflicted  = sgs.Predamage
 
+--新神杀专用事件
+sgs.ConfirmDamage = sgs.Predamage
 sgs.EventPhaseStart = sgs.PhaseChange
 sgs.EventPhaseEnd = sgs.PhaseChange
 sgs.EventPhaseChanging = sgs.PhaseChange
-
 sgs.FinishRetrial = sgs.FinishJudge
 
 
@@ -39,7 +39,6 @@ zgfunc[sgs.CardEffected]={}
 zgfunc[sgs.CardFinished]={}
 
 zgfunc[sgs.CardDiscarded]={}
-zgfunc[sgs.CardResponsed]={}
 zgfunc[sgs.ChoiceMade]={}
 zgfunc[sgs.CardDrawing]={}
 
@@ -76,15 +75,7 @@ zgfunc[sgs.Predamage]={}
 require "sqlite3"
 db = sqlite3.open("./extensions/zhangong/zhangong.data")
 
-
-local tblquery=db:first_row("select count(name) as tblnum from sqlite_master  where type='table' and name='card';")
-if tblquery.tblnum==0 then
-	db:exec("CREATE TABLE zgcard([id] varchar(20) NOT NULL,[gained] int(11) NOT NULL,[used] int(11) NOT NULL, Primary Key(id) ON CONFLICT Ignore);")
-	db:exec("insert into zgcard values('luckycard',100,0);")
-end
-
 local content=(io.open "./extensions/zhangong/zhangong.sql"):read("*a")
-
 local zgquery=db:first_row("select count(name) as tblnum from sqlite_master  where type='table' and name='zhangong';")
 if zgquery.tblnum==0 then
 	local sqltbl = content:split("\n")
@@ -93,17 +84,6 @@ if zgquery.tblnum==0 then
 	end
 end
 
-if string.find(content,"%-%-new%-zhangong%-%-") then
-	local rowquery=db:first_row("select count(*) as rowcount from zhangong;")
-	if rowquery.rowcount<300 then
-		local arr=content:split("%/%*%-%-new%-zhangong%-%-%*%/")
-		local sqlarr = arr[2]:split("\n")
-		for _,line in ipairs(sqlarr) do
-			db:exec(line)
-		end
-		db:exec("update zgcard set gained=gained+200 where id='luckycard'")
-	end
-end
 
 function logmsg(fmt,...)
 	local fp = io.open("zgdebug.log","ab")
@@ -119,126 +99,6 @@ end
 
 
 function database2js()
-	if 1==1 then return false end
-	local zglist={'zhonghe','wei','shu','wu','qun','god','3v3','1v1'}
-	local ret={}
-	table.insert(ret,"var zglist=['zhonghe','wei','shu','wu','qun','god','3v3','1v1'];")
-	table.insert(ret,"var data={};")
-
-	local dbquery=function(sql,collist)
-		local arr={}
-		for row in db:rows(sql) do
-			local item={}
-			for _,col in ipairs(collist) do
-				table.insert(item,string.format('"%s":"%s"',col,row[col]))
-			end
-			table.insert(arr,string.format("{%s}",table.concat(item,",")))
-		end
-		return table.concat(arr,",\r\n")
-	end
-
-	local sql = "select datetime(id,'unixepoch','localtime') as gametime,* from results order by id desc limit 300";
-	local collist={'gametime','id','general','role','kingdom','hegemony','mode','turncount','alive','result','wen','wu','expval','zhangong'}
-	table.insert(ret,string.format("data.results=[%s];",dbquery(sql,collist)))
-
-	local sql = "select skillname,gained,used,gained-used as remainnum from skills order by remainnum desc"
-	local collist={'skillname','gained','used','remainnum'}
-	table.insert(ret,string.format("data.skills=[%s];",dbquery(sql,collist)))
-
-	local sql = "select level,name,score,category as cat from gongxun where level>0 order by category,level"
-	local collist={'level','name','score','cat'}
-	table.insert(ret,string.format("data.gongxun=[%s];",dbquery(sql,collist)))
-
-	for _,zgcat in ipairs(zglist) do
-		local sql = "select * from zhangong where category='"..zgcat.."' order by general asc"
-		local collist={'id','name','description','score','gained','category','lasttime','general','num','count'}
-		table.insert(ret,string.format("data['zg"..zgcat.."']=[%s];",dbquery(sql,collist)))
-	end
-	local zgtrans="$.each(zglist,function(i,val){$.each(data['zg'+val],function(index,item){trans[item.id]=[item.name];})});"
-	table.insert(ret,zgtrans)
-
-	local getinfodata=function()
-		local arr={""}		
-		table.insert(arr,"var info={v3:{},role:{},hegemony:{},v1:{},hulao:{},total:{},wen:{},wu:{},expval:{},zg:{},luckycard:{}};")
-
-		local getVal=function(sql,...)
-			local query=db:first_row(string.format(sql, unpack(arg)))
-			if not query then return 0 end
-			for _,p in pairs(query) do
-				return p
-			end
-			return 0
-		end	
-
-		local getData=function(col,val,valtype)
-			if valtype=="str" then
-				table.insert(arr,string.format("info.%s='%s';",col,val))
-			else
-				table.insert(arr,string.format("info.%s=%d;",col,val))
-			end
-		end
-
-		local getResult=function(mode,cond,ratearr)
-			local winnum = getVal("select count(id) from results where %s and result='win'",cond)
-			local losenum= getVal("select count(id) from results where %s and result='lose'",cond)
-			local escnum = getVal("select count(id) from results where %s and result='-'",cond)
-			local totalnum= winnum+losenum+escnum
-			if totalnum==0 then totalnum=1 end
-			table.insert(arr,string.format("info['%s'].winnum=%d;",mode,winnum))
-			table.insert(arr,string.format("info['%s'].losenum=%d;",mode,losenum))
-			table.insert(arr,string.format("info['%s'].escnum=%d;",mode,escnum))
-			table.insert(arr,string.format("info['%s'].totalnum=%d;",mode,totalnum))
-			table.insert(arr,string.format("info['%s'].winrate='%.1f%%';",mode,100*winnum/totalnum))
-			for i,ratecond in ipairs(ratearr) do 
-				local win=getVal("select count(id) from results where %s and result='win' and %s",cond,ratecond)
-				local total=getVal("select count(id) from results where %s and 1 and %s",cond,ratecond)
-				if total==0 then total=1 end
-				table.insert(arr,string.format("info['%s']['winnum_%d']=%d;",mode,i,win))
-				table.insert(arr,string.format("info['%s']['totalnum_%d']=%d;",mode,i,total))
-				table.insert(arr,string.format("info['%s']['winrate_%d']='%.1f%%';",mode,i,100*win/total))
-			end			
-		end
-
-		getResult("hulao","mode='04_1v3' and hegemony=0",{"role='lord'","role='rebel'"})
-		getResult("v3",  "mode='06_3v3' and hegemony=0",{"role in ('lord','renegade')","role in ('loyalist','rebel')"})
-		getResult("v1",  "mode='02_1v1' and hegemony=0",{"role='renegade'","role='lord'"})
-		getResult("role","mode like '__p%' and hegemony=0",{"role='lord'","role='loyalist'","role='renegade'","role='rebel'"})
-		getResult("hegemony","hegemony=1",{"kingdom='wei'","kingdom='shu'","kingdom='wu'","kingdom='qun'"})
-		getResult("total","1",{})
-
-		local wen=getVal("select sum(wen) from results")
-		local wu=getVal("select sum(wu) from results")
-		local expval=getVal("select sum(expval) from results")
-		getData("wen.score",wen)
-		getData("wu.score",wu)		
-		getData("expval.score",expval)
-		getData("expval.level",math.floor(math.pow(expval,1/3)))
-
-		getData("zg.num",getVal("select count(id) from zhangong where gained>0"))
-		getData("zg.total",getVal("select count(id) from zhangong"))
-		getData("zg.score",getVal("select sum(score*gained) from zhangong where gained>0"))
-		getData("wen.level",getVal("select level from gongxun where category='wen' and score<=%d order by score desc limit 1",wen))
-		getData("wen.name",getVal("select name from gongxun where category='wen' and score<=%d order by score desc limit 1",wen),"str")
-		
-		getData("wu.level",getVal("select level from gongxun where category='wu' and score<=%d order by score desc limit 1",wu))
-		getData("wu.name",getVal("select name from gongxun where category='wu' and score<=%d order by score desc limit 1",wu),"str")
-
-		getData("luckycard.gained",getVal("select gained from zgcard where id='%s'",'luckycard'))
-		getData("luckycard.used",getVal("select used from zgcard where id='%s'",'luckycard'))
-
-		local starttime=getVal("select datetime(min(id),'unixepoch','localtime') from results")
-		if starttime==0 then starttime="尚未开始统计" end
-		getData("total.starttime",starttime,"str")
-		
-		table.insert(arr,"return info;")
-		return table.concat(arr,"\r\n")
-	end
-	table.insert(ret,string.format("data.info=(function(){%s})();",getinfodata()))
-
-	local fp = io.open("./zhangong/js/zg.js","wb")
-	fp:write(table.concat(ret,"\r\n"))
-	fp:close()
-
 end
 
 
@@ -390,18 +250,8 @@ zgfunc[sgs.CardDiscarded].bjz=function(self, room, event, player, data,isowner,n
 end
 
 
--- bqbr :: 不屈不饶 :: 一格体力情况下，累积出闪100次
---
-zgfunc[sgs.CardResponsed].bqbr=function(self, room, event, player, data,isowner,name)
-	if not isowner then return false end
-	if player:getHp() == 1 and data:toResponsed().m_card:inherits("Jink") then
-		addGlobalData(name,1)
-		local zgquery=db:first_row("select gained from zhangong where id='"..name.."'")
-		if getGlobalData(name)>=100 and zgquery and zgquery.gained==0 then
-			addZhanGong(room,name)
-		end
-	end
-end
+
+
 
 
 -- bqk :: 兵器库 :: 在一局游戏中，累计装备过至少10次武器以及10次防具
@@ -506,19 +356,6 @@ zgfunc[sgs.CardFinished].gjcc=function(self, room, event, player, data,isowner,n
 end
 
 
--- gn :: 果农 :: 游戏开始时，起手手牌全部是“桃”
---
-zgfunc[sgs.GameStart].gn=function(self, room, event, player, data,isowner,name)
-	if not isowner then return false end
-	for _,cd in sgs.qlist(player:getHandcards()) do
-		if not cd:inherits("Peach") then return false end
-	end
-	if getGameData(name,0)==0 then
-		setGameData(name,1)
-		addZhanGong(room,name)
-	end
-end
-
 
 -- jdfy :: 绝对防御 :: 在一局游戏中，使用八挂累计出闪20次
 --
@@ -618,20 +455,6 @@ zgfunc[sgs.CardFinished].stzs=function(self, room, event, player, data,isowner,n
 end
 
 
--- thy :: 桃花运 :: 当你的开局手牌全部为红桃时，体力上限加1
---
-zgfunc[sgs.GameStart].thy=function(self, room, event, player, data,isowner,name)
-	if not isowner then return false end
-	for _,cd in sgs.qlist(player:getHandcards()) do
-		if cd:getSuit()~=sgs.Card_Heart then return false end
-	end
-	if getGameData(name,0) == 0 then
-		setGameData(name,1)
-		addZhanGong(room,name)
-		room:setPlayerProperty(player, "maxhp", sgs.QVariant(player:getMaxHp()+1))
-	end
-end
-
 
 -- tyzy :: 桃园之义 :: 在一局游戏中，场上同时存在刘备、关羽、张飞三人且为队友，而你是其中一个并最后获胜
 --
@@ -694,14 +517,8 @@ zgfunc[sgs.GameOverJudge].callback.wsww=function(room,player,data,name,result)
 end
 
 
--- xcdz :: 星驰电走 :: 在一局游戏中，累计出闪20次
---
-zgfunc[sgs.CardResponsed].xcdz=function(self, room, event, player, data,isowner,name)
-	if data:toResponsed().m_card:inherits("Jink") and isowner then
-		addGameData(name,1)
-		if getGameData(name)==20 then addZhanGong(room,name) end
-	end
-end
+
+
 
 
 -- xhjs :: 悬壶济世 :: 在一局游戏中，使用桃或技能累计将我方队友脱离濒死状态4次以上
@@ -1861,36 +1678,7 @@ zgfunc[sgs.Damaged].shgx=function(self, room, event, player, data,isowner,name)
 end
 
 
--- swzs :: 神威之势 :: 使用神赵云发动各花色龙魂各两次并在存活的情况下取得游戏胜利
---
-zgfunc[sgs.CardFinished].swzs=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~='shenzhaoyun' then return false end
-	if not isowner then return false end
-	local use=data:toCardUse()
-	if use.card:getSkillName()=="longhun" then
-		setGameData(name..'_'..use.card:getSuitString(), math.min(2,getGameData(name..'_'..use.card:getSuitString())+1 ) )
-		if getGameData(name..'_spade')==2 and getGameData(name..'_heart')==2 and getGameData(name..'_club')==2
-			and getGameData(name..'_diamond')==2 then
-			addZhanGong(room,name)
-			setGameData(name..'_heart',-100)
-		end
-	end
-end
 
-zgfunc[sgs.CardResponsed].swzs=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~='shenzhaoyun' then return false end
-	if not isowner then return false end
-	local use=data:toResponsed()
-	local card=use.m_card
-	if card:getSkillName()=="longhun" then
-		setGameData(name..'_'..card:getSuitString(), math.min(2,getGameData(name..'_'..card:getSuitString())+1 ) )
-		if getGameData(name..'_spade')==2 and getGameData(name..'_heart')==2 and getGameData(name..'_club')==2
-			and getGameData(name..'_diamond')==2 then
-			addZhanGong(room,name)
-			setGameData(name..'_heart',-100)
-		end
-	end
-end
 
 
 -- tyzm :: 桃园之梦 :: 使用神关羽在一局游戏中阵亡后发动武魂判定结果为桃园结义
@@ -2108,7 +1896,7 @@ end
 zgfunc[sgs.HpChanged].dsdnx=function(self, room, event, player, data,isowner,name)
 	if room:getMode()~="04_1v3" or not player:isLord() then return false end
 	if room:getCurrent():objectName()~=room:getOwner():objectName() or getGameData("turncount")>1 then return false end
-	if room:getOwner():getSeat()==2 and player:getHp()<= 4 and player:getMark("secondMode") == 0 then
+	if room:getOwner():getSeat()==2 and player:getHp()<= 4 then
 		addZhanGong(room,name)
 	end
 end
@@ -5119,55 +4907,6 @@ zgfunc[sgs.CardFinished].yzkw=function(self, room, event, player, data,isowner,n
 end
 
 
--- gsy :: 狗屎运 :: 当你的开局4牌的颜色全为黑色时,清除你的N盘逃跑记录(N为5-10的随机数)
---
-zgfunc[sgs.GameStart].gsy=function(self, room, event, player, data,isowner,name)
-	if not isowner or getGameData("turncount",0)>0 or player:isKongcheng() then return false end
-	if getGameData(name,0)==1 then return false end
-	local cards=sgs.QList2Table(player:getHandcards())
-	local num= 5 + (os.time() % 6)
-	for i=1,#cards,1 do
-		if cards[i]:isRed() then return false end
-	end
-	local sql=string.format("select id from results where result='-' and id<>%d order by id asc limit %d",getGameData("roomid"),num)
-	local count=0
-	for row in db:rows(sql) do
-		sqlexec("delete from results where id=%d",row.id)
-		count = count +1
-	end
-	local desc="当你的开局4牌的颜色全为黑色时,清除你的N盘逃跑记录(N为5-10的随机数)"
-	sqlexec("update zhangong set description='%s' where id='%s'",desc,name)
-	addZhanGong(room,name)
-	setGameData(name,1)
-	broadcastMsg(room,"#gsyNum",count)
-end
-
-
-zgfunc[sgs.TurnStart].hulao=function(self, room, event, player, data,isowner,name)
-	if room:getMode()=="04_1v3" and player:isLord() and player:getMark("secondMode")==1 and player:getGeneral2() and player:getMark("changeHulao2")==0 then
-		if player:hasSkill("wushuang") then room:detachSkillFromPlayer(player, "wushuang") end
-		room:setPlayerMark(player, "changeHulao2", 1)
-
-		if player:getMaxHp()~=4 then
-			room:setPlayerProperty(player, "maxhp", sgs.QVariant(4))
-			room:setPlayerProperty(player, "hp", sgs.QVariant(4))
-		end	
-
-		local weapon=player:getWeapon()
-		if weapon and not weapon:inherits("Crossbow") then
-			room:moveCardTo(weapon, nil, nil, sgs.Player_DiscardPile)
-		end
-	end
-
-	if room:getMode()=="04_1v3" and player:isLord() and player:getMark("secondMode")==1 and not player:faceUp() then
-		player:turnOver()
-	end
-end
-
-
-
-
-
 function gainSkill(room)	
 	local skillname 
 	local count=0
@@ -5314,59 +5053,7 @@ function useLuckyCard(room,owner)
 	end
 end
 
-function useHulaoCard(room,owner)
-	if room:getMode()~='04_1v3' or not owner:askForSkillInvoke("useHulaoCrad") then return false end
-	local generalnames=sgs.Sanguosha:getRandomGenerals(999)
-	
-	local banlist={"shenguanyu", "shenzhugeliang","shenzhouyu","shenlvbu","bgm_diaochan","sp_pangde"}
-	for _,p in sgs.qlist(room:getAllPlayers()) do
-		table.insert(banlist,p:getGeneralName())
-	end
-	table.removeTable(generalnames, banlist)
 
-	local shuffle=function(arr)
-		local count = #arr
-		math.randomseed(os.time()+count)
-		for i = 1, count do
-			local j = math.random( 1, count )
-			arr[j], arr[i] = arr[i], arr[j]
-		end
-		return arr
-	end
-	
-	local count=1
-	local choice
-	shuffle(generalnames)
-	for _,p in sgs.qlist(room:getAllPlayers()) do
-		if p:isLord() then
-			local names=table.concat(generalnames,"+",1,10)
-			local namslist= names:split("+")
-			local choice=room:askForChoice(owner,"@chooseGeneral0","cancel+randSelect+"..names)
-			if choice=="randSelect" then choice=namslist[ 1 + (os.time() % 10)] end
-			if choice ~= "cancel" then
-				room:detachSkillFromPlayer(p, "wushuang")
-				room:changeHero(p,choice,false,false,true,true)
-				if p:getMaxHp()~=8 then
-					room:setPlayerProperty(p, "maxhp", sgs.QVariant(8))
-					room:setPlayerProperty(p, "hp", sgs.QVariant(8))
-				end				
-			end
-		else
-			local names=table.concat(generalnames,"+",1,10)
-			local choice=room:askForChoice(owner,"@chooseGeneral"..count,"cancel+"..names)
-			if choice ~= "cancel" then
-				room:changeHero(p,choice,true,false,false,true)
-				room:setPlayerProperty(p, "kingdom", sgs.QVariant(p:getGeneral():getKingdom()))
-				p:setGender(p:getGeneral():getGender())
-			end
-			count=count+1
-		end
-		if choice ~= "cancel" then
-			table.removeOne(generalnames,choice)
-			shuffle(generalnames)
-		end
-	end
-end
 
 function init_gamestart(self, room, event, player, data, isowner)
 	local config=sgs.Sanguosha:getSetupString():split(":")
@@ -5417,7 +5104,6 @@ function init_gamestart(self, room, event, player, data, isowner)
 
 	if enableLuckyCard==1 then useLuckyCard(room,owner) end
 	if enableSkillCard==1 then useSkillCard(room,owner) end
-	if enableHulaoCard==1 then useHulaoCard(room,owner) end
 
 	return true
 end
@@ -5486,7 +5172,6 @@ zgzhangong2 = sgs.CreateTriggerSkill{
 		sgs.CardFinished,
 		sgs.CardDiscarded,
 		sgs.CardDrawing,
-		sgs.CardResponsed,
 		sgs.ChoiceMade,
 		sgs.EventPhaseStart,
 		sgs.EventPhaseEnd,
@@ -5675,12 +5360,7 @@ sgs.LoadTranslationTable {
 	["#enableZhangong"]="【<b><font color='green'>提示</font></b>】: 本局游戏开启了战功统计",
 	["#disableZhangong"]="【<b><font color='red'>提示</font></b>】: 本局游戏禁止了战功统计",
 	["useLuckyCard"]  ="手气卡",
-	["useHulaoCrad"]  ="点将卡",
-	["@chooseGeneral0"]  ="请为主公选将",
-	["@chooseGeneral1"]  ="请为先锋选将",
-	["@chooseGeneral2"]  ="请为中坚选将",
-	["@chooseGeneral3"]  ="请为大将选将",
-	["randSelect"]  ="随机选择",
+
 	
 
 	["#LuckyCardNum"]  ="【<b><font color='yellow'>手气卡</font></b>】: 本局还有【%arg】次换牌机会",
