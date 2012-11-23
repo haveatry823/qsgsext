@@ -5151,15 +5151,11 @@ zgfunc[sgs.TurnStart].hulao=function(self, room, event, player, data,isowner,nam
 		if player:getMaxHp()~=4 then
 			room:setPlayerProperty(player, "maxhp", sgs.QVariant(4))
 			room:setPlayerProperty(player, "hp", sgs.QVariant(4))
-		end
-		local reason=sgs.CardMoveReason()
-		reason.m_reason   = sgs.CardMoveReason_S_REASON_NATURAL_ENTER
-		reason.m_playerId = player:objectName()
-		reason.m_targetId = player:objectName()
+		end	
 
 		local weapon=player:getWeapon()
 		if weapon and not weapon:inherits("Crossbow") then
-			room:moveCardTo(weapon, nil, nil, sgs.Player_DiscardPile, reason)
+			room:moveCardTo(weapon, nil, nil, sgs.Player_DiscardPile)
 		end
 	end
 
