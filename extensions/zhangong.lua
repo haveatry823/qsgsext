@@ -699,7 +699,7 @@ zgfunc[sgs.GameOverJudge].callback.wsww=function(room,player,data,name,result)
 			end
 		end
 	end
-	if getGameData(name)==rebel_num then addZhanGong(room,name) end
+	if getGameData(name)==rebel_num and rebel_num>0 then addZhanGong(room,name) end
 end
 
 
@@ -1469,7 +1469,7 @@ end
 zgfunc[sgs.Death].dyzh=function(self, room, event, player, data,isowner,name)
 	if  room:getOwner():getGeneralName()~='bgm_zhangfei' then return false end
 	local damage=data:toDamageStar()
-	if damage and damage.from and damage.to:hasFlag("dahe") and damage.from==room:getOwner():objectName() 
+	if damage and damage.from and damage.to:hasFlag("dahe") and damage.from:objectName()==room:getOwner():objectName()
 		and damage.card:isKindOf("Slash") and damage.card:isRed() then
 		addGameData(name,1)
 		if getGameData(name)==2 then addZhanGong(room,name) end
