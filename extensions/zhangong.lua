@@ -483,7 +483,7 @@ zgfunc[sgs.GameOverJudge].callback.dgxl=function(room,player,data,name,result)
 	local female_loyalist = 0
 	local female_loyalist_alive = true
 	for _,op in sgs.qlist(room:getPlayers()) do
-		if op:getRole()=="loyalist" and op:isFemale() then
+		if op:getRole()=="loyalist" and op:getGeneral():isFemale() then
 			female_loyalist = female_loyalist+1
 			if not op:isAlive() then female_loyalist_alive = false end
 		end
@@ -2580,7 +2580,7 @@ zgfunc[sgs.Death].lsch=function(self, room, event, player, data,isowner,name)
 	if not damage then return false end
 	local killer=damage.from
 	if not killer then return false end
-	if player:isFemale() and killer:objectName()==room:getOwner():objectName()  then
+	if player:getGeneral():isFemale() and killer:objectName()==room:getOwner():objectName()  then
 		addGameData(name,1)		
 		if getGameData(name,0)==2 then 			 
 			addZhanGong(room,name)
@@ -2596,7 +2596,7 @@ zgfunc[sgs.GameOverJudge].callback.lsch=function(room,player,data,name,result)
 	if not damage then return false end
 	local killer=damage.from
 	if not killer then return false end
-	if player:isFemale() and killer:objectName()==room:getOwner():objectName()  then
+	if player:getGeneral():isFemale() and killer:objectName()==room:getOwner():objectName()  then
 		addGameData(name,1)
 		if getGameData(name)==2 then 			 
 			addZhanGong(room,name)
@@ -4613,9 +4613,9 @@ zgfunc[sgs.GameStart].jgyx=function(self, room, event, player, data,isowner,name
 	local n=0
 	for _, generalname in ipairs(list) do
 		local general = sgs.Sanguosha:getGeneral(generalname)
-		if general:isFemale() then n=n+1 end
+		if general:getGeneral():isFemale() then n=n+1 end
 	end
-	if player:isFemale() then n=n+1 end
+	if player:getGeneral():isFemale() then n=n+1 end
 	if n==3 then
 		setGameData(name,1)
 	end
@@ -4857,7 +4857,7 @@ zgfunc[sgs.Death].rs=function(self, room, event, player, data,isowner,name)
 	if not damage then return false end
 	local killer=damage.from
 	if not killer then return false end
-	if player:isFemale() and killer:objectName()==room:getOwner():objectName() and damage.card and damage.card:inherits("Slash") then
+	if player:getGeneral():isFemale() and killer:objectName()==room:getOwner():objectName() and damage.card and damage.card:inherits("Slash") then
 		addGameData(name,1)		
 		if getGameData(name,0)==3 then
 			addZhanGong(room,name)
@@ -4874,7 +4874,7 @@ zgfunc[sgs.GameOverJudge].callback.rs=function(room,player,data,name,result)
 	if not damage then return false end
 	local killer=damage.from
 	if not killer then return false end
-	if player:isFemale() and killer:objectName()==room:getOwner():objectName() and damage.card and damage.card:inherits("Slash") then
+	if player:getGeneral():isFemale() and killer:objectName()==room:getOwner():objectName() and damage.card and damage.card:inherits("Slash") then
 		addGameData(name,1)
 		if getGameData(name)==3 then 			 
 			addZhanGong(room,name)
