@@ -1793,16 +1793,6 @@ zgfunc[sgs.ChoiceMade].jzyf=function(self, room, event, player, data,isowner,nam
 	end
 end
 
--- xhrb :: 心如寒冰 :: 使用张春华在一局游戏中至少触发“绝情”10次以上
---
-zgfunc[sgs.Predamage].xhrb=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~="zhangchunhua" then return false end
-	if not isowner then return false end
-	addGameData(name,1)
-	if getGameData(name)==10 then
-		addZhanGong(room,name)
-	end
-end
 
 -- lbss :: 乐不思蜀 :: 在对你的“乐不思蜀”生效后的回合弃牌阶段弃置超过8张手牌
 --

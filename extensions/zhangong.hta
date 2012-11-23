@@ -3,7 +3,7 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <link href="./zhangong/js/zg.css" rel="stylesheet" type="text/css">
 <title>成就系统for太阳神三国杀</title> 
-<hta:application id="ohta" applicationname="qsgsext" border="thin" borderstyle="normal" caption="yes" icon="./QSanguosha.exe" maximizebutton="yes" 	minimizebutton="yes" showintaskbar="yes" ingleinstance="no" sysmenu="yes" version="1.0" windowstate="normal" />
+<hta:application id="ohta" applicationname="qsgsext" border="thin" borderstyle="normal" caption="yes" icon="../QSanguosha.exe" maximizebutton="yes" 	minimizebutton="yes" showintaskbar="yes" ingleinstance="no" sysmenu="yes" version="1.0" windowstate="normal" />
 <script type="text/javascript" language="javascript" src="./zhangong/js/jquery-1.4.2.min.js"></script>
 <script type="text/javascript" language="javascript" src="./zhangong/js/jquery.table.js"></script>
 <script type="text/javascript" language="javascript" src="./zhangong/js/template.min.js"></script>
@@ -81,10 +81,10 @@
 		<td align="center"><%= info.role.losenum %></td>
 		<td align="center"><%= info.role.escnum %></td>
 		<td align="center"><%= info.role.winrate %></td>
-		<td title="主公胜率" align="center"><img src="./image/system/roles/lord-1.png" height="23"/><%= info.role.winrate_1 %></td>
-		<td title="忠臣胜率" align="center"><img src="./image/system/roles/loyalist-1.png" height="23"/><%= info.role.winrate_2 %></td>
-		<td title="内奸胜率" align="center"><img src="./image/system/roles/renegade-1.png" height="23"/><%= info.role.winrate_3 %></td>
-		<td title="反贼胜率" align="center"><img src="./image/system/roles/rebel-1.png" height="23"/><%= info.role.winrate_4 %></td>
+		<td title="主公胜率" align="center"><img src="../image/system/roles/lord.png" height="19"/><%= info.role.winrate_1 %></td>
+		<td title="忠臣胜率" align="center"><img src="../image/system/roles/loyalist.png" height="19"/><%= info.role.winrate_2 %></td>
+		<td title="内奸胜率" align="center"><img src="../image/system/roles/renegade.png" height="19"/><%= info.role.winrate_3 %></td>
+		<td title="反贼胜率" align="center"><img src="../image/system/roles/rebel.png" height="19"/><%= info.role.winrate_4 %></td>
 	</tr>
 	<tr>
 		<td align="center">虎牢关</td>
@@ -92,10 +92,10 @@
 		<td align="center"><%= info.hulao.losenum %></td>
 		<td align="center"><%= info.hulao.escnum %></td>
 		<td align="center"><%= info.hulao.winrate %></td>
-		<td  align="center" title="吕布胜率"><img src="./image/system/roles/lord.png" height="23"/><%= info.hulao.winrate_1 %></td>
+		<td  align="center" title="吕布胜率"><img src="../image/system/roles/lord.png" height="17"/><%= info.hulao.winrate_1 %></td>
 		<td align="center">&nbsp;</td>
 		<td align="center">&nbsp;</td>
-		<td  align="center" title="联军胜率"><img src="./image/system/roles/rebel.png" height="23"/><%= info.hulao.winrate_2 %></td>
+		<td  align="center" title="联军胜率"><img src="../image/system/roles/rebel.png" height="17"/><%= info.hulao.winrate_2 %></td>
 
 	</tr>
 	<tr>
@@ -105,13 +105,13 @@
 		<td align="center"><%= info.v3.escnum %></td>
 		<td align="center"><%= info.v3.winrate %></td>
 		<td title="主帅胜率" align="center">
-			<img src="./image/system/roles/lord-4.png" height="23"/>
-			<img src="./image/system/roles/renegade-4.png" height="23"/>
+			<img src="../image/system/roles/small-lord.png" height="23"/>
+			<img src="../image/system/roles/small-renegade.png" height="23"/>
 			<%= info.v3.winrate_1 %>
 		</td>
 		<td title="前锋胜率" align="center">
-			<img src="./image/system/roles/loyalist-4.png" height="23"/>
-			<img src="./image/system/roles/rebel-4.png" height="23"/>
+			<img src="../image/system/roles/small-loyalist.png" height="23"/>
+			<img src="../image/system/roles/small-rebel.png" height="23"/>
 			<%= info.v3.winrate_2 %>
 		</td>
 		<td>&nbsp;</td>				
@@ -123,10 +123,10 @@
 		<td align="center"><%= info.hegemony.losenum %></td>
 		<td align="center"><%= info.hegemony.escnum %></td>
 		<td align="center"><%= info.hegemony.winrate %></td>
-		<td title="魏国胜率" align="center"><img src="./image/system/roles/lord-5.png" height="23"/><%= info.hegemony.winrate_1 %></td>
-		<td title="蜀国胜率" align="center"><img src="./image/system/roles/loyalist-5.png" height="23"/><%= info.hegemony.winrate_2 %></td>
-		<td title="吴国胜率" align="center"><img src="./image/system/roles/rebel-5.png" height="23"/><%= info.hegemony.winrate_3 %></td>
-		<td title="群雄胜率" align="center"><img src="./image/system/roles/renegade-5.png" height="23"/><%= info.hegemony.winrate_4 %></td>
+		<td title="魏国胜率" align="center"><img src="../image/system/roles/lord-5.png" height="17"/><%= info.hegemony.winrate_1 %></td>
+		<td title="蜀国胜率" align="center"><img src="../image/system/roles/loyalist-5.png" height="17"/><%= info.hegemony.winrate_2 %></td>
+		<td title="吴国胜率" align="center"><img src="../image/system/roles/rebel-5.png" height="17"/><%= info.hegemony.winrate_3 %></td>
+		<td title="群雄胜率" align="center"><img src="../image/system/roles/renegade-5.png" height="17"/><%= info.hegemony.winrate_4 %></td>
 	</tr>
 
 	<tr>
@@ -135,9 +135,9 @@
 		<td align="center"><%= info.v1.losenum %></td>
 		<td align="center"><%= info.v1.escnum %></td>
 		<td align="center"><%= info.v1.winrate %></td>
-		<td title="后手胜率" align="center"><img src="./image/system/roles/lord.png" height="23"/><%= info.v1.winrate_2 %></td>
+		<td title="后手胜率" align="center"><img src="../image/system/roles/lord.png" height="18"/><%= info.v1.winrate_2 %></td>
 		<td>&nbsp;</td>	
-		<td title="先手胜率" align="center"><img src="./image/system/roles/renegade.png" height="23"/><%= info.v1.winrate_1 %></td>			
+		<td title="先手胜率" align="center"><img src="../image/system/roles/renegade.png" height="18"/><%= info.v1.winrate_1 %></td>			
 		<td>&nbsp;</td>
 	</tr>
 	
@@ -353,10 +353,10 @@ var callback={
 		return v;
 	},
 	getGeneral:function(v){
-		return "<img height='20' src='./image/generals/tiny/"+v+".png'/>"+(trans[v] || v);
+		return "<img height='20' src='../image/generals/tiny/"+v+".png'/>"+(trans[v] || v);
 	},	
 	getRole:function(v){
-		return "<img height='20' src='./image/system/roles/"+v+"-1.png'/>"+(trans[v] || v);
+		return "<img height='20' src='../image/system/roles/"+v+"-1.png'/>"+(trans[v] || v);
 	},
 	getStatus:function(v){
 		return v==1 ? "<font color='green'>是</font>":"<font color='#cccccc'>否</font>";
@@ -413,9 +413,9 @@ var callback={
 		if (!info)	return "<div style='width:53px'>&nbsp;</div>";
 		var imgsrc="./zhangong/img/"+info.id+".png";
 		if ($.inArray(info.category,["wei","shu","wu","qun","god"])!=-1 && info.general!=='-'){
-			imgsrc="./image/generals/avatar/"+info.general+".png";
+			imgsrc="../image/generals/big/"+info.general+".png";
 			if ($.inArray(info.general,["guanxingzhangbao","erzhang","yanliangwenchou"])!=-1){
-				imgsrc="./image/generals/big/"+info.general+".png";
+				imgsrc="../image/generals/big/"+info.general+".png";
 			}
 		}
 		var enableStr= info.gained !==0 ? "" : " class='graycolor'";
