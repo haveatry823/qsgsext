@@ -21,7 +21,6 @@ zgturndata={}
 zggamedata={}
 
 sgs.ConfirmDamage = sgs.Predamage
-sgs.CardsMoveOneTime = sgs.CardMoving
 
 sgs.EventPhaseStart = sgs.PhaseChange
 sgs.EventPhaseEnd = sgs.PhaseChange
@@ -38,7 +37,7 @@ zggamedata.hegemony=0
 zgfunc[sgs.CardEffect]={}
 zgfunc[sgs.CardEffected]={}
 zgfunc[sgs.CardFinished]={}
-zgfunc[sgs.CardsMoveOneTime]={}
+
 zgfunc[sgs.CardDiscarded]={}
 zgfunc[sgs.CardResponsed]={}
 zgfunc[sgs.ChoiceMade]={}
@@ -521,29 +520,6 @@ zgfunc[sgs.GameStart].gn=function(self, room, event, player, data,isowner,name)
 end
 
 
--- htdl :: 黄天当立 :: 使用张角在一局游戏中从群雄武将处得到的闪不少于8张
---
-zgfunc[sgs.CardsMoveOneTime].htdl=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~='zhangjiao' then return false end
-	if not isowner then return false end
-	local move=data:toCardMove()
-	local ids=sgs.QList2Table(move.card_ids)
-	local from_places=sgs.QList2Table(move.from_places)
-	if table.contains(from_places,sgs.Player_PlaceHand) and move.to_place==sgs.Player_PlaceHand
-			and move.to:objectName()==room:getOwner():objectName() and move.from:getKingdom()=='qun' then
-		for i=1,#ids,1 do
-			local card=sgs.Sanguosha:getCard(ids[i])
-			if card:inherits("Jink") then
-				addGameData(name,1)
-				if getGameData(name)==8 then
-					addZhanGong(room,name)
-				end
-			end
-		end
-	end
-end
-
-
 -- jdfy :: 绝对防御 :: 在一局游戏中，使用八挂累计出闪20次
 --
 zgfunc[sgs.FinishRetrial].jdfy=function(self, room, event, player, data,isowner,name)
@@ -758,21 +734,7 @@ zgfunc[sgs.GameOverJudge].callback.xnhx=function(room,player,data,name,result)
 end
 
 
--- ymds :: 驭马大师 :: 在一局游戏中，至少更换过8匹马
---
-zgfunc[sgs.CardsMoveOneTime].ymds=function(self, room, event, player, data,isowner,name)
-	if not isowner then return false end
-	local move=data:toCardMove()
-	if move.from_places:contains(sgs.Player_PlaceHand) and move.from:objectName()==room:getOwner():objectName()
-		and move.to_place==sgs.Player_PlaceEquip and move.to:objectName()==room:getOwner():objectName() then
-		for _,cdid in sgs.qlist(move.card_ids) do
-			if sgs.Sanguosha:getCard(cdid):inherits("Horse") then
-				addGameData(name,1)
-				if getGameData(name)==8 then addZhanGong(room,name) end
-			end
-		end
-	end
-end
+
 
 
 -- cqcz :: 此情常在 :: 在一局游戏中，布练师发动安恤4次并在阵亡情况下获胜
@@ -839,31 +801,6 @@ end
 
 
 
--- gzwb :: 固政为本 :: 使用张昭张纮在一局游戏中利用技能“固政”获得累计至少40张牌
---
-zgfunc[sgs.CardsMoveOneTime].gzwb=function(self, room, event, player, data,isowner,name)
-	if room:getOwner():getGeneralName()~='erzhang' or not isowner then return false end
-	if room:getCurrent():getPhaseString()~="discard"
-		or room:getCurrent():objectName()==room:getOwner():objectName() then return false end
-
-	local move=data:toCardMove()
-	local reason=move.reason
-	local from_places=sgs.QList2Table(move.from_places)
-
-	if move.to_place~=sgs.Player_PlaceHand or move.to:objectName()~=room:getOwner():objectName() then return false end
-
-	if table.contains(from_places,sgs.Player_DiscardPile) then
-		local ids=sgs.QList2Table(move.card_ids)
-		for _,cid in ipairs(ids) do
-			addGameData(name,1)
-			if getGameData(name)>=40 then
-				addZhanGong(room,name)
-				setGameData(name,-100)
-				return false
-			end
-		end
-	end
-end
 
 
 -- jfhz :: 解烦护主 :: 使用韩当在一局游戏游戏中发动“解烦”救过队友孙权至少两次
@@ -933,30 +870,7 @@ end
 
 
 
--- jyh :: 解语花 :: 使用步练师在一局游戏中发动安恤摸八张牌以上
---
-zgfunc[sgs.CardsMoveOneTime].jyh=function(self, room, event, player, data,isowner,name)
-	if room:getOwner():getGeneralName()~="bulianshi" then return false end
-	if room:getCurrent():getPhaseString()~="play"  then return false end
 
-	local move=data:toCardMove()
-	local from_places=sgs.QList2Table(move.from_places)
-	local reason=move.reason
-	if reason.m_reason==sgs.CardMoveReason_S_REASON_GIVE and reason.m_playerId==room:getOwner():objectName()
-			and isowner and room:getCurrent():objectName()==room:getOwner():objectName() then
-		local ids=sgs.QList2Table(move.card_ids)
-		for _,cid in ipairs(ids) do
-			local card=sgs.Sanguosha:getCard(cid)
-			if card:getSuit()~=sgs.Card_Spade  then
-				addGameData(name,1)
-				if getGameData(name)==8 then
-					addZhanGong(room,name)
-					return false
-				end
-			end
-		end
-	end
-end
 
 
 
@@ -1273,19 +1187,6 @@ zgfunc[sgs.CardFinished].tmnw=function(self, room, event, player, data,isowner,n
 	end
 end
 
-zgfunc[sgs.CardsMoveOneTime].tmnw=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~='simayi' then return false end
-	local move=data:toCardMove()
-	local ids=sgs.QList2Table(move.card_ids)
-	local card=sgs.Sanguosha:getCard(ids[1])
-
-	local from_places=sgs.QList2Table(move.from_places)
-	if table.contains(from_places,sgs.Player_PlaceDelayedTrick) and move.to_place~=sgs.Player_PlaceDelayedTrick then
-		if card:hasFlag(name) then
-			room:setCardFlag(card, '-'..name)
-		end
-	end
-end
 
 zgfunc[sgs.FinishRetrial].tmnw=function(self, room, event, player, data,isowner,name)
 	if  room:getOwner():getGeneralName()~='simayi' then return false end
@@ -1320,33 +1221,6 @@ zgfunc[sgs.GameOverJudge].callback.tmnw=function(room,player,data,name,result)
 	end
 end
 
-
--- tmzf :: 天命之罚 :: 在一局游戏中，使用司马懿更改闪电判定牌至少劈中其他角色两次
---
-zgfunc[sgs.CardsMoveOneTime].tmzf=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~='simayi' then return false end
-	local move = data:toCardMove()
-	if move.from:objectName()==room:getOwner():objectName() and move.reason.m_reason==sgs.CardMoveReason_S_REASON_RETRIAL
-		and move.reason.m_skillName=="guicai" then
-		setTurnData(name.."_change", move.card_ids:first())
-	end
-end
-
-
-zgfunc[sgs.FinishRetrial].tmzf=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~='simayi' then return false end
-	local judge=data:toJudge()
-	if judge.reason=="lightning" and room:getTag("retrial"):toBool()==true
-			and judge.who:objectName()~=room:getOwner():objectName() and judge:isBad() then
-		if judge.card:getEffectiveId()==getTurnData(name.."_change") then
-			addGameData(name,1)
-			if getGameData(name)==2 then
-				addZhanGong(room,name)
-			end
-		end
-	end
-	setTurnData(name.."_change", 0)
-end
 
 
 -- wzxj :: 稳重行军 :: 使用于禁在一局游戏中发动“毅重”抵御至少4次黑色杀
@@ -1505,15 +1379,7 @@ zgfunc[sgs.GameOverJudge].callback.dyzh=function(room,player,data,name,result)
 end
 
 
--- gmzc :: 过目之才 :: 使用☆SP庞统一回合内累计拿到至少16张牌
---
-zgfunc[sgs.CardsMoveOneTime].gmzc=function(self, room, event, player, data,isowner,name)
-	local move=data:toCardMove()
-	if room:getOwner():getGeneralName()=="bgm_pangtong" and room:getOwner():getHandcardNum()>=16 and getGameData(name)==0 then
-		addZhanGong(room,name)
-		setGameData(name,1)
-	end
-end
+
 
 
 -- hlzms :: 挥泪斩马谡 :: 使用诸葛亮杀死马谡
@@ -3167,21 +3033,7 @@ zgfunc[sgs.ConfirmDamage].bszj=function(self, room, event, player, data,isowner,
 end
 
 
--- dtj :: 打铁匠 :: 累计将铁索连环重铸30次 
--- 
-zgfunc[sgs.CardsMoveOneTime].dtj=function(self, room, event, player, data,isowner,name)
-	if not isowner then return false end
-	local move=data:toCardMove()
-	if move.from and move.from:objectName()~=player:objectName() then return end
-	local reason=move.reason.m_reason	
-	if reason==sgs.CardMoveReason_S_REASON_RECAST then 
-		addGlobalData(name,1) 
-		local zgquery=db:first_row("select gained from zhangong where id='"..name.."'")
-		if getGlobalData(name)>=30 and zgquery and zgquery.gained==0 then
-			addZhanGong(room,name)
-		end	
-	end
-end
+
 
 
 
@@ -3548,34 +3400,7 @@ zgfunc[sgs.CardFinished].lsmy=function(self, room, event, player, data,isowner,n
 	end
 end
 
--- lsdjx :: 乱世的奸雄 :: 使用曹操在1局游戏中发动奸雄得到至少3张南蛮入侵和1张万箭齐发 
--- 
-zgfunc[sgs.CardsMoveOneTime].lsdjx=function(self, room, event, player, data,isowner,name)
-	if room:getOwner():getGeneralName()~='caocao' or not isowner then return false end
-	local move=data:toCardMove()	
-	local reason=move.reason
-	local from_places=sgs.QList2Table(move.from_places)
 
-	if move.to_place~=sgs.Player_PlaceHand or move.to:objectName()~=room:getOwner():objectName() then return false end
-	if table.contains(from_places,sgs.Player_PlaceTable) then
-		local ids=sgs.QList2Table(move.card_ids)
-		for _,cid in ipairs(ids) do
-			local card=sgs.Sanguosha:getCard(cid)
-			if card:inherits("SavageAssault") then 
-				addGameData(name.."SavageAssault",1) 
-			end
-			if card:inherits("ArcheryAttack") then 
-				addGameData(name.."ArcheryAttack",1)
-			end	
-			if getGameData(name.."SavageAssault")>=3 and getGameData(name.."ArcheryAttack")>=1 then
-				addZhanGong(room,name)
-				setGameData(name.."SavageAssault",-100)
-				setGameData(name.."ArcheryAttack",-100)
-				return false
-			end
-		end
-	end
-end
 
 -- yqwb :: 掩其无备 :: 使用张辽在1局游戏中发动至少10次突袭 
 -- 
@@ -3901,15 +3726,7 @@ zgfunc[sgs.CardFinished].wjdbt=function(self, room, event, player, data,isowner,
 end
 
 
--- sjdf :: 伺机待发 :: 使用吕蒙将手牌囤积到20张 
--- 
-zgfunc[sgs.CardsMoveOneTime].sjdf=function(self, room, event, player, data,isowner,name)
-	local move=data:toCardMove()
-	if room:getOwner():getGeneralName()=="lvmeng" and room:getOwner():getHandcardNum()>=20 and getGameData(name)==0 then 		 			 
-		addZhanGong(room,name)
-		setGameData(name,1)
-	end
-end
+
 
 
 -- yhjm :: 移花接木 :: 使用大乔在一局游戏中累计发动5次流离 
@@ -3927,24 +3744,7 @@ zgfunc[sgs.CardFinished].yhjm=function(self, room, event, player, data,isowner,n
 end
 
 
--- yhdf :: 因祸得福 :: 使用孙尚香在1局游戏中累计失去至少5张已装备的装备牌
--- 
-zgfunc[sgs.CardsMoveOneTime].yhdf=function(self, room, event, player, data,isowner,name)
-	if room:getOwner():getGeneralName()~="sunshangxiang" then return false end
-	if player:getGeneralName()~="sunshangxiang" then return false end
-	local move=data:toCardMove()
-	local from_places=sgs.QList2Table(move.from_places)
-	if move and move.from and move.from:objectName() == room:getOwner():objectName() and table.contains(from_places,sgs.Player_PlaceEquip) then
-		for _, place in ipairs(from_places) do
-			if place==sgs.Player_PlaceEquip then
-				addGameData(name,1)
-				if getGameData(name)==5 then 			 
-					addZhanGong(room,name)
-				end	
-			end
-		end
-	end
-end
+
 
 
 -- wjdzz :: 无尽的挣扎 :: 使用周瑜在1局游戏中使用反间杀死至少3名角色 
@@ -4463,25 +4263,7 @@ zgfunc[sgs.CardFinished].swjd=function(self, room, event, player, data,isowner,n
 end
 
 
--- bfh :: 暴发户 :: 一回合内获得至少10张手牌 (3v3)
--- 
-zgfunc[sgs.EventPhaseStart].bfh=function(self, room, event, player, data,isowner,name)
-	if room:getMode()~="06_3v3" then return false end	
-	if not isowner then return false end
-	if player:getPhaseString()=="start" then
-		setTurnData(name,player:getHandcardNum())
-	end		
-end
 
-zgfunc[sgs.CardsMoveOneTime].bfh=function(self, room, event, player, data,isowner,name)
-	if room:getMode()~="06_3v3" then return false end
-	if not room:getOwner():objectName()==room:getCurrent():objectName() then return false end
-	local move=data:toCardMove()
-	if room:getOwner():getHandcardNum() - getTurnData(name)>=10 then 		 			 
-		addZhanGong(room,name)
-		setTurnData(name,100)		
-	end
-end
 
 
 -- ssqy :: 舍生取义 :: 身为前锋，被本方角色杀死累计10次 (3v3)
@@ -4722,72 +4504,6 @@ zgfunc[sgs.GameOverJudge].callback.zysq=function(room,player,data,name,result)
 end
 
 
--- wwd2 :: 魏文帝 :: 使用曹丕在1局游戏中发动行殇获得锦囊牌至少6张 
---
-zgfunc[sgs.CardsMoveOneTime].wwd2=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~='caopi' or not isowner then return false end
-	local move=data:toCardMove()
-	if move.to and move.to:objectName()~=room:getOwner():objectName() then return end
-	local reason=move.reason.m_reason	
-	local ids=sgs.QList2Table(move.card_ids)
-	if reason==sgs.CardMoveReason_S_REASON_RECYCLE then 
-		for _,cid in ipairs(ids) do
-			local card=sgs.Sanguosha:getCard(cid)
-			if card:inherits("TrickCard") then
-				addGameData(name,1)
-				if getGameData(name)==6 then
-					addZhanGong(room,name)
-				end
-			end
-		end
-	end
-end
-
-
--- djlj :: 粮尽援绝 :: 使用徐晃在1局游戏中用装备区的牌发动断粮至少4次 
---
-zgfunc[sgs.CardsMoveOneTime].djlj=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~='xuhuang' then return false end
-	local move=data:toCardMove()
-	if move.from and move.from:objectName()~=room:getOwner():objectName() then return end
-	local ids=sgs.QList2Table(move.card_ids)
-	local card=sgs.Sanguosha:getCard(ids[1])
-
-	local from_places=sgs.QList2Table(move.from_places)
-	if table.contains(from_places,sgs.Player_PlaceEquip) then
-		for _, place in ipairs(from_places) do
-			if place==sgs.Player_PlaceEquip and card:getSkillName()=="duanliang" then
-				addGameData(name,1)
-				if getGameData(name)==4 then 			 
-					addZhanGong(room,name)
-				end	
-			end
-		end
-	end	
-end
-
-
-
--- qqqz :: 七擒七纵 :: 使用孟获在1局游戏中发动再起回复体力至少7点 
---
-zgfunc[sgs.CardsMoveOneTime].qqqz=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~='menghuo' or not isowner then return false end
-	local move=data:toCardMove()
-	if room:getCurrent():objectName()~=room:getOwner():objectName() then return end
-	local reason=move.reason.m_reason
-	local ids=sgs.QList2Table(move.card_ids)
-	if reason==sgs.CardMoveReason_S_REASON_NATURAL_ENTER and move.reason.m_skillName=="zaiqi" then 
-		for _,cid in ipairs(ids) do
-			local card=sgs.Sanguosha:getCard(cid)
-			if card:getSuit()==sgs.Card_Heart then
-				addGameData(name,1)
-				if getGameData(name)==7 then
-					addZhanGong(room,name)
-				end
-			end
-		end
-	end
-end
 
 
 
@@ -4912,23 +4628,6 @@ end
 
 
 
--- fwjj :: 辅吴将军 :: 使用张昭&张纮在一局中发动直谏将至少5张装备牌置于吴势力武将装备区 
---
-zgfunc[sgs.CardsMoveOneTime].fwjj=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~='erzhang' then return false end
-	local move=data:toCardMove()
-	if room:getCurrent():objectName()~=room:getOwner():objectName() then return end
-	local reason=move.reason.m_reason
-	if reason==sgs.CardMoveReason_S_REASON_USE and move.reason.m_skillName=="zhijian" and move.to:getKingdom()=='wu'
-			and isowner and room:getCurrent():objectName()==room:getOwner():objectName() then
-		addGameData(name,1)
-		if getGameData(name)==5 then
-			addZhanGong(room,name)
-		end		
-	end
-end
-
-
 -- dzry :: 大智若愚 :: 使用刘禅每回合都发动放权并最终获胜 
 --
 zgfunc[sgs.ChoiceMade].dzry=function(self, room, event, player, data,isowner,name)
@@ -4977,28 +4676,6 @@ zgfunc[sgs.EventPhaseStart].mrgs=function(self, room, event, player, data,isowne
 end
 
 
-
--- bzcq :: 变拙成巧 :: 使用张郃在一局游戏中发动巧变移动判定区的牌及装备区的牌各至少3张 
---
-zgfunc[sgs.CardsMoveOneTime].bzcq=function(self, room, event, player, data,isowner,name)
-	if room:getOwner():getGeneralName()~="zhanghe" then return false end
-	local move=data:toCardMove()
-	local from_places=sgs.QList2Table(move.from_places)
-	local reason=move.reason
-	if reason.m_reason==sgs.CardMoveReason_S_REASON_TRANSFER and reason.m_playerId==room:getOwner():objectName() 
-		and reason.m_skillName=="qiaobian" and isowner and room:getCurrent():objectName()==room:getOwner():objectName() then
-		if table.contains(from_places,sgs.Player_PlaceEquip) then 
-			setGameData(name..'equip',math.min(3,getGameData(name..'equip')+1))
-		end
-		if table.contains(from_places,sgs.Player_PlaceDelayedTrick) then 
-			setGameData(name..'judge',math.min(3,getGameData(name..'judge')+1))
-		end
-		if getGameData(name..'equip')==3 and getGameData(name..'judge')==3 then
-			addZhanGong(room,name)
-			setGameData(name..'judge',-100)
-		end
-	end
-end
 
 
 -- szzjz :: 蜀之终结者 :: 使用邓艾在一回合内发动急袭至少4次 
@@ -5090,26 +4767,7 @@ zgfunc[sgs.GameOverJudge].callback.lyws=function(room,player,data,name,result)
 end
 
 
--- dcyq :: 洞察一切 :: 使用神吕蒙在一局游戏中发动攻心将至少5张无中生有或桃置于牌堆顶 
---
-zgfunc[sgs.CardsMoveOneTime].dcyq=function(self, room, event, player, data,isowner,name)
-	if room:getOwner():getGeneralName()~="shenlvmeng" then return false end
-	local move=data:toCardMove()
-	local reason=move.reason
-	if room:getCurrent():objectName()~=room:getOwner():objectName() then return end
-	if reason.m_reason==sgs.CardMoveReason_S_REASON_PUT and reason.m_playerId==room:getOwner():objectName() then
-		local ids=sgs.QList2Table(move.card_ids)
-		for _,cid in ipairs(ids) do
-			local card=sgs.Sanguosha:getCard(cid)
-			if card:inherits("Peach") or card:inherits("ExNihilo") then
-				addGameData(name,1)
-				if getGameData(name)==5 then
-					addZhanGong(room,name)
-				end
-			end
-		end
-	end
-end
+
 
 -- hlyh :: 红莲业火 :: 使用神周瑜在一回合发动业炎造成至少5点伤害 
 --
@@ -5833,7 +5491,6 @@ zgzhangong2 = sgs.CreateTriggerSkill{
 		sgs.CardDiscarded,
 		sgs.CardDrawing,
 		sgs.CardResponsed,
-		sgs.CardsMoveOneTime,
 		sgs.ChoiceMade,
 		sgs.EventPhaseStart,
 		sgs.EventPhaseEnd,
