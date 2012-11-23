@@ -4,6 +4,7 @@ CREATE TABLE "skills"([skillname] varchar(20) NOT NULL,[gained] int(11) NOT NULL
 CREATE TABLE "gamedata"([id] varchar(20) NOT NULL,[num] int(11) NOT NULL, Primary Key(id) ON CONFLICT Ignore);
 CREATE TABLE "zhangong"([id] varchar(10) NOT NULL,[name] varchar(30) NOT NULL,[score] int(11) NOT NULL,[description] varchar(250) NOT NULL,[gained] int(11) NOT NULL,[category] varchar(20) NOT NULL,[lasttime] datetime NOT NULL,[general] varchar(40) NOT NULL,[num] int(11) NOT NULL,[count] int(11) NOT NULL, Primary Key(id) ON CONFLICT Ignore);
 CREATE TABLE "results"([id] int(11) NOT NULL,[general] varchar(30) NOT NULL,[role] varchar(10) NOT NULL,[kingdom] varchar(10) NOT NULL,[hegemony] int(11) NOT NULL,[mode] varchar(10) NOT NULL,[turncount] int(11) NOT NULL,[alive] int(11) NOT NULL,[result] varchar(10) NOT NULL,[wen] int(11) NOT NULL,[wu] int(11) NOT NULL,[expval] int(11) NOT NULL,[zhangong] varchar(255) NOT NULL, Primary Key(id) ON CONFLICT Ignore);
+CREATE TABLE "zgcard"([id] varchar(20) NOT NULL,[gained] int(11) NOT NULL,[used] int(11) NOT NULL, Primary Key(id) ON CONFLICT Ignore);
 CREATE INDEX [gamedata_num] On [gamedata] ([num] );
 CREATE INDEX [results_result] On [results] ([result]);
 CREATE INDEX [results_role] On [results] ([role]);
@@ -18,6 +19,7 @@ CREATE INDEX [zhangong_general] On [zhangong] ([general]);
 CREATE INDEX [zhangong_num] On [zhangong] ([num]);
 CREATE INDEX [skills_gained] On [skills] ([gained]);
 CREATE INDEX [skills_used] On [skills] ([used]);
+INSERT INTO "zgcard"  VALUES('luckycard',100,0);
 INSERT INTO "gongxun" VALUES(0, '平民', 0, 'wen');
 INSERT INTO "gongxun" VALUES(1, '里长', 100, 'wen');
 INSERT INTO "gongxun" VALUES(2, '亭长', 300, 'wen');
@@ -499,15 +501,10 @@ INSERT INTO "zhangong" VALUES('sbfh', '十倍奉还', 5, '使用法正在一局�
 INSERT INTO "zhangong" VALUES('styj', '身体要紧', 5, '在主公是刘备的情况下，使用SP孙尚香做内奸取得胜利', 0, 'shu', '1999-12-31 00:00:00', 'sp_sunshangxiang', 0, 0);
 INSERT INTO "zhangong" VALUES('yzkw', '严整溃围', 5, '使用☆SP曹仁在一局游戏中发动溃围摸牌至少11张并发动严整至少4次', 0, 'wei', '1999-12-31 00:00:00', 'bgm_caoren', 0, 0);
 INSERT INTO "zhangong" VALUES('wjjh', '文姬归汉', 5, '在主公是曹操的情况下，使用SP蔡文姬做内奸取得胜利', 0, 'wei', '1999-12-31 00:00:00', 'sp_caiwenji', 0, 0);
-INSERT INTO "zhangong" VALUES('gsy', '狗屎运', 5, '当你的开局4牌全为黑色时,清除你的N盘逃跑记录(N为4牌点数之和)', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
-COMMIT;
-/*--new-zhangong--*/
-BEGIN TRANSACTION;
 INSERT INTO zhangong VALUES('ajnf', '暗箭难防', 10, '使用马岱在一局游戏中发动“潜袭”成功至少6次', 0, 'shu', '1999-12-31 00:00:00', 'madai', 0, 0);
 INSERT INTO zhangong VALUES('bj', '暴君', 15, '身为主公在1局游戏中，在反贼和内奸全部存活的情况下杀死全部忠臣，并最后胜利', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
 INSERT INTO zhangong VALUES('bjz', '败家子', 15, '在一局游戏中，弃牌阶段累计弃掉至少10张桃', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
 INSERT INTO zhangong VALUES('bnzw', '暴虐之王', 10, '使用董卓在一局游戏中利用技能“暴虐”至少回血10次', 0, 'qun', '1999-12-31 00:00:00', 'dongzhuo', 0, 0);
-INSERT INTO zhangong VALUES('bqbr', '不屈不饶', 15, '一格体力情况下，累积出闪100次', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
 INSERT INTO zhangong VALUES('bqk', '兵器库', 15, '在一局游戏中，累计装备过至少10次武器以及10次防具', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
 INSERT INTO zhangong VALUES('brz', '百人斩', 15, '累积杀死100人', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
 INSERT INTO zhangong VALUES('cbhw', '长坂虎威', 10, '使用张飞在一回合内使用8张杀', 0, 'shu', '1999-12-31 00:00:00', 'zhangfei', 0, 0);
@@ -526,7 +523,6 @@ INSERT INTO zhangong VALUES('dyzh', '当阳之吼', 10, '在一局游戏中，�
 INSERT INTO zhangong VALUES('fynd', '愤勇难当', 10, '使用☆SP夏侯惇在一局游戏中，至少发动四次愤勇', 0, 'wei', '1999-12-31 00:00:00', 'bgm_xiahoudun', 0, 0);
 INSERT INTO zhangong VALUES('gjcc', '诡计重重', 15, '在一局游戏中，累计使用锦囊牌至少20次', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
 INSERT INTO zhangong VALUES('glnc', '刚烈难存', 10, '使用夏侯惇在一局游戏中连续4次刚烈判定均为红桃', 0, 'wei', '1999-12-31 00:00:00', 'xiahoudun', 0, 0);
-INSERT INTO zhangong VALUES('gn', '果农', 15, '游戏开始时，起手手牌全部是“桃”', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
 INSERT INTO zhangong VALUES('gqzl', '顾曲周郎', 10, '使用神周瑜连续至少4回合发动琴音回复体力', 0, 'god', '1999-12-31 00:00:00', 'shenzhouyu', 0, 0);
 INSERT INTO zhangong VALUES('lgzw', '雷公助我', 10, '使用张角在一局游戏中在未更改判定牌的情况下至少4次雷击成功', 0, 'qun', '1999-12-31 00:00:00', 'zhangjiao', 0, 0);
 INSERT INTO zhangong VALUES('hlzms', '挥泪斩马谡', 10, '使用诸葛亮杀死马谡', 0, 'shu', '1999-12-31 00:00:00', 'zhugeliang', 0, 0);
@@ -557,10 +553,8 @@ INSERT INTO zhangong VALUES('shgx', '四海归心', 10, '使用神曹操在一�
 INSERT INTO zhangong VALUES('ssex', '三思而行', 10, '使用孙权在一局游戏中利用制衡获得至少4张无中生有以及4张桃', 0, 'wu', '1999-12-31 00:00:00', 'sunquan', 0, 0);
 INSERT INTO zhangong VALUES('sssl', '深思熟虑', 10, '使用孙权在一个回合内发动制衡的牌不少于10张', 0, 'wu', '1999-12-31 00:00:00', 'sunquan', 0, 0);
 INSERT INTO zhangong VALUES('stzs', '神偷再世', 15, '在一局游戏中，累计使用卡牌顺手牵羊10次以上', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
-INSERT INTO zhangong VALUES('swzs', '神威之势', 10, '使用神赵云发动各花色龙魂各两次并在存活的情况下取得游戏胜利', 0, 'god', '1999-12-31 00:00:00', 'shenzhaoyun', 0, 0);
 INSERT INTO zhangong VALUES('syjh', '岁月静好', 10, '使用☆SP大乔在一局游戏中发动安娴五次并获胜', 0, 'wu', '1999-12-31 00:00:00', 'bgm_daqiao', 0, 0);
 INSERT INTO zhangong VALUES('syqd', '恃勇轻敌', 10, '使用华雄在一局游戏中，在没有马岱在场的情况下由于体力上限减至0而死亡', 0, 'qun', '1999-12-31 00:00:00', 'huaxiong', 0, 0);
-INSERT INTO zhangong VALUES('thy', '桃花运', 15, '当你的开局手牌全部为红桃时，体力上限加1', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
 INSERT INTO zhangong VALUES('tmnw', '天命难违', 10, '使用司马懿被自己挂的闪电劈死，不包括改判', 0, 'wei', '1999-12-31 00:00:00', 'simayi', 0, 0);
 INSERT INTO zhangong VALUES('tyzm', '桃园之梦', 10, '使用神关羽在一局游戏中阵亡后发动武魂判定结果为桃园结义', 0, 'god', '1999-12-31 00:00:00', 'shenguanyu', 0, 0);
 INSERT INTO zhangong VALUES('tyzy', '桃园之义', 15, '在一局游戏中，场上同时存在刘备、关羽、张飞三人且为队友，而你是其中一个并最后获胜', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
@@ -569,7 +563,6 @@ INSERT INTO zhangong VALUES('wsww', '为时未晚', 15, '身为反贼，在一�
 INSERT INTO zhangong VALUES('wxwd', '惟贤惟德', 10, '使用刘备在一个回合内发动仁德给的牌不少于10张', 0, 'shu', '1999-12-31 00:00:00', 'liubei', 0, 0);
 INSERT INTO zhangong VALUES('wyyd', '无言以对', 10, '使用徐庶在一局游戏中发动“无言”躲过南蛮入侵或万箭齐发累计4次', 0, 'shu', '1999-12-31 00:00:00', 'xushu', 0, 0);
 INSERT INTO zhangong VALUES('wzxj', '稳重行军', 10, '使用于禁在一局游戏中发动“毅重”抵御至少4次黑色杀', 0, 'wei', '1999-12-31 00:00:00', 'yujin', 0, 0);
-INSERT INTO zhangong VALUES('xcdz', '星驰电走', 15, '在一局游戏中，累计出闪20次', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
 INSERT INTO zhangong VALUES('xhdc', '雪恨敌耻', 10, '使用☆SP夏侯惇在一局游戏中，发动雪恨杀死一名角色', 0, 'wei', '1999-12-31 00:00:00', 'bgm_xiahoudun', 0, 0);
 INSERT INTO zhangong VALUES('xhjs', '悬壶济世', 15, '在一局游戏中，使用桃或技能累计将我方队友脱离濒死状态4次以上', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
 INSERT INTO zhangong VALUES('xlfm', '小露锋芒', 15, '进行1000局游戏', 0, 'zhonghe', '1999-12-31 00:00:00', '-', 0, 0);
