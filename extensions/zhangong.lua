@@ -6,7 +6,6 @@ enableLuckyCard = 1		-- 是否开启手气卡,  1:开启, 0:不开启
 
 zgver='20121121'
 
-dofile "lua/config.lua"
 dofile "lua/sgs_ex.lua"
 
 module("extensions.zhangong", package.seeall)
@@ -1696,7 +1695,7 @@ end
 --
 zgfunc[sgs.CardFinished].wmsz=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
-	if room:getOwner():getGeneralName()~='shenlvbu' then return false end
+	if room:getOwner():getGeneralName()~='shenlvbu' and room:getOwner():getGeneralName()~='shenlubu' then return false end
 	local use=data:toCardUse()
 	local card=use.card
 	if card:isNDTrick() then
@@ -1735,7 +1734,7 @@ end
 -- zszn :: 战神之怒 :: 使用神吕布在一局游戏中发动至少4次神愤、3次无前
 --
 zgfunc[sgs.CardFinished].zszn=function(self, room, event, player, data,isowner,name)
-	if room:getOwner():getGeneralName()~="shenlvbu" then return false end
+	if room:getOwner():getGeneralName()~='shenlvbu' and room:getOwner():getGeneralName()~='shenlubu' then return false end
 	if not isowner then return false end
 	local use=data:toCardUse()
 	local card=use.card
@@ -3083,7 +3082,7 @@ end
 -- fj :: 飞将 :: 使用吕布在1局游戏中发动方天画戟特效杀死至少2名角色 
 -- 
 zgfunc[sgs.SlashEffect].fj=function(self, room, event, player, data,isowner,name)
-	if room:getOwner():getGeneralName()~="lvbu" then return false end
+	if room:getOwner():getGeneralName()~="lvbu" and room:getOwner():getGeneralName()~="lubu" then return false end
 	if not isowner then return false end
 	local effect= data:toSlashEffect()
 	if player:isKongcheng() and player:hasWeapon("Halberd") then
@@ -3093,7 +3092,7 @@ end
 
 
 zgfunc[sgs.CardFinished].fj=function(self, room, event, player, data,isowner,name)
-	if room:getOwner():getGeneralName()~="lvbu" then return false end
+	if room:getOwner():getGeneralName()~="lvbu" and room:getOwner():getGeneralName()~="lubu" then return false end
 	if not isowner then return false end
 	local use=data:toCardUse()
 	local card=use.card	
@@ -3104,10 +3103,9 @@ end
 
 
 zgfunc[sgs.Death].fj=function(self, room, event, player, data,isowner,name)
-	if room:getOwner():getGeneralName()~="lvbu" then return false end
+	if room:getOwner():getGeneralName()~="lvbu" and room:getOwner():getGeneralName()~="lubu" then return false end
 	local damage=data:toDamageStar()
-	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
-		and damage.from:getGeneralName()=="lvbu" and damage.card:hasFlag(name) then
+	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() and damage.card:hasFlag(name) then
 		addGameData(name,1)	
 		if getGameData(name)==2 then
 			addZhanGong(room,name)
@@ -3116,10 +3114,9 @@ zgfunc[sgs.Death].fj=function(self, room, event, player, data,isowner,name)
 end
 
 zgfunc[sgs.GameOverJudge].callback.fj=function(room,player,data,name,result)
-	if  room:getOwner():getGeneralName()~="lvbu" then return false end
+	if room:getOwner():getGeneralName()~="lvbu" and room:getOwner():getGeneralName()~="lubu" then return false end
 	local damage=data:toDamageStar()
-	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() 
-		and damage.from:getGeneralName()=="lvbu" and damage.card:hasFlag(name) then
+	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() and damage.card:hasFlag(name) then
 		addGameData(name,1)	
 		if getGameData(name)==2 then
 			addZhanGong(room,name)
@@ -4609,7 +4606,7 @@ end
 -- sgws :: 神鬼无双 :: 使用神吕布在一局游戏中发动神愤至少2次 
 --
 zgfunc[sgs.CardFinished].sgws=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~='shenlvbu' then return false end
+	if room:getOwner():getGeneralName()~='shenlvbu' and room:getOwner():getGeneralName()~='shenlubu' then return false end
 	if not isowner then return false end
 	local use=data:toCardUse()
 	local card=use.card
@@ -4707,7 +4704,7 @@ zgfunc[sgs.CardEffect].bykt=function(self, room, event, player, data,isowner,nam
 	if  room:getOwner():getGeneralName()~='chengong' then return false end
 	if not isowner then return false end
 	local effect=data:toCardEffect()
-	if effect.card:inherits("MingceCard") and effect.to:getGeneralName()=="lvbu" then
+	if effect.card:inherits("MingceCard") and (effect.to:getGeneralName()=="lvbu" or effect.to:getGeneralName()=="lubu") then
 		addGameData(name,1)
 		if getGameData(name)==2 then 			 
 			addZhanGong(room,name)
@@ -5293,23 +5290,17 @@ function getWinner(room,victim)
 	return false
 end
 
+
+
 function initZhangong()
 	local generalnames=sgs.Sanguosha:getLimitedGeneralNames()
-	local packages={}
-	for _, pack in ipairs(config.package_names) do
-		if pack=="NostalGeneral" then table.insert(packages,"nostal_general") end
-		table.insert(packages,string.lower(pack))
-	end
-	local hidden={"sp_diaochan","sp_sunshangxiang","sp_pangde","sp_caiwenji","sp_machao","sp_jiaxu","anjiang","shenlvbu1","shenlvbu2"}
+	local hidden={"sp_diaochan","sp_sunshangxiang","sp_pangde","sp_caiwenji","sp_machao","sp_jiaxu","anjiang","shenlvbu1","shenlvbu2","shenlubu1","shenlubu2"}
 	table.insertTable(generalnames,hidden)
 	for _, generalname in ipairs(generalnames) do
 		local general = sgs.Sanguosha:getGeneral(generalname)
 		if general then
-			local packname = string.lower(general:getPackage())		
-			if table.contains(packages,packname) then
-				general:addSkill("#zgzhangong1")
-				general:addSkill("#zgzhangong2")
-			end
+			general:addSkill("#zgzhangong1")
+			general:addSkill("#zgzhangong2")
 		end
 	end
 end
