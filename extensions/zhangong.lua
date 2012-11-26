@@ -95,7 +95,8 @@ if zgquery.tblnum==0 then
 else
 	--新增战功
 	--
-	--战功ID必须唯一，不能和其他战功ID重复, 综合类战功势力为"zhonghe",武将为"-", 人物战功要填写准确势力和武将
+	-- 战功ID必须唯一，不能和其他战功ID重复, 综合类战功势力为"zhonghe",武将为"-", 武将战功要填写准确势力和武将
+	-- 综合类战功还需要弄一张图 60*60的png，名字为战功ID, 放zhangong/img目录下, 这里就是 ./zhangong/img/ymds.png  武将战功不需要额外的图，直接用武将大头像
 	--
 	--[[................................战功ID...战功名...战功值...战功描述......................................势力.............................武将........]]
 	db:exec("inert into zhangong values('xhrb', '心如寒冰', 10, '使用张春华在一局游戏中至少触发绝情10次以上', 0, 'wei',    '1999-12-31 00:00:00', 'zhangchunhua', 0, 0);")
@@ -517,7 +518,7 @@ zgfunc[sgs.GameOverJudge].callback.tyzy=function(room,player,data,name,result)
 			end
 		end
 	end
-	if has_liubei and has_zhangfei and has_zhangfei and issjy then
+	if has_liubei and has_guanyu and has_zhangfei and issjy then
 		addZhanGong(room, name)
 	end
 end
