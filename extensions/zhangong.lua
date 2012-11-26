@@ -92,7 +92,14 @@ if zgquery.tblnum==0 then
 		end
 	end
 
-
+else
+	--新增战功
+	--
+	--战功ID必须唯一，不能和其他战功ID重复, 综合类战功势力为"zhonghe",武将为"-", 人物战功要填写准确势力和武将
+	--
+	--[[................................战功ID...战功名...战功值...战功描述......................................势力.............................武将........]]
+	db:exec("inert into zhangong values('xhrb', '心如寒冰', 10, '使用张春华在一局游戏中至少触发绝情10次以上', 0, 'wei',    '1999-12-31 00:00:00', 'zhangchunhua', 0, 0);")
+	db:exec("inert into zhangong values('ymds', '驭马大师', 15, '在一局游戏中，至少更换过8匹马',              0, 'zhonghe', '1999-12-31 00:00:00', '-',           0, 0);")
 end
 
 
@@ -207,6 +214,32 @@ zgfunc[sgs.GameOverJudge].tongji=function(self, room, event, player, data,isowne
 end
 
 
+
+--- xhrb :: 心如寒冰 :: 使用张春华在一局游戏中至少触发绝情10次以上
+---
+zgfunc[sgs.Predamage].xhrb=function(self, room, event, player, data,isowner,name)
+	if room:getOwner():getGeneralName()~="zhangchunhua" then return false end
+	addGameData(name,1)
+	if getGameData(name)==10 then
+		addZhanGong(room,name)
+	end
+end
+
+
+--ymds :: 驭马大师 :: 在一局游戏中，至少更换过8匹马
+--
+zgfunc[sgs.CardFinished].ymds=function(self, room, event, player, data,isowner,name)
+	if not isowner then return false end
+	local use=data:toCardUse()
+	if use.card:inherits("Horse") then
+		addGameData(name, 1)
+		if getGameData(name)==8 then
+			addZhanGong(room,name)
+		end
+	end
+end
+
+
 -- bj :: 暴君 :: 身为主公在1局游戏中，在反贼和内奸全部存活的情况下杀死全部忠臣，并最后胜利
 --
 zgfunc[sgs.Death].bj=function(self, room, event, player, data,isowner,name)
@@ -260,10 +293,6 @@ zgfunc[sgs.CardDiscarded].bjz=function(self, room, event, player, data,isowner,n
 		end
 	end
 end
-
-
-
-
 
 
 -- bqk :: 兵器库 :: 在一局游戏中，累计装备过至少10次武器以及10次防具
