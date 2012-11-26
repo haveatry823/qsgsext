@@ -1,8 +1,8 @@
 package.path = package.path .. ";./lua/lib/?.lua"
 package.cpath = package.cpath .. ";./lua/clib/?.dll"
 
-enableSkillCard = 1		-- 是否开启技能卡， 1:开启, 0:不开启
-enableLuckyCard = 1		-- 是否开启手气卡,  1:开启, 0:不开启
+enableSkillCard = 0		-- 是否开启技能卡， 1:开启, 0:不开启
+enableLuckyCard = 0		-- 是否开启手气卡,  1:开启, 0:不开启
 
 zgver='20121121'
 
