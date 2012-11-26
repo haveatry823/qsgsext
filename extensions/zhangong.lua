@@ -80,8 +80,10 @@ if zgquery.tblnum==0 then
 		db:exec(line)
 	end
 
+	--删除不存在的武将，比如 bgm_xiahoudun, bgm_ganning等
 	local rows=db:rows("select general from zhangong where category in ('wei','shu','wu','qun','god')")
 	for row in rows do
+		--兼容踏青下 吕蒙，神吕蒙，吕布，神吕布，虎牢布的命名错误， 踏青下为：lumeng, lubu ,还有双雄
 		local name1=row.general
 		local name2=string.gsub(name1,'lv','lu')
 		local name3=string.gsub(name1,'yanliangwenchou','shuangxiong')
@@ -89,6 +91,8 @@ if zgquery.tblnum==0 then
 			db:exec("delete from zhangong where general='"..name1.."'")
 		end
 	end
+
+
 end
 
 
@@ -162,6 +166,7 @@ end
 -- 游戏结束判断代码
 -- 因为游戏结束的时候，当前阵亡的人的 sgs.Death 事件不会被触发，sgs.cardFinished也不会被触发，这里额外处理
 -- zgfunc[sgs.GameOverJudge]["callback"] 处理最后一个阵亡的人的 Death事件
+--
 zgfunc[sgs.GameOverJudge].tongji=function(self, room, event, player, data,isowner,name)
 	local winner=getWinner(room,player)
 	if not winner then return false end
