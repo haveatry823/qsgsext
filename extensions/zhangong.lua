@@ -1,8 +1,8 @@
 package.path = package.path .. ";./lua/lib/?.lua"
 package.cpath = package.cpath .. ";./lua/clib/?.dll"
 
-enableSkillCard = 0		-- 是否开启技能卡， 1:开启, 0:不开启
-enableLuckyCard = 0		-- 是否开启手气卡,  1:开启, 0:不开启
+enableSkillCard = 1		-- 是否开启技能卡， 1:开启, 0:不开启
+enableLuckyCard = 1		-- 是否开启手气卡,  1:开启, 0:不开启
 
 zgver='20121121'
 
@@ -98,9 +98,9 @@ else
 	-- 战功ID必须唯一，不能和其他战功ID重复, 综合类战功势力为"zhonghe",武将为"-", 武将战功要填写准确势力和武将
 	-- 综合类战功还需要弄一张图 60*60的png，名字为战功ID, 放zhangong/img目录下, 这里就是 ./zhangong/img/ymds.png  武将战功不需要额外的图，直接用武将大头像
 	--
-	--[[................................战功ID...战功名...战功值...战功描述......................................势力.............................武将........]]
-	db:exec("inert into zhangong values('xhrb', '心如寒冰', 10, '使用张春华在一局游戏中至少触发绝情10次以上', 0, 'wei',    '1999-12-31 00:00:00', 'zhangchunhua', 0, 0);")
-	db:exec("inert into zhangong values('ymds', '驭马大师', 15, '在一局游戏中，至少更换过8匹马',              0, 'zhonghe', '1999-12-31 00:00:00', '-',           0, 0);")
+	--[[.................................战功ID...战功名...战功值...战功描述......................................势力.............................武将........]]
+	db:exec("insert into zhangong values('xhrb', '心如寒冰', 10, '使用张春华在一局游戏中至少触发绝情10次以上', 0, 'wei',    '1999-12-31 00:00:00', 'zhangchunhua', 0, 0);")
+	db:exec("insert into zhangong values('ymds', '驭马大师', 15, '在一局游戏中，至少更换过8匹马',              0, 'zhonghe', '1999-12-31 00:00:00', '-',           0, 0);")
 end
 
 
@@ -157,6 +157,12 @@ end
 --
 zgfunc[sgs.TurnStart].init=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
+
+	if getGameData("turncount")==0 then
+		if enableLuckyCard==1 then useLuckyCard(room,room:getOwner()) end
+		if enableSkillCard==1 then useSkillCard(room,room:getOwner()) end
+	end
+
 	addGameData("turncount",1)
 	local alive=room:getOwner():isAlive() and 1 or 0
 	local kingdom=room:getOwner():getKingdom()
@@ -4908,7 +4914,7 @@ function useLuckyCard(room,owner)
 	local zgquery=db:first_row("select count(id) as num from zhangong where gained>0")
 	local numquery=db:first_row("select gained - used as num from zgcard where id='luckycard'")
 	local limitnum= math.ceil(zgquery.num / 20)
-	
+
 	if numquery.num<=0 then return false end
 	limitnum = math.min(numquery.num,limitnum)
 
@@ -4917,9 +4923,9 @@ function useLuckyCard(room,owner)
 			local n=owner:getHandcardNum()
 			if owner:hasSkill("lianying") then n=n-1 end
 			for j=n,1,-1 do
-				room:moveCardTo(owner:getRandomHandCard(), nil, nil, sgs.Player_DiscardPile)
+				room:throwCard(owner:getRandomHandCard())
 			end
-			owner:drawCards(n,true)
+			owner:drawCards(n)
 			sqlexec("update zgcard set used = used + 1 where id='%s'",'luckycard')
 			broadcastMsg(room,"#LuckyCardNum",i-1)
 		else
@@ -4977,8 +4983,6 @@ function init_gamestart(self, room, event, player, data, isowner)
 				player:getKingdom(),getGameData("hegemony"),room:getMode())
 	end	
 
-	if enableLuckyCard==1 then useLuckyCard(room,owner) end
-	if enableSkillCard==1 then useSkillCard(room,owner) end
 
 	return true
 end
