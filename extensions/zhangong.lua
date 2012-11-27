@@ -4317,7 +4317,7 @@ end
 
 
 
--- mrgs :: 猛锐盖世 :: 使用孙策在一局游戏中发动激昂摸牌至少5张并发动技能魂姿 
+-- mrgs :: 猛锐盖世 :: 使用孙策在一局游戏中发动激昂摸牌至少5张并发动技能魂姿
 --
 zgfunc[sgs.ChoiceMade].mrgs=function(self, room, event, player, data,isowner,name)
 	if  room:getOwner():getGeneralName()~='sunce' then return false end
@@ -4325,7 +4325,8 @@ zgfunc[sgs.ChoiceMade].mrgs=function(self, room, event, player, data,isowner,nam
 	local choices= data:toString():split(":")
 	if choices[1]=="skillInvoke"  and  choices[2]=="jiang" and choices[3]=="yes" then
 		setGameData(name..'jiang',math.min(5,getGameData(name..'jiang')+1))
-		if getGameData(name..'jiang')==5 and getGameData(name..'hunzi')==1 then
+		if getGameData(name..'jiang')==5 and getGameData(name..'hunzi')==1 and getGameData(name)==0 then
+			setGameData(name,1)
 			addZhanGong(room,name)
 			setGameData(name..'hunzi',0)
 		end
@@ -4337,12 +4338,14 @@ zgfunc[sgs.EventPhaseStart].mrgs=function(self, room, event, player, data,isowne
 	if not isowner then return false end
 	if player:getPhaseString()=="start" and player:getMark("hunzi")==0 and player:getHp() == 1 then
 		setGameData(name..'hunzi',1)
-		if getGameData(name..'jiang')==5 then
+		if getGameData(name..'jiang')==5 and getGameData(name)==0 then
+			setGameData(name,1)
 			addZhanGong(room,name)
 			setGameData(name..'hunzi',0)
 		end
 	end		
 end
+
 
 
 
