@@ -5206,8 +5206,10 @@ end
 
 function initZhangong()
 	local generalnames=sgs.Sanguosha:getLimitedGeneralNames()
-	local hidden={"sp_diaochan","sp_sunshangxiang","sp_pangde","sp_caiwenji","sp_machao","sp_jiaxu","anjiang","shenlvbu1","shenlvbu2","shenlubu1","shenlubu2"}
-	table.insertTable(generalnames,hidden)
+	local hiddens={"sp_diaochan","sp_sunshangxiang","sp_pangde","sp_caiwenji","sp_machao","sp_jiaxu","anjiang","shenlvbu1","shenlvbu2","shenlubu1","shenlubu2"}
+	for _, hiddenname in ipairs(hiddens) do
+		table.insert(generalnames, hiddenname)
+	end
 	for _, generalname in ipairs(generalnames) do
 		local general = sgs.Sanguosha:getGeneral(generalname)
 		if general then
