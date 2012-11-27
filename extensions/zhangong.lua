@@ -120,7 +120,8 @@ end
 function database2js()
 end
 
-
+-- 玩家a 玩家b 是否同一个阵营 (内奸不属于任何阵营，两内奸也是敌对的)
+--
 function isSameGroup(a,b)
 	local role1=a:getRole()
 	local role2=b:getRole()
@@ -133,6 +134,22 @@ function isSameGroup(a,b)
 	return role1==role2 and role1~="renegade"
 end
 
+
+-- 取得某个身份的人数
+--
+function getRoleNum(room, role, include_dead)
+	local ret=0
+	for _,player in sgs.qlist(room:getPlayers()) do
+		if player:getRole()==role then
+			if include_dead then
+				ret = ret +1
+			else
+				if player:isAlive() then ret = ret +1 end
+			end
+		end
+	end
+	return ret
+end
 
 -- wenwu ::  :: 每打出或使用一个【杀】,增加一点武功;  每打出或使用一个锦囊,增加一点文功
 --
@@ -2005,7 +2022,7 @@ end
 -- 
 zgfunc[sgs.GameOverJudge].callback.bgws=function(room,player,data,name,result)	
 	if getGameData("hegemony")==1 then return false end
-	if getGameData("bgws",0)==0 and room:getOwner():isLord() and result =='win' and string.match(sgs.Sanguosha:getRoles(room:getMode()),"C") then		 
+	if getGameData("bgws",0)==0 and room:getOwner():isLord() and result =='win' and getRoleNum(room,'loyalist',true)>=1 then
 		addZhanGong(room,name)
 	end
 end
@@ -2897,7 +2914,7 @@ zgfunc[sgs.GameOverJudge].callback.zszm=function(room,player,data,name,result)
 		addGameData(name,1)
 	end
 	if sgs.Sanguosha:getPlayerCount(room:getMode())- room:alivePlayerCount()==getGameData(name) 
-			and string.match(sgs.Sanguosha:getRoles(room:getMode()),"C") then
+			and getRoleNum(room,'loyalist',true)>=1 then
 		addZhanGong(room,name)
 	end	
 end
