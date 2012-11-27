@@ -10,6 +10,8 @@ lua 扩展for [太阳神三国杀](https://github.com/gaodayihao/QSanguosha)
 *  XP安装包:   https://github.com/haveatry823/qsgsext/zipball/master
 *  
 *  win7安装包: https://github.com/haveatry823/qsgsext/zipball/win7
+*  
+*  涅槃版以及踏青版安装包(需用win7方式安装): https://github.com/haveatry823/qsgsext/zipball/niepan
 
 
 无尽模式包
