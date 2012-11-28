@@ -120,6 +120,16 @@ end
 function database2js()
 end
 
+-- 有些版本，比如基于踏青的高达版，没这个函数
+--
+function table:contains(element)
+	if #self == 0 or type(self[1]) ~= type(element) then return false end
+	for _, e in ipairs(self) do
+		if e == element then return true end
+	end
+	return false
+end
+
 -- 玩家a 玩家b 是否同一个阵营 (内奸不属于任何阵营，两内奸也是敌对的)
 --
 function isSameGroup(a,b)
