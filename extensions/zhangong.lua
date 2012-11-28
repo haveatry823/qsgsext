@@ -21,7 +21,6 @@ sgs.DamageCaused = sgs.DamageCaused or sgs.Predamage
 sgs.DamageInflicted  = sgs.DamageInflicted or sgs.Predamage
 
 --新神杀专用事件
-sgs.ConfirmDamage = sgs.ConfirmDamage or sgs.Predamage
 sgs.EventPhaseStart = sgs.EventPhaseStart or sgs.PhaseChange
 sgs.EventPhaseEnd = sgs.EventPhaseEnd or sgs.PhaseChange
 sgs.EventPhaseChanging = sgs.EventPhaseChanging or sgs.PhaseChange
@@ -42,7 +41,6 @@ zgfunc[sgs.ChoiceMade]={}
 zgfunc[sgs.CardDrawing]={}
 
 
-zgfunc[sgs.ConfirmDamage]={}
 zgfunc[sgs.Damage]={}
 zgfunc[sgs.DamageCaused]={}
 zgfunc[sgs.Damaged]={}
@@ -253,6 +251,7 @@ end
 ---
 zgfunc[sgs.Predamage].xhrb=function(self, room, event, player, data,isowner,name)
 	if room:getOwner():getGeneralName()~="zhangchunhua" then return false end
+	if not isowner then return false end
 	addGameData(name,1)
 	if getGameData(name)==10 then
 		addZhanGong(room,name)
@@ -2543,7 +2542,7 @@ zgfunc[sgs.Death].jcfs=function(self, room, event, player, data,isowner,name)
 	local damage = data:toDamageStar()
 	if not damage then return false end
 	if getGameData("hegemony")==1 then return false end
-	if room:getOwner():getRole()=="rebel" then
+	if room:getOwner():getRole()=="rebel" and room:getOwner():isAlive() then
 		local others = room:getPlayers()
 		local loyalist_alive,loyalist_dead=0,0
 		local rebel_alive,rebel_dead=0,0
@@ -2566,7 +2565,7 @@ end
 -- 
 zgfunc[sgs.GameOverJudge].callback.jcfs=function(room,player,data,name,result)
 	if getGameData("hegemony")==1 then return false end
-	if result =='win' and getGameData(name)==1 then addZhanGong(room,name) end
+	if result =='win' and getGameData(name)==1 and room:getOwner():isAlive() then addZhanGong(room,name) end
 end
 
 
@@ -2766,7 +2765,7 @@ end
 
 -- yqt :: 一骑讨 :: 与人决斗胜利累计30次 
 -- 
-zgfunc[sgs.ConfirmDamage].yqt=function(self, room, event, player, data,isowner,name)
+zgfunc[sgs.Damaged].yqt=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
 	local damage = data:toDamage()
 	if damage and damage.card and damage.card:inherits("Duel") and player:objectName()==damage.from:objectName() then
@@ -2781,7 +2780,7 @@ end
 
 -- bszj :: 搬石砸脚 :: 与人决斗失败累计10次 
 -- 
-zgfunc[sgs.ConfirmDamage].bszj=function(self, room, event, player, data,isowner,name)	
+zgfunc[sgs.Damaged].bszj=function(self, room, event, player, data,isowner,name)	
 	local damage = data:toDamage()
 	if damage and damage.card and damage.card:inherits("Duel") and damage.to:objectName()==room:getOwner():objectName() and player:objectName()==damage.from:objectName() then
 		addGlobalData(name,1)
@@ -2791,10 +2790,6 @@ zgfunc[sgs.ConfirmDamage].bszj=function(self, room, event, player, data,isowner,
 		end
 	end	
 end
-
-
-
-
 
 
 -- tw :: 桃王 :: 在1局游戏中给自己吃过5个或者更多得桃（不包括华佗的技能） 
@@ -5021,12 +5016,9 @@ end
 zgzhangong1 = sgs.CreateTriggerSkill{
 	name = "#zgzhangong1",
 	events ={
-			sgs.ConfirmDamage,
 			sgs.Damage,
-			sgs.DamageCaused,
 			sgs.DamageComplete,
 			sgs.Damaged,
-			sgs.DamageInflicted,
 			sgs.Death,
 			sgs.FinishRetrial,
 			sgs.GameStart,
@@ -5082,6 +5074,8 @@ zgzhangong2 = sgs.CreateTriggerSkill{
 		sgs.CardDiscarded,
 		sgs.CardDrawing,
 		sgs.ChoiceMade,
+		sgs.DamageCaused,
+		sgs.DamageInflicted,
 		sgs.EventPhaseStart,
 		sgs.EventPhaseEnd,
 		sgs.Pindian,
