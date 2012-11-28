@@ -1,10 +1,12 @@
 package.path = package.path .. ";./lua/lib/?.lua"
 package.cpath = package.cpath .. ";./lua/clib/?.dll"
 
-enableSkillCard = 0		-- 是否开启技能卡， 1:开启, 0:不开启
+enableSkillCard = 1		-- 是否开启技能卡， 1:开启, 0:不开启
 enableLuckyCard = 1		-- 是否开启手气卡,  1:开启, 0:不开启
 
 zgver='20121121'
+
+gameVersion=string.gsub(sgs.Sanguosha:getVersion(),'GDMOD%-','')
 
 dofile "lua/sgs_ex.lua"
 
@@ -178,16 +180,22 @@ zgfunc[sgs.Damage].expval=function(self, room, event, player, data,isowner,name)
 	end
 end
 
+
+-- 技能卡和手气卡
+--
+zgfunc[sgs.TurnStart].zgCard=function(self, room, event, player, data,isowner,name)
+	if getGameData(name)==0 then
+		setGameData(name,1)
+		if enableLuckyCard==1 then useLuckyCard(room,room:getOwner()) end
+		if enableSkillCard==1 then useSkillCard(room,room:getOwner()) end
+	end
+end
+
+
 -- init ::  :: 更新results, 将所有的 turndata重置为0
 --
 zgfunc[sgs.TurnStart].init=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
-
-	if getGameData("turncount")==0 then
-		if enableLuckyCard==1 then useLuckyCard(room,room:getOwner()) end
-		if enableSkillCard==1 then useSkillCard(room,room:getOwner()) end
-	end
-
 	addGameData("turncount",1)
 	local alive=room:getOwner():isAlive() and 1 or 0
 	local kingdom=room:getOwner():getKingdom()
@@ -4925,7 +4933,7 @@ function useSkillCard(room,owner)
 		if row.skillname and sgs.Sanguosha:getSkill(row.skillname) then table.insert(skills,row.skillname) end
 	end
 	if #skills>0 then
-		local choice=room:askForChoice(owner,"@chooseskill","cancel+"..table.concat(skills,"+"))
+		local choice=room:askForChoice(owner,"zgzhangong3","cancel+"..table.concat(skills,"+"))
 		if choice ~= "cancel" then
 			room:acquireSkill(owner,choice)
 			if not owner:hasSkill("ruoyu") then room:loseHp(owner) end
@@ -5101,12 +5109,25 @@ zgzhangong2 = sgs.CreateTriggerSkill{
 	end,
 }
 
+
+-- 空技能， 踏青下的 askForChoices 第二个参数一定需要一个技能名，
+--
+-- 不知道为何 #zgzhangong2 不行
+--
+zgzhangong3 =sgs.CreateTriggerSkill{
+	name = "zgzhangong3",
+	events = sgs.ChoiceMade,
+	on_trigger = function(self, event, player, data)
+		return false
+	end
+}
+
 function askForGiveUp(room,owner)
 	local mode=room:getMode()
 	local role=owner:getRole()
 
 	if mode=="02_1v1" or not owner:askForSkillInvoke("giveup") then return false end
-	
+
 	if getGameData("hegemony")==1 then	
 		for _, p in sgs.qlist(room:getAlivePlayers()) do
 			if p:getRole()==role then room:killPlayer(p) end
@@ -5125,7 +5146,11 @@ function askForGiveUp(room,owner)
 		for i=1,#alives-1,1 do
 			room:killPlayer(alives[i])			
 		end
-		room:getThread():trigger(sgs.GameOverJudge, room, owner)
+		if gameVersion>='20120525' then
+			room:getThread():trigger(sgs.GameOverJudge, room, owner)
+		else
+			room:getThread():trigger(sgs.GameOverJudge, owner)
+		end
 		return false
 	end
 
@@ -5136,7 +5161,11 @@ function askForGiveUp(room,owner)
 			if not p:isLord() then room:killPlayer(p) end
 		end
 	end
-	room:getThread():trigger(sgs.GameOverJudge, room, owner)
+	if gameVersion>='20120525' then
+		room:getThread():trigger(sgs.GameOverJudge, room, owner)
+	else
+		room:getThread():trigger(sgs.GameOverJudge, owner)
+	end
 end
 
 
@@ -5226,6 +5255,7 @@ end
 
 zganjiang:addSkill(zgzhangong1)
 zganjiang:addSkill(zgzhangong2)
+zganjiang:addSkill(zgzhangong3)
 
 
 initZhangong()
@@ -5253,7 +5283,10 @@ sgs.LoadTranslationTable {
 	["#canntGainSkill"]= "【警告】无法获得技能【%arg】",
 	["#gainSkill"]="%from获得了技能卡【%arg】",
 	["#gsyNum"]="%from清除了【%arg】盘逃跑记录",
-	["@chooseskill"]="流失体力获得技能",
+
+	--["@chooseskill"]="流失体力获得技能",
+	["zgzhangong3"]="流失体力获得技能",
+
 	["cancel"] = "取消",
 	["giveup"] = "立即认输并结束游戏",
 	["#enableZhangong"]="【<b><font color='green'>提示</font></b>】: 本局游戏开启了战功统计",
