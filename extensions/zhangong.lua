@@ -496,10 +496,12 @@ end
 --
 zgfunc[sgs.GameStart].gn=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
+	local count=0
 	for _,cd in sgs.qlist(player:getHandcards()) do
 		if not cd:isKindOf("Peach") then return false end
+		count = count + 1
 	end
-	if getGameData(name,0)==0 then
+	if getGameData(name,0)==0 and count>=3 and getGameData("turncount")==0 then
 		setGameData(name,1)
 		addZhanGong(room,name)
 	end
@@ -631,10 +633,12 @@ end
 --
 zgfunc[sgs.GameStart].thy=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
+	local count=0
 	for _,cd in sgs.qlist(player:getHandcards()) do
 		if cd:getSuit()~=sgs.Card_Heart then return false end
+		count=count+1
 	end
-	if getGameData(name,0) == 0 then
+	if getGameData(name,0) == 0 and count>=3 and getGameData("turncount")==0 then
 		setGameData(name,1)
 		addZhanGong(room,name)
 		room:setPlayerProperty(player, "maxhp", sgs.QVariant(player:getMaxHp()+1))
