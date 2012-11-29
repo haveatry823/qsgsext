@@ -4954,11 +4954,9 @@ function useLuckyCard(room,owner)
 	for i=math.max(1,limitnum),1,-1 do
 		if owner:askForSkillInvoke("useLuckyCard") then
 			local n=owner:getHandcardNum()
-			if owner:hasSkill("lianying") then n=n-1 end
-			for j=n,1,-1 do
-				room:throwCard(owner:getRandomHandCard())
-			end
-			owner:drawCards(n)
+			if n==0 then break end
+			room:throwAllHandCards()
+			owner:drawCards( n - owner:getHandcardNum())
 			sqlexec("update zgcard set used = used + 1 where id='%s'",'luckycard')
 			broadcastMsg(room,"#LuckyCardNum",i-1)
 		else
