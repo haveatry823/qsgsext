@@ -1455,7 +1455,7 @@ end
 -- sbfs :: 生不逢时 :: 使用双雄对关羽使用决斗，并因这个决斗被关羽杀死
 --
 zgfunc[sgs.Death].sbfs=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~='yanliangwenchou' then return false end
+	if room:getOwner():getGeneralName()~='yanliangwenchou' and room:getOwner():getGeneralName()~='shuangxiong' then return false end
 	if not isowner then return false end
 	local damage=data:toDamageStar()
 	if not (damage and damage.from) then return false end
@@ -1468,7 +1468,7 @@ end
 
 
 zgfunc[sgs.GameOverJudge].callback.sbfs=function(room,player,data,name,result)
-	if  room:getOwner():getGeneralName()~='yanliangwenchou' then return false end
+	if room:getOwner():getGeneralName()~='yanliangwenchou' and room:getOwner():getGeneralName()~='shuangxiong' then return false end
 	local damage=data:toDamageStar()
 	if not (damage and damage.from) then return false end
 	local dname=damage.from:getGeneralName()
@@ -3840,7 +3840,7 @@ end
 -- qldj :: 其利断金 :: 使用颜良文丑在1局游戏中发动双雄至少3次并在双雄的回合中杀死过至少3名角色 
 -- 
 zgfunc[sgs.ChoiceMade].qldj=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~="yanliangwenchou" then return false end
+	if room:getOwner():getGeneralName()~='yanliangwenchou' and room:getOwner():getGeneralName()~='shuangxiong' then return false end
 	if not isowner then return false end
 	local choices= data:toString():split(":")
 	if choices[1]=="skillInvoke"  and  choices[2]=="shuangxiong" and choices[3]=="yes" then
@@ -3850,7 +3850,7 @@ zgfunc[sgs.ChoiceMade].qldj=function(self, room, event, player, data,isowner,nam
 end
 
 zgfunc[sgs.Death].qldj=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~="yanliangwenchou" then return false end
+	if room:getOwner():getGeneralName()~='yanliangwenchou' and room:getOwner():getGeneralName()~='shuangxiong' then return false end
 	local owner=room:getOwner()
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==owner:objectName() and getTurnData(name)==1 then
@@ -3862,7 +3862,7 @@ zgfunc[sgs.Death].qldj=function(self, room, event, player, data,isowner,name)
 end
 
 zgfunc[sgs.GameOverJudge].callback.qldj=function(room,player,data,name,result)
-	if  room:getOwner():getGeneralName()~="yanliangwenchou" then return false end
+	if room:getOwner():getGeneralName()~='yanliangwenchou' and room:getOwner():getGeneralName()~='shuangxiong' then return false end
 	local owner=room:getOwner()
 	local damage=data:toDamageStar()
 	if damage and damage.from and damage.from:objectName()==owner:objectName() and getTurnData(name)==1 then
