@@ -2078,7 +2078,7 @@ end
 -- 
 zgfunc[sgs.EventPhaseEnd].mbgj=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
-	if player:getPhaseString()=="judge" and player:isAlive() and getTurnData(name,0)==1 then
+	if player:getPhaseString()=="draw" and player:isAlive() and getTurnData(name,0)==1 then
 		setTurnData(name,0)		 
 		addZhanGong(room,name)
 	end		
