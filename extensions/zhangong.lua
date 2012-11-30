@@ -1986,7 +1986,8 @@ zgfunc[sgs.CardFinished].shd=function(self, room, event, player, data,isowner,na
 	if player:objectName()~=room:getCurrent():objectName() then return false end
 	local use=data:toCardUse()
 	local card=use.card
-	if player:getWeapon() and player:getWeapon():inherits("crossbow") and card:inherits("Slash") then 
+
+	if player:getWeapon() and player:getWeapon():inherits("Crossbow") and card:inherits("Slash") then
 		addTurnData(name,1) 
 		if getTurnData(name)==4 then
 			addZhanGong(room,name)
