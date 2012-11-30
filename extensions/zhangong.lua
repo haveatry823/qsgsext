@@ -4094,7 +4094,7 @@ zgfunc[sgs.GameStart].jgyx=function(self, room, event, player, data,isowner,name
 	local n=0
 	for _, generalname in ipairs(list) do
 		local general = sgs.Sanguosha:getGeneral(generalname)
-		if general:getGeneral():isFemale() then n=n+1 end
+		if general:isFemale() then n=n+1 end
 	end
 	if player:getGeneral():isFemale() then n=n+1 end
 	if n==3 then
