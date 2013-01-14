@@ -667,7 +667,7 @@ zgfunc[sgs.GameOverJudge].callback.tyzy=function(room,player,data,name,result)
 			end
 		end
 	end
-	if has_liubei and has_zhangfei and has_zhangfei and issjy then
+	if has_liubei and has_guanyu and has_zhangfei and issjy then
 		addZhanGong(room, name)
 	end
 end
