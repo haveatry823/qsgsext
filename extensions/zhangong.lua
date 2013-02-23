@@ -555,7 +555,10 @@ zgfunc[sgs.EventPhaseStart].jg=function(self, room, event, player, data,isowner,
 				analeptic_num=analeptic_num+1
 			end
 		end
-		if analeptic_num>=3 then addZhanGong(room,name) end
+		if analeptic_num>=3 and getGameData(name)==0 then 
+			addGameData(name,1)
+			addZhanGong(room,name)
+		end
 	end
 end
 
@@ -667,7 +670,7 @@ zgfunc[sgs.GameOverJudge].callback.tyzy=function(room,player,data,name,result)
 			end
 		end
 	end
-	if has_liubei and has_zhangfei and has_zhangfei and issjy then
+	if has_liubei and has_guanyu and has_zhangfei and issjy then
 		addZhanGong(room, name)
 	end
 end
