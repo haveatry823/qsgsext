@@ -24,7 +24,6 @@ zgfunc[sgs.CardEffect]={}
 zgfunc[sgs.CardEffected]={}
 zgfunc[sgs.CardFinished]={}
 zgfunc[sgs.CardsMoveOneTime]={}
-zgfunc[sgs.CardDiscarded]={}
 zgfunc[sgs.CardResponsed]={}
 zgfunc[sgs.ChoiceMade]={}
 zgfunc[sgs.CardDrawing]={}
@@ -71,12 +70,6 @@ function sqlexec(sql,...)
 	local sqlstr=string.format(sql, unpack(arg))
 	db:exec(sqlstr)
 end
-
-
-function database2js()
-	return false
-end
-
 
 function isSameGroup(a,b)
 	local role1=a:getRole()
@@ -125,7 +118,6 @@ zgfunc[sgs.TurnStart].init=function(self, room, event, player, data,isowner,name
 	for key,val in pairs(zgturndata) do
 		zgturndata[key]=0
 	end
-	database2js()
 end
 
 -- 游戏结束判断代码
@@ -167,7 +159,6 @@ zgfunc[sgs.GameOverJudge].tongji=function(self, room, event, player, data,isowne
 	end
 
 	setGameData("status",0)
-	database2js()
 end
 
 
@@ -213,11 +204,16 @@ end
 
 -- bjz :: 败家子 :: 在一局游戏中，弃牌阶段累计弃掉至少10张桃
 --
-zgfunc[sgs.CardDiscarded].bjz=function(self, room, event, player, data,isowner,name)
+zgfunc[sgs.CardsMoveOneTime].bjz=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
-	if player:getPhase()~=sgs.Player_Discard then return false end
-	local card = data:toCard()
-	for _,cdid in sgs.qlist(card:getSubcards()) do
+	local move = data:toMoveOneTime()
+	local reason = move.reason
+	
+	if player:getPhase() ~= sgs.Player_Discard then return false end
+	if reason.m_reason ~= sgs.CardMoveReason_S_REASON_RULEDISCARD then return false end
+
+	for i = 0, move.card_ids:length()-1 do
+		local cdid=move.card_ids:at(i)
 		if sgs.Sanguosha:getCard(cdid):isKindOf("Peach") then
 			addGameData(name,1)
 			if getGameData(name)==10 then addZhanGong(room,name) end
@@ -1891,12 +1887,15 @@ end
 
 -- yrbf :: 隐忍不发 :: 使用神司马懿在一局游戏中发动忍戒至少10次并获胜
 --
-zgfunc[sgs.CardDiscarded].yrbf=function(self, room, event, player, data,isowner,name)
+zgfunc[sgs.CardsMoveOneTime].yrbf=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
 	if  room:getOwner():getGeneralName()~='shensimayi' then return false end
-	if player:getPhase()~=sgs.Player_Discard then return false end
-	local card = data:toCard()
-	addGameData(name,card:subcardsLength())
+
+	local move = data:toMoveOneTime()
+	local reason = move.reason
+	if player:getPhase() ~= sgs.Player_Discard then return false end
+	if reason.m_reason ~= sgs.CardMoveReason_S_REASON_RULEDISCARD then return false end
+	addGameData(name,move.card_ids:length())
 end
 
 zgfunc[sgs.Damaged].yrbf=function(self, room, event, player, data,isowner,name)
@@ -1995,13 +1994,17 @@ zgfunc[sgs.FinishRetrial].lbss=function(self, room, event, player, data,isowner,
 	end
 end
 
-zgfunc[sgs.CardDiscarded].lbss=function(self, room, event, player, data,isowner,name)
+zgfunc[sgs.CardsMoveOneTime].lbss=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
 	if player:getPhase()~=sgs.Player_Discard then return false end
 	if getTurnData(name)~=1 then return false end
-	local card = data:toCard()
+
+	local move = data:toMoveOneTime()
+	local reason = move.reason	
+	if reason.m_reason ~= sgs.CardMoveReason_S_REASON_RULEDISCARD then return false end
+
 	local count = 0
-	for _,cdid in sgs.qlist(card:getSubcards()) do
+	for i = 0, move.card_ids:length()-1 do
 		count=count +1
 		if count==8 then addZhanGong(room,name) end
 	end
@@ -5334,7 +5337,6 @@ function addZhanGong(room,name)
 	sqlexec("update results set zhangong='%s' where id='%d'",getGameData("myzhangong",""),getGameData("roomid"))
 	broadcastMsg(room,"#zhangong_"..name)	
 	room:getOwner():speak(string.format("恭喜获得战功【<font color='yellow'><b>%s</b></font>】",sgs.Sanguosha:translate(name)))
-	database2js()
 end
 
 --[[
@@ -5441,7 +5443,7 @@ function useLuckyCard(room,owner)
 	for i=math.max(1,limitnum),1,-1 do
 		if owner:askForSkillInvoke("useLuckyCard") then
 			local n=owner:getHandcardNum()
-			if owner:hasSkill("lianying") then n=n-1 end
+			if owner:hasSkill("lianying") or owner:hasSkill("beifa") or owner:hasSkill("sijian") then n=n-1 end
 			for j=n,1,-1 do
 				room:moveCardTo(owner:getRandomHandCard(), nil, nil, sgs.Player_DiscardPile, reason)
 			end
@@ -5612,7 +5614,7 @@ zgzhangong1 = sgs.CreateTriggerSkill{
 		end
 		
 		if event ==sgs.Death then
-			if owner then askForGiveUp(room,player) end
+			if owner and room:getOwner():isDead() then askForGiveUp(room,room:getOwner()) end
 		end
 		return false
 	end,
@@ -5624,7 +5626,6 @@ zgzhangong2 = sgs.CreateTriggerSkill{
 		sgs.CardEffect,
 		sgs.CardEffected,
 		sgs.CardFinished,
-		sgs.CardDiscarded,
 		sgs.CardDrawing,
 		sgs.CardResponsed,
 		sgs.CardsMoveOneTime,
