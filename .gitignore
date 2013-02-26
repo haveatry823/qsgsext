@@ -14,10 +14,10 @@ extensions/tools
 font/
 image/
 lang/
-lua/
 scenarios/
 skins/
 etc/
+lua/ai/a.git/
 
 zhangong/zhangong.data
 zhangong/js/zg.js

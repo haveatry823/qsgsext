@@ -58,38 +58,7 @@ zgfunc[sgs.TurnStart]={}
 zgfunc[sgs.Pindian]={}
 zgfunc[sgs.Predamage]={}
 
-
-
-require "sqlite3"
-db = sqlite3.open("./zhangong/zhangong.data")
-
-local tblquery=db:first_row("select count(name) as tblnum from sqlite_master  where type='table' and name='card';")
-if tblquery.tblnum==0 then
-	db:exec("CREATE TABLE zgcard([id] varchar(20) NOT NULL,[gained] int(11) NOT NULL,[used] int(11) NOT NULL, Primary Key(id) ON CONFLICT Ignore);")
-	db:exec("insert into zgcard values('luckycard',100,0);")
-end
-
-local content=(io.open "./zhangong/zhangong.sql"):read("*a")
-
-local zgquery=db:first_row("select count(name) as tblnum from sqlite_master  where type='table' and name='zhangong';")
-if zgquery.tblnum==0 then
-	local sqltbl = content:split("\n")
-	for _,line in ipairs(sqltbl) do
-		db:exec(line)
-	end
-end
-
-if string.find(content,"%-%-new%-zhangong%-%-") then
-	local rowquery=db:first_row("select count(*) as rowcount from zhangong;")
-	if rowquery.rowcount<300 then
-		local arr=content:split("%/%*%-%-new%-zhangong%-%-%*%/")
-		local sqlarr = arr[2]:split("\n")
-		for _,line in ipairs(sqlarr) do
-			db:exec(line)
-		end
-		db:exec("update zgcard set gained=gained+200 where id='luckycard'")
-	end
-end
+local db
 
 function logmsg(fmt,...)
 	local fp = io.open("zgdebug.log","ab")
@@ -105,126 +74,7 @@ end
 
 
 function database2js()
-	if 1==1 then return false end
-	local zglist={'zhonghe','wei','shu','wu','qun','god','3v3','1v1'}
-	local ret={}
-	table.insert(ret,"var zglist=['zhonghe','wei','shu','wu','qun','god','3v3','1v1'];")
-	table.insert(ret,"var data={};")
-
-	local dbquery=function(sql,collist)
-		local arr={}
-		for row in db:rows(sql) do
-			local item={}
-			for _,col in ipairs(collist) do
-				table.insert(item,string.format('"%s":"%s"',col,row[col]))
-			end
-			table.insert(arr,string.format("{%s}",table.concat(item,",")))
-		end
-		return table.concat(arr,",\r\n")
-	end
-
-	local sql = "select datetime(id,'unixepoch','localtime') as gametime,* from results order by id desc limit 300";
-	local collist={'gametime','id','general','role','kingdom','hegemony','mode','turncount','alive','result','wen','wu','expval','zhangong'}
-	table.insert(ret,string.format("data.results=[%s];",dbquery(sql,collist)))
-
-	local sql = "select skillname,gained,used,gained-used as remainnum from skills order by remainnum desc"
-	local collist={'skillname','gained','used','remainnum'}
-	table.insert(ret,string.format("data.skills=[%s];",dbquery(sql,collist)))
-
-	local sql = "select level,name,score,category as cat from gongxun where level>0 order by category,level"
-	local collist={'level','name','score','cat'}
-	table.insert(ret,string.format("data.gongxun=[%s];",dbquery(sql,collist)))
-
-	for _,zgcat in ipairs(zglist) do
-		local sql = "select * from zhangong where category='"..zgcat.."' order by general asc"
-		local collist={'id','name','description','score','gained','category','lasttime','general','num','count'}
-		table.insert(ret,string.format("data['zg"..zgcat.."']=[%s];",dbquery(sql,collist)))
-	end
-	local zgtrans="$.each(zglist,function(i,val){$.each(data['zg'+val],function(index,item){trans[item.id]=[item.name];})});"
-	table.insert(ret,zgtrans)
-
-	local getinfodata=function()
-		local arr={""}		
-		table.insert(arr,"var info={v3:{},role:{},hegemony:{},v1:{},hulao:{},total:{},wen:{},wu:{},expval:{},zg:{},luckycard:{}};")
-
-		local getVal=function(sql,...)
-			local query=db:first_row(string.format(sql, unpack(arg)))
-			if not query then return 0 end
-			for _,p in pairs(query) do
-				return p
-			end
-			return 0
-		end	
-
-		local getData=function(col,val,valtype)
-			if valtype=="str" then
-				table.insert(arr,string.format("info.%s='%s';",col,val))
-			else
-				table.insert(arr,string.format("info.%s=%d;",col,val))
-			end
-		end
-
-		local getResult=function(mode,cond,ratearr)
-			local winnum = getVal("select count(id) from results where %s and result='win'",cond)
-			local losenum= getVal("select count(id) from results where %s and result='lose'",cond)
-			local escnum = getVal("select count(id) from results where %s and result='-'",cond)
-			local totalnum= winnum+losenum+escnum
-			if totalnum==0 then totalnum=1 end
-			table.insert(arr,string.format("info['%s'].winnum=%d;",mode,winnum))
-			table.insert(arr,string.format("info['%s'].losenum=%d;",mode,losenum))
-			table.insert(arr,string.format("info['%s'].escnum=%d;",mode,escnum))
-			table.insert(arr,string.format("info['%s'].totalnum=%d;",mode,totalnum))
-			table.insert(arr,string.format("info['%s'].winrate='%.1f%%';",mode,100*winnum/totalnum))
-			for i,ratecond in ipairs(ratearr) do 
-				local win=getVal("select count(id) from results where %s and result='win' and %s",cond,ratecond)
-				local total=getVal("select count(id) from results where %s and 1 and %s",cond,ratecond)
-				if total==0 then total=1 end
-				table.insert(arr,string.format("info['%s']['winnum_%d']=%d;",mode,i,win))
-				table.insert(arr,string.format("info['%s']['totalnum_%d']=%d;",mode,i,total))
-				table.insert(arr,string.format("info['%s']['winrate_%d']='%.1f%%';",mode,i,100*win/total))
-			end			
-		end
-
-		getResult("hulao","mode='04_1v3' and hegemony=0",{"role='lord'","role='rebel'"})
-		getResult("v3",  "mode='06_3v3' and hegemony=0",{"role in ('lord','renegade')","role in ('loyalist','rebel')"})
-		getResult("v1",  "mode='02_1v1' and hegemony=0",{"role='renegade'","role='lord'"})
-		getResult("role","mode like '__p%' and hegemony=0",{"role='lord'","role='loyalist'","role='renegade'","role='rebel'"})
-		getResult("hegemony","hegemony=1",{"kingdom='wei'","kingdom='shu'","kingdom='wu'","kingdom='qun'"})
-		getResult("total","1",{})
-
-		local wen=getVal("select sum(wen) from results")
-		local wu=getVal("select sum(wu) from results")
-		local expval=getVal("select sum(expval) from results")
-		getData("wen.score",wen)
-		getData("wu.score",wu)		
-		getData("expval.score",expval)
-		getData("expval.level",math.floor(math.pow(expval,1/3)))
-
-		getData("zg.num",getVal("select count(id) from zhangong where gained>0"))
-		getData("zg.total",getVal("select count(id) from zhangong"))
-		getData("zg.score",getVal("select sum(score*gained) from zhangong where gained>0"))
-		getData("wen.level",getVal("select level from gongxun where category='wen' and score<=%d order by score desc limit 1",wen))
-		getData("wen.name",getVal("select name from gongxun where category='wen' and score<=%d order by score desc limit 1",wen),"str")
-		
-		getData("wu.level",getVal("select level from gongxun where category='wu' and score<=%d order by score desc limit 1",wu))
-		getData("wu.name",getVal("select name from gongxun where category='wu' and score<=%d order by score desc limit 1",wu),"str")
-
-		getData("luckycard.gained",getVal("select gained from zgcard where id='%s'",'luckycard'))
-		getData("luckycard.used",getVal("select used from zgcard where id='%s'",'luckycard'))
-
-		local starttime=getVal("select datetime(min(id),'unixepoch','localtime') from results")
-		if starttime==0 then starttime="尚未开始统计" end
-		getData("total.starttime",starttime,"str")
-		
-		table.insert(arr,"return info;")
-		return table.concat(arr,"\r\n")
-	end
-	table.insert(ret,string.format("data.info=(function(){%s})();",getinfodata()))
-
-	local fp = io.open("./zhangong/js/zg.js","wb")
-	fp:write(table.concat(ret,"\r\n"))
-	fp:close()
-
+	return false
 end
 
 
@@ -496,12 +346,10 @@ end
 --
 zgfunc[sgs.GameStart].gn=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
-	local count=0
 	for _,cd in sgs.qlist(player:getHandcards()) do
 		if not cd:isKindOf("Peach") then return false end
-		count = count + 1
 	end
-	if getGameData(name,0)==0 and count>=3 and getGameData("turncount")==0 then
+	if getGameData(name,0)==0 then
 		setGameData(name,1)
 		addZhanGong(room,name)
 	end
@@ -555,10 +403,7 @@ zgfunc[sgs.EventPhaseStart].jg=function(self, room, event, player, data,isowner,
 				analeptic_num=analeptic_num+1
 			end
 		end
-		if analeptic_num>=3 and getGameData(name)==0 then 
-			addGameData(name,1)
-			addZhanGong(room,name)
-		end
+		if analeptic_num>=3 then addZhanGong(room,name) end
 	end
 end
 
@@ -636,12 +481,10 @@ end
 --
 zgfunc[sgs.GameStart].thy=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
-	local count=0
 	for _,cd in sgs.qlist(player:getHandcards()) do
 		if cd:getSuit()~=sgs.Card_Heart then return false end
-		count=count+1
 	end
-	if getGameData(name,0) == 0 and count>=3 and getGameData("turncount")==0 then
+	if getGameData(name,0) == 0 then
 		setGameData(name,1)
 		addZhanGong(room,name)
 		room:setPlayerProperty(player, "maxhp", sgs.QVariant(player:getMaxHp()+1))
@@ -670,7 +513,7 @@ zgfunc[sgs.GameOverJudge].callback.tyzy=function(room,player,data,name,result)
 			end
 		end
 	end
-	if has_liubei and has_guanyu and has_zhangfei and issjy then
+	if has_liubei and has_zhangfei and has_zhangfei and issjy then
 		addZhanGong(room, name)
 	end
 end
@@ -1476,7 +1319,7 @@ end
 zgfunc[sgs.Death].dyzh=function(self, room, event, player, data,isowner,name)
 	if  room:getOwner():getGeneralName()~='bgm_zhangfei' then return false end
 	local damage=data:toDamageStar()
-	if damage and damage.from and damage.to:hasFlag("dahe") and damage.from:objectName()==room:getOwner():objectName()
+	if damage and damage.from and damage.to:hasFlag("dahe") and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.card:isKindOf("Slash") and damage.card:isRed() then
 		addGameData(name,1)
 		if getGameData(name)==2 then addZhanGong(room,name) end
@@ -1489,7 +1332,7 @@ end
 zgfunc[sgs.GameOverJudge].callback.dyzh=function(room,player,data,name,result)
 	if  room:getOwner():getGeneralName()~='bgm_zhangfei' then return false end
 	local damage=data:toDamageStar()
-	if damage and damage.from and damage.to:hasFlag("dahe") and damage.from==room:getOwner():objectName() 
+	if damage and damage.from and damage.to:hasFlag("dahe") and damage.from:objectName()==room:getOwner():objectName() 
 		and damage.card:isKindOf("Slash") and damage.card:isRed() then
 		addGameData(name,1)
 		if getGameData(name)==2 then addZhanGong(room,name) end
@@ -2989,53 +2832,6 @@ zgfunc[sgs.GameOverJudge].callback.csjj=function(room,player,data,name,result)
 	end
 	if count==10 then addZhanGong(room,name) end	
 end
-
--- 所有武将的 获得N场胜利 取得相应战功的代码  
---
-for query in db:rows("select * from zhangong where num>0 ") do
-	zgfunc[sgs.GameOverJudge].callback[query.id]=function(room,player,data,name,result)			
-		local mode=room:getMode()
-		local kingdoms={["wu"]=1,["shu"]=1,["wei"]=1,["qun"]=1,["god"]=1}
-		if result ~='win' then return false end
-		if query.category=="3v3" and room:getMode()~="06_3v3" then return false end
-		if query.category=="1v1" and room:getMode()~="02_1v1" then return false end
-		if kingdoms[query.category] and	(mode=="06_3v3" or mode=="02_1v1" or getGameData("hegemony")==1) then
-			return false
-		end
-		local flag=false		
-		local role=room:getOwner():getRole()
-		local sql="select count(id) as num from results where result='win' "
-
-		if query.general=="-" then
-			sql=sql..string.format("and 1 ")
-		elseif query.general==room:getOwner():getGeneralName() then
-			sql=sql..string.format("and general='%s' ",query.general)
-		elseif query.general==role then
-			sql=sql..string.format("and role='%s' ",query.general)
-		elseif query.general==room:getOwner():getKingdom() then
-			sql=sql..string.format("and kingdom='%s' ",query.general)
-		elseif query.general=="leader" and (role=="lord" or role =="renegade") and mode=="06_3v3" then
-			sql=sql..string.format("and mode='06_3v3' and (role=='lord' or role =='renegade') ")
-		elseif query.general=="guard" and (role=="loyalist" or role =="rebel") and mode=="06_3v3" then
-			sql=sql..string.format("and mode='06_3v3' and (role=='loyalist' or role =='rebel') ")
-		else
-			return false
-		end
-
-		if query.category=="3v3" then sql=sql.."and mode=='06_3v3' " end
-		if query.category=="1v1" then sql=sql.."and mode=='02_1v1' " end
-		if kingdoms[query.category] then 
-			sql=sql.." and hegemony=0 and mode not in ('06_3v3','02_1v1') "
-		end
-
-		for row in db:rows(sql) do
-			if row.num>=query.num and query.gained==0 then addZhanGong(room,name) end
-			sqlexec("update zhangong set count=%d where id='%s'",row.num,query.id)
-		end
-	end
-end
-
-
 
 -- dqbr :: 刀枪不入 :: 一局游戏中发动仁王盾特效3次
 -- 
@@ -5793,7 +5589,7 @@ zgzhangong1 = sgs.CreateTriggerSkill{
 		local room = player:getRoom()
 		local owner= room:getOwner():objectName()==player:objectName()
 		
-		if event ==sgs.GameStart and owner and room:getTag("zg_init_game"):toBool()==false then
+		if event ==sgs.TurnStart and owner and room:getTag("zg_init_game"):toBool()==false then
 			room:setTag("zg_init_game",sgs.QVariant(true))
 			local log= sgs.LogMessage()
 			if init_gamestart(self, room, event, player, data, owner) then
@@ -5963,7 +5759,7 @@ function getWinner(room,victim)
 	return false
 end
 
-function initZhangong()
+function initZhangong()	
 	local generalnames=sgs.Sanguosha:getLimitedGeneralNames()
 	local packages={}
 	for _, pack in ipairs(config.package_names) do
@@ -5984,6 +5780,83 @@ function initZhangong()
 	end
 end
 
+function initZhangong()
+	require "sqlite3"
+	db = sqlite3.open("./zhangong/zhangong.data")
+
+	local tblquery=db:first_row("select count(name) as tblnum from sqlite_master  where type='table' and name='card';")
+	if tblquery.tblnum==0 then
+		db:exec("CREATE TABLE zgcard([id] varchar(20) NOT NULL,[gained] int(11) NOT NULL,[used] int(11) NOT NULL, Primary Key(id) ON CONFLICT Ignore);")
+		db:exec("insert into zgcard values('luckycard',100,0);")
+	end
+
+	local content=(io.open "./zhangong/zhangong.sql"):read("*a")
+
+	local zgquery=db:first_row("select count(name) as tblnum from sqlite_master  where type='table' and name='zhangong';")
+	if zgquery.tblnum==0 then
+		local sqltbl = content:split("\n")
+		for _,line in ipairs(sqltbl) do
+			db:exec(line)
+		end
+	end
+
+	-- 所有武将的 获得N场胜利 取得相应战功的代码  
+	--
+	for query in db:rows("select * from zhangong where num>0 ") do
+		zgfunc[sgs.GameOverJudge].callback[query.id]=function(room,player,data,name,result)			
+			local mode=room:getMode()
+			local kingdoms={["wu"]=1,["shu"]=1,["wei"]=1,["qun"]=1,["god"]=1}
+			if result ~='win' then return false end
+			if query.category=="3v3" and room:getMode()~="06_3v3" then return false end
+			if query.category=="1v1" and room:getMode()~="02_1v1" then return false end
+			if kingdoms[query.category] and	(mode=="06_3v3" or mode=="02_1v1" or getGameData("hegemony")==1) then
+				return false
+			end
+			local flag=false		
+			local role=room:getOwner():getRole()
+			local sql="select count(id) as num from results where result='win' "
+
+			if query.general=="-" then
+				sql=sql..string.format("and 1 ")
+			elseif query.general==room:getOwner():getGeneralName() then
+				sql=sql..string.format("and general='%s' ",query.general)
+			elseif query.general==role then
+				sql=sql..string.format("and role='%s' ",query.general)
+			elseif query.general==room:getOwner():getKingdom() then
+				sql=sql..string.format("and kingdom='%s' ",query.general)
+			elseif query.general=="leader" and (role=="lord" or role =="renegade") and mode=="06_3v3" then
+				sql=sql..string.format("and mode='06_3v3' and (role=='lord' or role =='renegade') ")
+			elseif query.general=="guard" and (role=="loyalist" or role =="rebel") and mode=="06_3v3" then
+				sql=sql..string.format("and mode='06_3v3' and (role=='loyalist' or role =='rebel') ")
+			else
+				return false
+			end
+
+			if query.category=="3v3" then sql=sql.."and mode=='06_3v3' " end
+			if query.category=="1v1" then sql=sql.."and mode=='02_1v1' " end
+			if kingdoms[query.category] then 
+				sql=sql.." and hegemony=0 and mode not in ('06_3v3','02_1v1') "
+			end
+
+			for row in db:rows(sql) do
+				if row.num>=query.num and query.gained==0 then addZhanGong(room,name) end
+				sqlexec("update zhangong set count=%d where id='%s'",row.num,query.id)
+			end
+		end
+	end
+
+
+	local genTranslation = function()
+		local zgTrList={}	
+		for row in db:rows("select id,name,description from zhangong") do
+			zgTrList["#zhangong_"..row.id]="%from 获得了战功【<b><font color='yellow'>"..row.name.."</font></b>】,"..row.description
+			zgTrList[row.id]=row.name
+		end
+		return zgTrList
+	end
+	sgs.LoadTranslationTable(genTranslation())
+end
+
 
 zganjiang:addSkill(zgzhangong1)
 zganjiang:addSkill(zgzhangong2)
@@ -5992,17 +5865,6 @@ zganjiang:addSkill(zgzhangong2)
 initZhangong()
 
 
-function genTranslation()
-	local zgTrList={}	
-	for row in db:rows("select id,name,description from zhangong") do
-		zgTrList["#zhangong_"..row.id]="%from 获得了战功【<b><font color='yellow'>"..row.name.."</font></b>】,"..row.description
-		zgTrList[row.id]=row.name
-	end
-	return zgTrList
-end
-
-
-sgs.LoadTranslationTable(genTranslation())
 
 sgs.LoadTranslationTable {
 	["zhangong"] ="战功包",
