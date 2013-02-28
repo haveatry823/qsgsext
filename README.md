@@ -3,9 +3,9 @@ lua 扩展for [太阳神三国杀](https://github.com/gaodayihao/QSanguosha)
 
 版本与下载
 --------
-* 本项目的扩展包, 如果没有特别说明，默认只适合新神杀的最新版本(神杀贴吧置顶帖有下载)，不适合踏青版或涅槃版
-* 本项目svn地址 https://code.google.com/p/qsgsext/  
-* 扩展包下载地址:  https://github.com/haveatry823/qsgsext/zipball/master  (安装的话，下载这个)
+
+* 新神杀0224:  https://github.com/haveatry823/qsgsext/zipball/master
+* 踏青，涅槃，高达，雪霁，金蛇： https://github.com/haveatry823/qsgsext/archive/niepan.zip
 
 功能
 ----------
@@ -17,8 +17,7 @@ lua 扩展for [太阳神三国杀](https://github.com/gaodayihao/QSanguosha)
     * 投降: 如果你阵亡,在死亡事件结算完毕后,系统会询问你是否投降并立即结束游戏,此举旨在降低逃跑率.
     * 游戏记录: 系统将记录你所有的游戏成绩,并显示最近300盘游戏成绩
     * 本系统用sqlite3作为数据库保存保存所有相关数据
-    * 用html作为前端结果显示与查看界面
-    
+    * 用hta作为前端结果显示与查看界面    
 
 FAQ
 ----
@@ -36,7 +35,9 @@ FAQ
 1. 战功成就系统
    * 下载本扩展包,解压后复制所有文件到神杀的游戏目录。
    * 保证 libluasqlite3.dll, lua5.1.dll, lua51.dll 和游戏主程序QSanguosha.exe 在同一个目录就好了
-   * 如果上述步骤都OK, 就可用浏览器打开 zhangong.html 来查看战功了.
+   * xp,win7,vista系统图文教程 http://tieba.baidu.com/p/2016100855
+   * win8 系统图文教程 http://tieba.baidu.com/p/2015939724
+   * 如果上述步骤都OK, 就可打开 zhangong.hta 来查看战功了.
 
 
 截图
