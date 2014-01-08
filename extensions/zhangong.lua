@@ -5442,7 +5442,7 @@ function useSkillCard(room,owner)
 		end
 	end
 end
-
+--[[
 function useLuckyCard(room,owner)
 	if owner:hasSkill("tuntian") then return false end
 	local zgquery=db:first_row("select count(id) as num from zhangong where gained>0")
@@ -5473,7 +5473,7 @@ function useLuckyCard(room,owner)
 		end
 	end
 end
-
+]]
 function useHulaoCard(room,owner)
 	if room:getMode()~='04_1v3' or not owner:askForSkillInvoke("useHulaoCrad") then return false end
 	local generalnames=sgs.Sanguosha:getRandomGenerals(999)
@@ -5575,7 +5575,7 @@ function init_gamestart(self, room, event, player, data, isowner)
 				player:getKingdom(),getGameData("hegemony"),room:getMode())
 	end	
 
-	if enableLuckyCard==1 then useLuckyCard(room,owner) end
+	--if enableLuckyCard==1 then useLuckyCard(room,owner) end
 	if enableSkillCard==1 then useSkillCard(room,owner) end
 	if enableHulaoCard==1 then useHulaoCard(room,owner) end
 
@@ -5621,10 +5621,11 @@ zgzhangong1 = sgs.CreateTriggerSkill{
 				end
 			end
 		end
-		
+		--[[
 		if event ==sgs.Death then
 			if owner and data:toDeath().who:objectName() == player:objectName() then askForGiveUp(room,room:getOwner()) end
 		end
+		]]
 		return false
 	end,
 }
@@ -5679,7 +5680,7 @@ zgzhangong2 = sgs.CreateTriggerSkill{
 		return false
 	end,
 }
-
+--[[
 function askForGiveUp(room,owner)
 	local mode=room:getMode()
 	local role=owner:getRole()
@@ -5717,7 +5718,7 @@ function askForGiveUp(room,owner)
 	end
 	room:getThread():trigger(sgs.GameOverJudge, room, owner)
 end
-
+]]
 
 function getWinner(room,victim)
 	local mode=room:getMode()
@@ -5903,10 +5904,10 @@ sgs.LoadTranslationTable {
 	["#gsyNum"]="%from清除了【%arg】盘逃跑记录",
 	["@chooseskill"]="流失体力获得技能",
 	["cancel"] = "取消",
-	["giveup"] = "立即认输并结束游戏",
+	--["giveup"] = "立即认输并结束游戏",
 	["#enableZhangong"]="【<b><font color='green'>提示</font></b>】: 本局游戏开启了战功统计",
 	["#disableZhangong"]="【<b><font color='red'>提示</font></b>】: 本局游戏禁止了战功统计",
-	["useLuckyCard"]  ="手气卡",
+	--["useLuckyCard"]  ="手气卡",
 	["useHulaoCrad"]  ="点将卡",
 	["@chooseGeneral0"]  ="请为主公选将",
 	["@chooseGeneral1"]  ="请为先锋选将",
