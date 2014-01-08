@@ -2,7 +2,7 @@ enableSkillCard = 1		-- 是否开启技能卡， 1:开启, 0:不开启
 enableLuckyCard = 1		-- 是否开启手气卡,  1:开启, 0:不开启
 enableHulaoCard = 1		-- 是否开启虎牢关点将卡,  1:开启, 0:不开启
 
-zgver='20121121'
+zgver='20131217'
 
 dofile "lua/config.lua"
 dofile "lua/sgs_ex.lua"
@@ -19,6 +19,11 @@ zggamedata.turncount=0
 zggamedata.roomid=0
 zggamedata.enable=0
 zggamedata.hegemony=0
+
+sgs.CardDrawing = 1001
+sgs.SlashEffect = 1002
+sgs.CardResponsed = 1003
+
 
 zgfunc[sgs.CardEffect]={}
 zgfunc[sgs.CardEffected]={}
@@ -61,12 +66,14 @@ local db
 
 function logmsg(fmt,...)
 	local fp = io.open("zgdebug.log","ab")
+	local arg = {...}
 	if type(fmt)=="boolean" then fmt = fmt and "true" or "false" end
-	fp:write(string.format(fmt, unpack(arg)).."\r\n")
+	fp:write(string.format(fmt, unpack(arg)).."\r\n")	
 	fp:close()
 end
 
 function sqlexec(sql,...)
+	local arg = {...}	
 	local sqlstr=string.format(sql, unpack(arg))
 	db:exec(sqlstr)
 end
@@ -5332,6 +5339,7 @@ function broadcastMsg(room,info,...)
 	local log= sgs.LogMessage()
 	log.type = info
 	log.from = room:getOwner()
+	local arg = {...}
 	if #arg>0 then log.arg = arg[1] end
 	if #arg>1 then log.arg2 =arg[2] end
 	room:sendLog(log)
@@ -5361,6 +5369,7 @@ function setGlobalData(key,val)
 end
 
 function getGlobalData(key,...)
+	local arg = {...}
 	local defval= #arg>=1 and arg[1] or 0
 	local row=db:first_row(string.format("select id,num from gamedata where id='%s'",key))
 	if (not row) or row.id==nil then
@@ -5385,6 +5394,7 @@ function setGameData(key,val)
 end
 
 function getGameData(key,...)
+	local arg = {...}
 	if not zggamedata[key] then return #arg>=1 and arg[1] or 0 end
 	return zggamedata[key]
 end
@@ -5404,6 +5414,7 @@ function setTurnData(key,val)
 end
 
 function getTurnData(key,...)
+	local arg = {...}
 	if not zgturndata[key] then return #arg>=1 and arg[1] or 0 end
 	return zgturndata[key]
 end
@@ -5590,9 +5601,9 @@ zgzhangong1 = sgs.CreateTriggerSkill{
 			sgs.TurnStart,
 			},
 	priority = 6,
-	can_trigger = function()
-		return true
-	end,
+	--can_trigger = function()
+	--	return true
+	--end,
 
 	on_trigger = function(self, event, player, data)
 		local room = player:getRoom()
@@ -5636,7 +5647,7 @@ zgzhangong1 = sgs.CreateTriggerSkill{
 zgzhangong2 = sgs.CreateTriggerSkill{
 	name = "#zgzhangong2",
 	events = {
-		sgs.CardEffect,
+		--[[sgs.CardEffect,
 		sgs.CardEffected,
 		sgs.CardFinished,
 		sgs.CardDrawing,
@@ -5649,13 +5660,14 @@ zgzhangong2 = sgs.CreateTriggerSkill{
 		sgs.Predamage,
 		sgs.SlashEffected,
 		sgs.SlashEffect,
+		]]
 		sgs.SlashMissed,
 		},
 	priority = 6,
 	on_trigger = function(self, event, player, data)
+		--[[
 		local room = player:getRoom()
 		local owner= room:getOwner():objectName()==player:objectName()
-
 		local callbacks=zgfunc[event]
 		if callbacks and getGameData("status")==1 then
 			for name, func in pairs(callbacks) do
@@ -5664,6 +5676,7 @@ zgzhangong2 = sgs.CreateTriggerSkill{
 				end				
 			end
 		end
+		]]
 		return false
 	end,
 }
