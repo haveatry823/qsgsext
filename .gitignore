@@ -17,12 +17,17 @@ lang/
 scenarios/
 skins/
 etc/
-lua/ai/a.git/
+lua/ai/*.lua
+lua/*.lua
+/lua/lib/middleclass.lua
 
 zhangong/zhangong.data
 zhangong/js/zg.js
+
 
 !libluasqlite3.dll
 !sqlite3.dll
 !lua5.1.dll
 !lua51.dll
+!QSanguosha.exe
+
