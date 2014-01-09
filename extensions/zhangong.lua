@@ -1,5 +1,5 @@
 enableSkillCard = 1		-- 是否开启技能卡， 1:开启, 0:不开启
-enableLuckyCard = 1		-- 是否开启手气卡,  1:开启, 0:不开启
+--enableLuckyCard = 1		-- 是否开启手气卡,  1:开启, 0:不开启
 enableHulaoCard = 1		-- 是否开启虎牢关点将卡,  1:开启, 0:不开启
 
 zgver='20131217'
@@ -19,11 +19,6 @@ zggamedata.turncount=0
 zggamedata.roomid=0
 zggamedata.enable=0
 zggamedata.hegemony=0
-
-sgs.CardDrawing = 1001
-sgs.SlashEffect = 1002
-sgs.CardResponsed = 1003
-
 
 zgfunc[sgs.CardEffect]={}
 zgfunc[sgs.CardEffected]={}
