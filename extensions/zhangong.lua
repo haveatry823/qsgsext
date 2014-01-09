@@ -27,6 +27,7 @@ zgfunc[sgs.CardsMoveOneTime]={}
 zgfunc[sgs.CardResponded]={}
 zgfunc[sgs.ChoiceMade]={}
 zgfunc[sgs.AfterDrawNCards]={}
+zgfunc[sgs.AfterDrawInitialCards] = {}
 
 
 zgfunc[sgs.ConfirmDamage]={}
