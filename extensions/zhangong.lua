@@ -30,7 +30,7 @@ zgfunc[sgs.AfterDrawNCards]={}
 zgfunc[sgs.AfterDrawInitialCards] = {}
 
 
-zgfunc[sgs.ConfirmDamage]={}
+zgfunc[sgs.PreDamageDone]={}
 zgfunc[sgs.Damage]={}
 zgfunc[sgs.DamageCaused]={}
 zgfunc[sgs.Damaged]={}
@@ -2944,7 +2944,7 @@ end
 
 -- yqt :: 一骑讨 :: 与人决斗胜利累计30次 
 -- 
-zgfunc[sgs.ConfirmDamage].yqt=function(self, room, event, player, data,isowner,name)
+zgfunc[sgs.PreDamageDone].yqt=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
 	local damage = data:toDamage()
 	if damage and damage.card and damage.card:isKindOf("Duel") and player:objectName()==damage.from:objectName() then
@@ -2959,7 +2959,7 @@ end
 
 -- bszj :: 搬石砸脚 :: 与人决斗失败累计10次 
 -- 
-zgfunc[sgs.ConfirmDamage].bszj=function(self, room, event, player, data,isowner,name)	
+zgfunc[sgs.PreDamageDone].bszj=function(self, room, event, player, data,isowner,name)	
 	local damage = data:toDamage()
 	if damage and damage.card and damage.card:isKindOf("Duel") and damage.to:objectName()==room:getOwner():objectName() and player:objectName()==damage.from:objectName() then
 		addGlobalData(name,1)
@@ -5583,7 +5583,7 @@ function init_gamestart(self, room, event, player, data, isowner)
 
 	setGameData("status",1)
 	setGameData("myzhangong","")
-	if string.find(flags,"H") then setGameData("hegemony",1) end
+	if sgs.GetConfig("EnableHegemony", false) then setGameData("hegemony", 1) end
 
 	if getGameData("roomid")==0 then 
 		setGameData("roomid",os.time())
@@ -5605,7 +5605,7 @@ end
 zgzhangong1 = sgs.CreateTriggerSkill{
 	name = "#zgzhangong1",
 	events ={
-			sgs.ConfirmDamage,
+			sgs.PreDamageDone,
 			sgs.Damage,
 			sgs.DamageCaused,
 			sgs.DamageComplete,
@@ -5811,7 +5811,7 @@ function initZhangong()
 	local generalnames=sgs.Sanguosha:getLimitedGeneralNames()
 	local packages={}
 	for _, pack in ipairs(config.package_names) do
-		if pack=="NostalGeneral" then table.insert(packages,"nostal_general") end
+		if pack=="NostalGeneral" then table.insert(packages,"nostal_standard") end
 		table.insert(packages,string.lower(pack))
 	end
 	local hidden={"sp_diaochan","sp_sunshangxiang","sp_pangde","sp_caiwenji","sp_machao","sp_jiaxu","anjiang","shenlvbu1","shenlvbu2"}
