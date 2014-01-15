@@ -5552,7 +5552,7 @@ function init_gamestart(self, room, event, player, data, isowner)
 	local config=sgs.Sanguosha:getSetupString():split(":")
 	local count=0
 	local mode=config[2]
-	local flags=config[5]
+	local flags=config[6]
 	local owner=room:getOwner()
 	if not isowner or getGameData("status")==1 then return false end
 	
@@ -5572,7 +5572,7 @@ function init_gamestart(self, room, event, player, data, isowner)
 		setGameData("status",0)
 		return false
 	end
-	if string.find(config[5],"F") then
+	if string.find(flags,"C") then
 		setGameData("status",0)
 		return false
 	end
@@ -5811,16 +5811,16 @@ function initZhangong()
 	local generalnames=sgs.Sanguosha:getLimitedGeneralNames()
 	local packages={}
 	for _, pack in ipairs(config.package_names) do
-		if pack=="NostalGeneral" then table.insert(packages,"nostal_standard") end
-		table.insert(packages,string.lower(pack))
+		pack = string.gsub(pack, "_", "")
+		table.insert(packages, string.lower(pack))
 	end
 	local hidden={"sp_diaochan","sp_sunshangxiang","sp_pangde","sp_caiwenji","sp_machao","sp_jiaxu","anjiang","shenlvbu1","shenlvbu2"}
 	table.insertTable(generalnames,hidden)
 	for _, generalname in ipairs(generalnames) do
 		local general = sgs.Sanguosha:getGeneral(generalname)
 		if general then
-			local packname = string.lower(general:getPackage())		
-			if table.contains(packages,packname) then
+			local packname = string.lower(general:getPackage())
+			if table.contains(packages, packname) then
 				general:addSkill("#zgzhangong1")
 				general:addSkill("#zgzhangong2")
 			end
