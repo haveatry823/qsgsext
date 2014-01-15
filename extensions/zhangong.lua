@@ -5811,7 +5811,14 @@ function initZhangong()
 	local generalnames=sgs.Sanguosha:getLimitedGeneralNames()
 	local packages={}
 	for _, pack in ipairs(config.package_names) do
-		pack = string.gsub(pack, "_", "")
+		if pack == "NostalStandard" then table.insert(packages,"nostal_standard") end
+		if pack == "HFormation" then table.insert(packages,"h_formation") end
+		if pack == "HMomentum" then table.insert(packages,"h_momentum") end
+		if pack == "HegemonySP" then table.insert(packages,"hegemony_sp") end
+		if pack == "NostalWind" then table.insert(packages,"nostal_wind") end
+		if pack == "NostalYJCM" then table.insert(packages,"nostal_yjcm") end
+		if pack == "NostalYJCM2012" then table.insert(packages,"nostal_yjcm2012") end
+		if pack == "TaiwanSP" then table.insert(packages,"Taiwan_sp") end
 		table.insert(packages, string.lower(pack))
 	end
 	local hidden={"sp_diaochan","sp_sunshangxiang","sp_pangde","sp_caiwenji","sp_machao","sp_jiaxu","anjiang","shenlvbu1","shenlvbu2"}
