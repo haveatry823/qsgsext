@@ -210,6 +210,7 @@ end
 zgfunc[sgs.CardsMoveOneTime].bjz=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
 	local move = data:toMoveOneTime()
+	if not move.from then return false end
 	local reason = move.reason
 	
 	if player:getPhase() ~= sgs.Player_Discard then return false end
