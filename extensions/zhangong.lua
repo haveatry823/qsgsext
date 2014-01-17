@@ -2998,7 +2998,7 @@ zgfunc[sgs.CardFinished].tw=function(self, room, event, player, data, isowner, n
 	local card = use.card
 	if card:getSkillName()~="jijiu" and card:isKindOf("Peach") and use.to:contains(player) then
 		addGameData(name, 1)
-		if getGameData(name == 5 then
+		if getGameData(name == 5) then
 			addZhanGong(room, name)
 		end
 	end
