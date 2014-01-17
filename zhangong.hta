@@ -168,16 +168,22 @@
 	<th>技能卡</th><th>总数</th><th>剩余</th>
 	<th>技能卡</th><th>总数</th><th>剩余</th>
 	<th>技能卡</th><th>总数</th><th>剩余</th>
+	<th>技能卡</th><th>总数</th><th>剩余</th>
+	<th>技能卡</th><th>总数</th><th>剩余</th>
+	<th>技能卡</th><th>总数</th><th>剩余</th>
 	</tr>
 </thead>
 <tbody>
-    <% for (i = 0; i<skills.length; i+=5) { %>
+    <% for (i = 0; i<skills.length; i+=8) { %>
         <tr height="15">
 		<td><%= getTrans(skills[i].skillname) %></td><td><%= skills[i].gained %></td><td><%= skills[i].remainnum %></td>
 		<td><%= getTrans(skills[i+1].skillname) %></td><td><%= skills[i+1].gained %></td><td><%= skills[i+1].remainnum %></td>
 		<td><%= getTrans(skills[i+2].skillname) %></td><td><%= skills[i+2].gained %></td><td><%= skills[i+2].remainnum %></td>
 		<td><%= getTrans(skills[i+3].skillname) %></td><td><%= skills[i+3].gained %></td><td><%= skills[i+3].remainnum %></td>
 		<td><%= getTrans(skills[i+4].skillname) %></td><td><%= skills[i+4].gained %></td><td><%= skills[i+4].remainnum %></td>
+		<td><%= getTrans(skills[i+5].skillname) %></td><td><%= skills[i+5].gained %></td><td><%= skills[i+5].remainnum %></td>
+		<td><%= getTrans(skills[i+6].skillname) %></td><td><%= skills[i+6].gained %></td><td><%= skills[i+6].remainnum %></td>
+		<td><%= getTrans(skills[i+7].skillname) %></td><td><%= skills[i+7].gained %></td><td><%= skills[i+7].remainnum %></td>
 		</tr>
     <% } %>
 </tbody>
@@ -414,7 +420,7 @@ var callback={
 		var imgsrc="./zhangong/img/"+info.id+".png";
 		if ($.inArray(info.category,["wei","shu","wu","qun","god"])!=-1 && info.general!=='-'){
 			imgsrc="./image/generals/avatar/"+info.general+".png";
-			if ($.inArray(info.general,["guanxingzhangbao","erzhang","yanliangwenchou"])!=-1){
+			if ($.inArray(info.general,["guanxingzhangbao","erzhang","yanliangwenchou","erqiao","panzhangmazhong","jiangwanfeiyi","chenwudongxi"])!=-1){
 				imgsrc="./image/generals/big/"+info.general+".png";
 			}
 		}

@@ -5819,7 +5819,7 @@ function initZhangong()
 		if pack == "NostalWind" then table.insert(packages,"nostal_wind") end
 		if pack == "NostalYJCM" then table.insert(packages,"nostal_yjcm") end
 		if pack == "NostalYJCM2012" then table.insert(packages,"nostal_yjcm2012") end
-		if pack == "TaiwanSP" then table.insert(packages,"Taiwan_sp") end
+		if pack == "TaiwanSP" then table.insert(packages,"taiwan_sp") end
 		table.insert(packages, string.lower(pack))
 	end
 	local hidden={"sp_diaochan","sp_sunshangxiang","sp_pangde","sp_caiwenji","sp_machao","sp_jiaxu","anjiang","shenlvbu1","shenlvbu2"}
@@ -5853,6 +5853,17 @@ function initDB()
 		local sqltbl = content:split("\n")
 		for _,line in ipairs(sqltbl) do
 			db:exec(line)
+		end
+	end
+	
+	if string.find(content, "%-%-new%-zhangong%-%-") then
+		local rowquery = db:first_row("select count(*) as rowcount from zhangong;")
+		if rowquery.rowcount < 389 then
+			local arr=content:split("%/%*%-%-new%-zhangong%-%-%*%/")
+			local sqlarr = arr[3]:split("\n")
+			for _, line in ipairs(sqlarr) do
+				db:exec(line)
+			end
 		end
 	end
 
