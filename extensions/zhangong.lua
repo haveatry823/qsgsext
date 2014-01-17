@@ -1443,10 +1443,10 @@ end
 -- wyyd :: 无言以对 :: 使用徐庶在一局游戏中发动“无言”躲过南蛮入侵或万箭齐发累计4次
 --
 zgfunc[sgs.CardEffected].wyyd=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~='xushu' then return false end
+	if  room:getOwner():getGeneralName()~='nos_xushu' then return false end
 	if not isowner then return false end
 	local effect=data:toCardEffect()
-	if effect.to:hasSkill("wuyan") and (effect.card:isKindOf("SavageAssault") or effect.card:isKindOf("ArcheryAttack")) then
+	if effect.to:hasSkill("noswuyan") and (effect.card:isKindOf("SavageAssault") or effect.card:isKindOf("ArcheryAttack")) then
 		addGameData(name,1)
 		if getGameData(name)==4 then addZhanGong(room,name) end
 	end
@@ -5308,6 +5308,29 @@ zgfunc[sgs.AfterDrawInitialCards].gsy=function(self, room, event, player, data,i
 	setGameData(name,1)
 	broadcastMsg(room,"#gsyNum",count)
 end
+
+--('fbrq', '法不容情', 10, '使用满宠在一局游戏中对魏势力角色发动至少4次峻刑', 0, 'wei',  'manchong', 0, 0);
+
+zgfunc[sgs.CardFinished].fbrq = function(self, room, event, player, data, isowner, name)
+	if room:getOwner():getGeneralName() ~= "manchong" then return false end
+	if not isowner then return false end
+	
+	local use = data:toCardUse()
+	if use.card:isKindOf("JunxingCard") and use.from:objectName() == room:getOwner():objectName() then
+		for _, p in sgs.qlist(use.to) do
+			if p:getKingdom() == "wei" then
+				addGameData(name .. "junxing", 1)
+				if getGameData(name .. "junxing", 0) >= 4 then
+					addZhanGong(room, name)
+					setGameData(name .. "junxing", -10000)
+				end
+			end
+		end
+	end
+end
+
+
+
 
 
 zgfunc[sgs.TurnStart].hulao=function(self, room, event, player, data,isowner,name)
