@@ -2992,16 +2992,15 @@ end
 
 -- tw :: 桃王 :: 在1局游戏中给自己吃过5个或者更多得桃（不包括华佗的技能） 
 -- 
-zgfunc[sgs.CardFinished].tw=function(self, room, event, player, data,isowner,name)
+zgfunc[sgs.CardFinished].tw=function(self, room, event, player, data, isowner, name)
 	if not isowner then return false end
-	local use=data:toCardUse()
-	local card=use.card
-	local tos=sgs.QList2Table(use.to)
-	if card:getSkillName()~="jijiu" and card:isKindOf("Peach") and #tos==0 then 
-		addGameData(name,1) 
-		if getGameData(name)==5 then 			 
-			addZhanGong(room,name)
-		end	
+	local use = data:toCardUse()
+	local card = use.card
+	if card:getSkillName()~="jijiu" and card:isKindOf("Peach") and use.to:contains(player) then
+		addGameData(name, 1)
+		if getGameData(name == 5 then
+			addZhanGong(room, name)
+		end
 	end
 end
 
