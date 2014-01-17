@@ -5746,8 +5746,9 @@ function getWinner(room,victim)
 	local role=victim:getRole()
 
 	if mode == "02_1v1" then
-		local list = victim:getTag("1v1Arrange"):toStringList()		
-		if #list >0  then return false end
+		local list = victim:getTag("1v1Arrange"):toStringList()
+		local rule = sgs.GetConfig("1v1/Rule", "")
+		if #list > (rule == "OL" and 3 or 0) then return false end
 	end
 
 	local alives=sgs.QList2Table(room:getAlivePlayers())
