@@ -848,7 +848,7 @@ zgfunc[sgs.ChoiceMade].syjh=function(self, room, event, player, data,isowner,nam
 	if choices[1]=="skillInvoke"  and  choices[2]=="anxian" and choices[3]=="yes" then
 		addGameData(name,1)
 	end
-	if choices[1]=="CardResponded"  and  choices[2]=="." and choices[3]=="@anxian-discard" and choices[4]~="_nil_" then
+	if choices[1]=="cardResponded"  and  choices[2]=="." and choices[3]=="@anxian-discard" and choices[4]~="_nil_" then
 		addGameData(name,1)
 	end
 end
@@ -2189,7 +2189,7 @@ end
 zgfunc[sgs.ChoiceMade].srpz=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
 	local choices= data:toString():split(":")
-	if choices[1]=="CardResponded" and choices[2]=="@Axe" and choices[#choices]~="_nil_" then
+	if choices[1]=="cardResponded" and choices[2]=="@Axe" and choices[#choices]~="_nil_" then
 		addGameData(name,1)
 		if getGameData(name)==3 then
 			addZhanGong(room,name)
@@ -3226,7 +3226,7 @@ end
 zgfunc[sgs.ChoiceMade].bkclm=function(self, room, event, player, data,isowner,name)
 	if not isowner then return false end
 	local choices= data:toString():split(":")
-	if choices[1]=="CardResponded"  and  string.match(choices[3],"@fire%-attack") and choices[#choices]=="_nil_" then
+	if choices[1]=="cardResponded"  and  string.match(choices[3],"@fire%-attack") and choices[#choices]=="_nil_" then
 		addGameData(name,1)
 		if getGameData(name)==3 then
 			addZhanGong(room,name)
