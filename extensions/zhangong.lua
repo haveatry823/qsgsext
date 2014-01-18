@@ -5445,6 +5445,137 @@ zgfunc[sgs.ChoiceMade].dxrs=function(self, room, event, player, data, isowner, n
 	end
 end
 
+-- ('dcs', '毒策士', 10, '使用李儒在一局游戏中，发动绝策杀死至少2名角色并发动焚城杀死至少2名角色', 0, 'qun',  'liru', 0, 0);
+zgfunc[sgs.Death].dcs = function(self, room, event, player, data, isowner, name)
+	if room:getOwner():getGeneralName() ~= 'liru' then return false end
+	local damage = data:toDeath().damage
+	if damage and damage.from and damage.from:objectName() == room:getOwner():objectName() then
+		if damage.reason == "fencheng" then
+			addGameData(name .. "fencheng", 1)
+		elseif damage.reason == "juece" then
+			addGameData(name .. "juece", 1)
+		end
+		if getGameData(name .. "fencheng") >= 2 and getGameData(name .. "juece") >= 2 then
+			setGameData(name .. "fencheng", -1000)
+			setGameData(name .. "juece", -1000)
+			addZhanGong(room, name)
+		end
+	end
+end
+
+-- ('dcs', '毒策士', 10, '使用李儒在一局游戏中，发动绝策杀死至少2名角色并发动焚城杀死至少2名角色', 0, 'qun',  'liru', 0, 0);
+zgfunc[sgs.GameOverJudge].callback.dcs = function(room, player, data, name, result)
+	if  room:getOwner():getGeneralName() ~= "liru" then return false end
+	if result ~= 'win' then return false end
+	local damage = data:toDeath().damage
+	if damage and damage.from and damage.from:objectName() == room:getOwner():objectName() then
+		if damage.reason == "fencheng" then
+			addGameData(name .. "fencheng", 1)
+		elseif damage.reason == "juece" then
+			addGameData(name .. "juece", 1)
+		end
+		if getGameData(name .. "fencheng") >= 2 and getGameData(name .. "juece") >= 2 then
+			addZhanGong(room, name)
+		end
+	end
+end
+
+-- ('ysbq', '与世不侵', 10, '使用伏皇后在一局游戏中发动惴恐拼点赢至少4次', 0, 'qun',  'fuhuanghou', 0, 0);
+zgfunc[sgs.ChoiceMade].ysbq = function(self, room, event, player, data, isowner, name)
+	if not isowner then return false end
+	if room:getOwner():getGeneralName() ~= 'fuhuanghou' then return false end
+	local choices = data:toString():split(":")
+	if choices[1] == "pindian" and choices[2] == "zhuikong" and choices[3] == player:objectName() then
+		local num_from = sgs.Sanguosha:getCard(choices[4]):getNumber()
+		local num_to = sgs.Sanguosha:getCard(choices[6]):getNumber()
+		if num_from > num_to then
+			addGameData(name, 1)
+			if getGameData(name) == 4 then
+				addZhanGong(room, name)
+			end
+		end
+	end
+end
+
+-- ('ntgm', '逆天改命', 10, '使用张宝在一局游戏中发动咒缚4次，影兵2次', 0, 'qun',  'zhangbao', 0, 0);
+zgfunc[sgs.ChoiceMade].ntgm = function(self, room, event, player, data, isowner, name)
+	if room:getOwner():getGeneralName() ~= "zhuran" then return false end
+	if not isowner then return false end
+	local choices = data:toString():split(":")
+	if choices[1] == "skillInvoke" and choices[2] == "yingbing" then
+		if choices[3] == "yes" then
+			addGameData(name .. "yingbing", 1)
+			if getGameData(name .. "yingbing") >= 2 and getGameData(name .. "zhoufu") >= 2 then
+				setGameData(name .. "yingbing", -1000)
+				setGameData(name .. "zhoufu", -1000)
+				addZhanGong(room, name)
+			end
+		end
+	end
+end
+
+-- ('ntgm', '逆天改命', 10, '使用张宝在一局游戏中发动咒缚4次，影兵2次', 0, 'qun',  'zhangbao', 0, 0);
+zgfunc[sgs.CardFinished].ntgm = function(self, room, event, player, data, isowner, name)
+	if room:getOwner():getGeneralName() ~= "manchong" then return false end
+	if not isowner then return false end
+	local use = data:toCardUse()
+	if use.card:isKindOf("ZhoufuCard") and use.from:objectName() == room:getOwner():objectName() then
+		addGameData(name .. "zhoufu", 1)
+		if getGameData(name .. "yingbing") >= 2 and getGameData(name .. "zhoufu") >= 4 then
+			setGameData(name .. "yingbing", -1000)
+			setGameData(name .. "zhoufu", -1000)
+			addZhanGong(room, name)
+		end
+	end
+end
+
+-- ('yyym', '有勇有谋', 10, '使用伏完在一局游戏中发动谋溃弃掉3张闪', 0, 'qun',  'fuwan', 0, 0);
+zgfunc[sgs.ChoiceMade].yyym=function(self, room, event, player, data,isowner,name)
+	if not string.find(room:getOwner():getGeneralName(), "fuwan") then return false end
+	if not isowner then return false end
+	local choices= data:toString():split(":")
+	if choices[1] == "cardChosen" and choices[2] == "moukui" and sgs.Sanguosha:getCard(choices[3]):isKindOf("Jink") then
+		addGameData(name, 1)
+		if getGameData(name) == 3 then
+			addZhanGong(room, name)
+		end
+	end
+end
+
+
+-- ('zmtz', '真命天子', 10, '使用刘协在一局游戏中发动密诏4次，天命4次，并最终胜利', 0, 'qun',  'liuxie', 0, 0);
+zgfunc[sgs.ChoiceMade].zmtz = function(self, room, event, player, data, isowner, name)
+	if room:getOwner():getGeneralName() ~= "zhuran" then return false end
+	if not isowner then return false end
+	local choices = data:toString():split(":")
+	if choices[1] == "skillInvoke" and choices[2] == "tianming" then
+		if choices[3] == "yes" then
+			addGameData(name .. "tianming", 1)
+			if getGameData(name .. "tianming") >= 4 and getGameData(name .. "mizhao") >= 4 then
+				setGameData(name .. "tianming", -1000)
+				setGameData(name .. "mizhao", -1000)
+				addZhanGong(room, name)
+			end
+		end
+	end
+end
+
+-- ('zmtz', '真命天子', 10, '使用刘协在一局游戏中发动密诏4次，天命4次，并最终胜利', 0, 'qun',  'liuxie', 0, 0);
+zgfunc[sgs.CardFinished].zmtz = function(self, room, event, player, data, isowner, name)
+	if room:getOwner():getGeneralName() ~= "liuxie" then return false end
+	if not isowner then return false end
+	local use = data:toCardUse()
+	if use.card:isKindOf("MizhaoCard") and use.from:objectName() == room:getOwner():objectName() then
+		addGameData(name .. "mizhao", 1)
+		if getGameData(name .. "mizhao") >= 4 and getGameData(name .. "tianming") >= 4 then
+			setGameData(name .. "tianming", -1000)
+			setGameData(name .. "mizhao", -1000)
+			addZhanGong(room, name)
+		end
+	end
+end
+
+
 
 
 zgfunc[sgs.TurnStart].hulao=function(self, room, event, player, data,isowner,name)
