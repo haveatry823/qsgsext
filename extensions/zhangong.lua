@@ -39,6 +39,7 @@ zgfunc[sgs.DamageInflicted]={}
 
 
 zgfunc[sgs.Death]={}
+zgfunc[sgs.Dying]={}
 zgfunc[sgs.EventPhaseEnd]={}
 zgfunc[sgs.EventPhaseStart]={}
 
@@ -2998,7 +2999,7 @@ zgfunc[sgs.CardFinished].tw=function(self, room, event, player, data, isowner, n
 	local card = use.card
 	if card:getSkillName()~="jijiu" and card:isKindOf("Peach") and use.to:contains(player) then
 		addGameData(name, 1)
-		if getGameData(name == 5) then
+		if getGameData(name) == 5 then
 			addZhanGong(room, name)
 		end
 	end
@@ -5330,6 +5331,119 @@ zgfunc[sgs.CardFinished].fbrq = function(self, room, event, player, data, isowne
 end
 
 
+-- ('xjcz', '兴家赤族', 10, '使用诸葛恪在一局游戏中发动技能黩武令两名角色进入濒死状态', 0, 'wu',  'zhugeke', 0, 0);
+zgfunc[sgs.Dying].xjcz = function(self, room, event, player, data, isowner, name)
+	if not isowner then return false end
+	if player:getGeneralName() ~= "zhugeke" then return false end
+	local dying = data:toDying()
+	if dying.who:objectName() ~= player:objectName() and dying.damage and dying.damage:getReason() == "duwu" then
+		addGameData(name, 1)
+		if getGameData(name) == 2 then
+			addZhanGong(room, name)
+		end
+	end
+end
+
+-- ('jiangdongzhihua', '江东之花', 10, '使用大乔小乔在一局游戏中发动技能星舞造成4点伤害', 0, 'wu',  'erqiao', 0, 0);
+zgfunc[sgs.Damage].jiangdongzhihua = function(self, room, event, player, data, isowner, name)
+	if not isowner then return false end
+	local damage = data:toDamage()
+	if not damage.from or damage.from:objectName() ~= player:objectName() or damage.from:getGeneralName() ~= "erqiao" then return end
+	if damage.reason == "xingwu" then
+		addZhanGong(room, name)
+	end
+end
+
+-- ('wmxt', '微妙玄通', 10, '使用虞翻在一局游戏中发动直言令其他角色摸到装备牌至少3张', 0, 'wu',  'yufan', 0, 0);
+zgfunc[sgs.ChoiceMade].wmxt=function(self, room, event, player, data, isowner, name)
+	if room:getOwner():getGeneralName() ~= "yufan" then return false end
+	if not isowner then return false end
+	local choices = data:toString():split(":")
+	if choices[1] == "playerChosen" and choices[2] == "zhiyan" then
+		local pile = room:getDrawPile()
+		if not pile:isEmpty() then
+			local id = pile:first()
+			if sgs.Sanguosha:getCard(id):getTypeId() == sgs.Card_TypeEquip then
+				addGameData(name, 1)
+				if getGameData(name) == 3 then
+					addZhanGong(room, name)
+				end
+			end
+		end
+	end
+end
+
+
+-- ('sjss', '上将杀手', 10, '使用潘璋＆马忠在一局游戏中杀死关羽和黄忠并获胜', 0, 'wu',  'panzhangmazhong', 0, 0);
+--
+zgfunc[sgs.Death].sjss=function(self, room, event, player, data, isowner, name)
+	if room:getOwner():getGeneralName() ~= 'panzhangmazhong' then return false end
+	local death = data:toDeath()
+	local damage = death.damage
+	if damage and damage.from and damage.from:objectName() == room:getOwner():objectName() then
+		if string.find(death.who:getGeneralName(), "guangyu") then
+			addGameData(name .. "guangyu", 1)
+		elseif string.find(death.who:getGeneralName(), "huangzhong") then
+			addGameData(name .. "huangzhong", 1)
+		end
+		if getGameData(name .. "huangzhong") > 0 and getGameData(name .. "guangyu") > 0 then
+			addZhanGong(room, name)
+		end
+	end
+end
+
+
+-- ('sjss', '上将杀手', 10, '使用潘璋＆马忠在一局游戏中杀死关羽和黄忠并获胜', 0, 'wu',  'panzhangmazhong', 0, 0);
+--
+zgfunc[sgs.GameOverJudge].callback.sjss=function(room, player, data, name, result)
+	if  room:getOwner():getGeneralName() ~= "panzhangmazhong" then return false end
+	if result ~= 'win' then return false end
+	local death = data:toDeath()
+	local damage = death.damage
+	if damage and damage.from and damage.from:objectName() == room:getOwner():objectName() then
+		if string.find(death.who:getGeneralName(), "guangyu") then
+			addGameData(name .. "guangyu", 1)
+		elseif string.find(death.who:getGeneralName(), "huangzhong") then
+			addGameData(name .. "huangzhong", 1)
+		end
+		if getGameData(name .. "huangzhong") > 0 and getGameData(name .. "guangyu") > 0 then
+			addZhanGong(room, name)
+		end
+	end
+end
+
+
+-- ('schs', '石城侯使', 10, '用韩当在一局游戏中发动技能弓骑弃置他人共计3张牌', 0, 'wu',  'handang', 0, 0);
+zgfunc[sgs.ChoiceMade].schs=function(self, room, event, player, data, isowner, name)
+	if room:getOwner():getGeneralName() ~= "handang" then return false end
+	if not isowner then return false end
+	local choices = data:toString():split(":")
+	if choices[1] == "playerChosen" and choices[2] == "gongqi" then
+		addGameData(name, 1)
+		if getGameData(name) == 3 then
+			addZhanGong(room, name)
+		end
+	end
+end
+
+
+-- dxrs :: 胆小如鼠 ：： 一局游戏内连续发动胆守至少7次
+--
+zgfunc[sgs.ChoiceMade].dxrs=function(self, room, event, player, data, isowner, name)
+	if room:getOwner():getGeneralName() ~= "zhuran" then return false end
+	if not isowner then return false end
+	local choices = data:toString():split(":")
+	if choices[1] == "skillInvoke" and choices[2] == "danshou" then
+		if choices[3] == "yes" then
+			addGameData(name, 1)
+			if getGameData(name) == 7 then
+				addZhanGong(room, name)
+			end
+		else
+			setGameData(name, 0)
+		end
+	end
+end
 
 
 
@@ -5692,6 +5806,7 @@ zgzhangong2 = sgs.CreateTriggerSkill{
 		sgs.SlashEffected,
 		sgs.SlashHit,
 		sgs.SlashMissed,
+		sgs.Dying,
 
 		},
 	priority = 6,
