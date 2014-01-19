@@ -669,7 +669,7 @@ INSERT INTO zhangong VALUES('xzqs', '险中求胜', 10, '使用夏侯霸在自�
 INSERT INTO zhangong VALUES('wj', '武姬', 10, '使用关银屏在一局游戏中发动技能虎啸3次，血祭1次', 0, 'shu', '1999-12-31 00:00:00', 'guanyinping', 0, 0);
 INSERT INTO zhangong VALUES('scxh', '身曹心汉', 10, '使用新徐庶在一局游戏中对蜀势力角色发动举荐至少3次', 0, 'shu', '1999-12-31 00:00:00', 'xushu', 0, 0);
 INSERT INTO zhangong VALUES('eyfm', '恩怨分明', 10, '使用新法正在一局游戏中分别获得卡牌和受到伤害时发动技能恩怨各2次', 0, 'shu', '1999-12-31 00:00:00', 'fazheng', 0, 0);
-INSERT INTO zhangong VALUES('sclh', '舌灿莲花', 10, '使用简雍在一局游戏中，发动巧说拼点赢后，为桃、顺手牵羊和决斗各额外选择一名目标', 0, 'jianyong', '1999-12-31 00:00:00', 'xiahouba', 0, 0);
+INSERT INTO zhangong VALUES('sclh', '舌灿莲花', 10, '使用简雍在一局游戏中，发动巧说拼点赢后，为桃、顺手牵羊和决斗各额外选择一名目标', 0, 'shu', '1999-12-31 00:00:00', 'jianyong', 0, 0);
 INSERT INTO zhangong VALUES('xzjz', '先主假子', 10, '使用刘封在一局游戏中发动陷嗣使得“逆”的数量达到8张并获得胜利', 0, 'shu', '1999-12-31 00:00:00', 'liufeng', 0, 0);
 INSERT INTO zhangong VALUES('lyjx', '龙吟九霄', 10, '使用关平在一局游戏中发动龙吟至少4次，并在本局游戏中杀死至少3名角色', 0, 'shu', '1999-12-31 00:00:00', 'guanping', 0, 0);
 INSERT INTO zhangong VALUES('xjcz', '兴家赤族', 10, '使用诸葛恪在一局游戏中发动技能黩武令两名角色进入濒死状态', 0, 'wu', '1999-12-31 00:00:00', 'zhugeke', 0, 0);
