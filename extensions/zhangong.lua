@@ -6351,7 +6351,8 @@ function getWinner(room,victim)
 				end
 			end
 			return #winners and table.concat(winners,"+") or false
-		end	
+		end
+		return
 	end
 	
 	
