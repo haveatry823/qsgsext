@@ -3921,7 +3921,7 @@ zgfunc[sgs.DamageComplete].lxxy=function(self, room, event, player, data,isowner
 			addZhanGong(room,name)
 			setGameData(name,-100)
 		end
-    end
+	end
 end
 
 
@@ -6318,27 +6318,28 @@ function getWinner(room,victim)
 	local alives=sgs.QList2Table(room:getAlivePlayers())
 	
 	
-	if getGameData("hegemony")==1 then				
-        local has_anjiang = false
+	if getGameData("hegemony")==1 then
+		local has_anjiang = false
 		local has_diff_kingdoms = false
-        local init_kingdom
+		local init_kingdom
 		for _, p in sgs.qlist(room:getAlivePlayers()) do
-			if room:getTag(p:objectName()):toString()~="" then 
+			local list = room:getTag(p:objectName()):toStringList()
+			if list and (p:getGeneral2() and #list == 2 or #list == 1) then
 				has_anjiang = true
-            end
-            if init_kingdom == nil then 
-                init_kingdom = p:getKingdom()
-            elseif init_kingdom ~= p:getKingdom() then
-                has_diff_kingdoms = true
-            end
+			end
+			if init_kingdom == nil then 
+				init_kingdom = p:getKingdom()
+			elseif init_kingdom ~= p:getKingdom() then
+				has_diff_kingdoms = true
+			end
 		end
 
-        if not has_anjiang and  not has_diff_kingdoms then
-            local winners={}
+		if not has_anjiang and  not has_diff_kingdoms then
+			local winners={}
 			local aliveKingdom = alives[1]:getKingdom()
 
-            for _, p in sgs.qlist(room:getAllPlayers()) do
-                if p:isAlive() then 
+			for _, p in sgs.qlist(room:getAllPlayers()) do
+				if p:isAlive() then 
 					table.insert(winners , p:objectName()) 
 				else
 					if p:getKingdom() == aliveKingdom then
@@ -6348,16 +6349,16 @@ function getWinner(room,victim)
 						end
 					end
 				end
-            end
-            return #winners and table.concat(winners,"+") or false
-        end	
+			end
+			return #winners and table.concat(winners,"+") or false
+		end	
 	end
 	
 	
 	if mode == "06_3v3" then
 		if role=="lord" then return "renegade+rebel" end
 		if role=="renegade" then return "lord+loyalist" end
-		return false			
+		return false
 	else
 		local alive_roles = room:aliveRoles(victim)
 		if role=="lord" then
