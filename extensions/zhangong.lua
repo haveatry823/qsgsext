@@ -4866,15 +4866,7 @@ zgfunc[sgs.ChoiceMade].cjww=function(self, room, event, player, data,isowner,nam
 			addZhanGong(room,name)
 			setGameData(name..'tiaoxin',-100)
 		end
-	end
-end
-
-
-zgfunc[sgs.ChoiceMade].cjww=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~='jiangwei' then return false end
-	if not isowner then return false end
-	local choices= data:toString():split(":")
-	if choices[1]=="skillInvoke"  and  choices[2]=="guanxing" and choices[3]=="yes" then
+	elseif choices[1]=="skillInvoke"  and  choices[2]=="guanxing" and choices[3]=="yes" then
 		setGameData(name..'guanxing',math.min(2,getGameData(name..'guanxing')+1))
 		if getGameData(name..'tiaoxin')==4 and getGameData(name..'guanxing')==2 then
 			addZhanGong(room,name)
@@ -5585,7 +5577,7 @@ zgfunc[sgs.ChoiceMade].lyjx = function(self, room, event, player, data, isowner,
 	if room:getOwner():getGeneralName() ~= "guanping" then return false end
 	if not isowner then return false end
 	local choices = data:toString():split(":")
-	if choices[1] == "cardResponded" and choices[2] == "@longyin" and choice[#choice] ~= "_nil_" then
+	if choices[1] == "cardResponded" and choices[3] == "@longyin" and choices[#choices] ~= "_nil_" then
 		addGameData(name .. "longyin", 1)
 		if getGameData(name .. "longyin") >= 4 and getGameData(name .. "kill") >= 3 then
 			setGameData(name .. "longyin", -1000)
@@ -6452,6 +6444,8 @@ function initDB()
 	-- 修正简雍舌灿莲花
 	sqlexec("update zhangong set category='shu' where id='sclh'")
 	sqlexec("update zhangong set general ='jianyong' where id='sclh'")
+	-- 修正SP甘宁军威如山
+	sqlexec("update zhangong set category='qun' where id='jwrs'")
 
 	-- 所有武将的 获得N场胜利 取得相应战功的代码  
 	--
