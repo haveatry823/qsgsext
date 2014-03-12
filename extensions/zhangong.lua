@@ -5557,14 +5557,14 @@ zgfunc[sgs.CardFinished].xzjz = function(self, room, event, player, data, isowne
 	local use = data:toCardUse()
 	if use.from:objectName() == room:getOwner():objectName() and use.card:isKindOf("XiansiCard") then
 		if player:getPile("counter"):length() >= 8 then
-			addGameDate(name, 1)
+			addGameData(name, 1)
 		end
 	end
 end
 
 -- ('xzjz', '先主假子', 10, '使用刘封在一局游戏中发动陷嗣使得“逆”的数量达到8张并获得胜利', 0, 'shu',  'liufeng', 0, 0);
 zgfunc[sgs.GameOverJudge].callback.xzjz = function(room, player, data, name, result)
-	if  room:getOwner():getGeneralName() ~= "liufeng" then return false end
+	if room:getOwner():getGeneralName() ~= "liufeng" then return false end
 	if result ~= 'win' then return false end
 	if getGameData(name) >= 1 then
 		addZhanGong(room, name)
