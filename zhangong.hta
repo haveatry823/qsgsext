@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"><head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <link href="./zhangong/js/zg.css" rel="stylesheet" type="text/css">
-<title>成就系统for太阳神三国杀</title> 
-<hta:application id="ohta" applicationname="qsgsext" border="thin" borderstyle="normal" caption="yes" icon="./zhangong/img/zg.ico" maximizebutton="yes" 	minimizebutton="yes" showintaskbar="yes" ingleinstance="no" sysmenu="yes" version="1.0" windowstate="normal" />
+<title>成就系统for太阳神三国杀 V2-1217</title> 
+<hta:application id="ohta" applicationname="qsgsext" border="thin" borderstyle="normal" caption="yes" icon="./zhangong/img/zg.ico" maximizebutton="yes" minimizebutton="yes" showintaskbar="yes" ingleinstance="no" sysmenu="yes" version="1.0" windowstate="normal" />
 <script type="text/javascript" language="javascript" src="./zhangong/js/jquery-1.4.2.min.js"></script>
 <script type="text/javascript" language="javascript" src="./zhangong/js/jquery.table.js"></script>
 <script type="text/javascript" language="javascript" src="./zhangong/js/template.min.js"></script>
@@ -359,7 +359,10 @@ var callback={
 		return v;
 	},
 	getGeneral:function(v){
-		return "<img height='25' src='./image/generals/avatar/"+v+".png'/>"+(trans[v] || v);
+		if ($.inArray(v,["guanxingzhangbao","erzhang","yanliangwenchou","erqiao","panzhangmazhong","jiangwanfeiyi","chenwudongxi"])!=-1){
+			return "<img height='25' src='./image/generals/big/"+v+".png' />"+(trans[v] || v);
+		}
+		return "<img height='25' src='./image/generals/avatar/"+v+".png' />"+(trans[v] || v);
 	},	
 	getRole:function(v){
 		return "<img height='20' src='./image/system/roles/"+v+"-1.png'/>"+(trans[v] || v);
