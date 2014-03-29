@@ -482,7 +482,7 @@ INSERT INTO "zhangong" VALUES('cmr', '刺美人', 5, '使用祝融在1局游戏�
 INSERT INTO "zhangong" VALUES('pndjj', '破虏大将军', 5, '使用孙坚连续至少3回合在1体力时发动英魂', 0, 'wu', '1999-12-31 00:00:00', 'sunjian', 0, 0);
 INSERT INTO "zhangong" VALUES('zqxz', '指囷相赠', 5, '使用鲁肃在1局游戏中发动好施分给其他角色至少15张牌', 0, 'wu', '1999-12-31 00:00:00', 'lusu', 0, 0);
 INSERT INTO "zhangong" VALUES('rs', '肉山', 5, '使用董卓在1局游戏中使用杀杀死至少3名女性角色', 0, 'qun', '1999-12-31 00:00:00', 'dongzhuo', 0, 0);
-INSERT INTO "zhangong" VALUES('lsgj', '乱世歌姬', 5, '使用蔡文姬在一局中发动悲歌至少4次 发动断肠并最终获胜', 0, 'wei', '1999-12-31 00:00:00', 'caiwenji', 0, 0);
+INSERT INTO "zhangong" VALUES('lsgj', '乱世歌姬', 5, '使用蔡文姬在一局中发动悲歌至少4次 发动断肠并最终获胜', 0, 'qun', '1999-12-31 00:00:00', 'caiwenji', 0, 0);
 INSERT INTO "zhangong" VALUES('fwjj', '辅吴将军', 5, '使用张昭&张纮在一局中发动直谏将至少5张装备牌置于吴势力武将装备区', 0, 'wu', '1999-12-31 00:00:00', 'erzhang', 0, 0);
 INSERT INTO "zhangong" VALUES('dzry', '大智若愚', 5, '使用刘禅每回合都发动放权并最终获胜', 0, 'shu', '1999-12-31 00:00:00', 'liushan', 0, 0);
 INSERT INTO "zhangong" VALUES('mrgs', '猛锐盖世', 5, '使用孙策在一局游戏中发动激昂摸牌至少5张并发动技能魂姿', 0, 'wu', '1999-12-31 00:00:00', 'sunce', 0, 0);

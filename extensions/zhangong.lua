@@ -1098,12 +1098,12 @@ end
 
 -- qqtx :: 权倾天下 :: 使用钟会在一局游戏中发动“排异”累计摸牌至少10张
 --
-zgfunc[sgs.AfterDrawNCards].qqtx=function(self, room, event, player, data,isowner,name)
-	if  room:getOwner():getGeneralName()~='zhonghui' then return false end
-	local x=data:toInt()
-	if isowner and sgs.Sanguosha:getCard(x):hasFlag("paiyi") then
-		addGameData(name, 1)
-		if getGameData(name)==10 then addZhanGong(room, name) end
+zgfunc[sgs.CardEffected].qqtx=function(self, room, event, player, data, isowner, name)
+	if room:getOwner():getGeneralName() ~= 'zhonghui' then return false end
+	local effect = data:toCardEffect()
+	if isowner and effect.card:isKindOf("PaiyiCard") and effect.to:objectName() == effect.from:objectName() then
+		addGameData(name, 2)
+		if getGameData(name) == 10 then addZhanGong(room, name) end
 	end
 end
 
@@ -2676,7 +2676,7 @@ zgfunc[sgs.GameOverJudge].callback.hsqj=function(room,player,data,name,result)
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName() then
 		addGameData(name,1)
 	end	
-	if result =='win' and getGameData(name)==7 then addZhanGong(room,name) end	
+	if result =='win' and getGameData(name)>=7 then addZhanGong(room,name) end	
 end
 
 
@@ -4709,11 +4709,11 @@ end
 
 -- lsgj :: 乱世歌姬 :: 使用蔡文姬在一局中发动悲歌至少4次 发动断肠并最终获胜 
 --
-zgfunc[sgs.ChoiceMade].lsgj=function(self, room, event, player, data,isowner,name)
+zgfunc[sgs.ChoiceMade].lsgj=function(self, room, event, player, data, isowner, name)
 	if  room:getOwner():getGeneralName()~='caiwenji' then return false end
 	if not isowner then return false end
-	local choices= data:toString():split(":")
-	if choices[1]=="skillInvoke"  and  choices[2]=="beige" and choices[3]=="yes" then
+	local choices = data:toString():split(":")
+	if choices[1] == "cardResponded" and choices[3] == "@beige" and choices[#choices] ~= "_nil_" then
 		addGameData(name,1)
 	end
 end
@@ -5248,7 +5248,7 @@ end
 --
 zgfunc[sgs.GameOverJudge].callback.wjjh=function(room,player,data,name,result)
 	if  room:getOwner():getGeneralName()~="sp_caiwenji" then return false end
-	if result=='win' and room:getLord():isCaoCao() and room:getOwner():getRole()=='renegade' then
+	if result=='win' and (string.find(room:getLord():getGeneralName(), "caocao") or string.find(room:getLord():getGeneral2Name(), "caocao")) and room:getOwner():getRole()=='renegade' then
 		addZhanGong(room,name)
 	end
 end
@@ -6010,9 +6010,11 @@ function useSkillCard(room,owner)
 	if #skills>0 then
 		local choice=room:askForChoice(owner,"@chooseskill","cancel+"..table.concat(skills,"+"))
 		if choice ~= "cancel" then
-			room:acquireSkill(owner,choice)
-			if not owner:hasSkill("ruoyu") then room:loseHp(owner) end
-			sqlexec("update skills set  used=used+1 where skillname='%s'",choice)
+			room:acquireSkill(owner, choice)
+			sqlexec("update skills set  used=used+1 where skillname='%s'", choice)
+			owner:setHp(owner:getHp() - 1)
+			room:broadcastProperty(owner, "hp")
+			if owner:getHp() <= 0 then room:enterDying(owner, nil) end
 		end
 	end
 end
@@ -6446,6 +6448,8 @@ function initDB()
 	sqlexec("update zhangong set general ='jianyong' where id='sclh'")
 	-- 修正SP甘宁军威如山
 	sqlexec("update zhangong set category='qun' where id='jwrs'")
+	-- 修正蔡文姬乱世歌姬
+	sqlexec("update zhangong set category='qun' where id='lsgj'")
 
 	-- 所有武将的 获得N场胜利 取得相应战功的代码  
 	--
