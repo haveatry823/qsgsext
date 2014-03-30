@@ -5399,15 +5399,16 @@ end
 
 
 -- ('fujiang', '福将', 10, '使用曹洪在一局游戏中发动援护总计回复两点体力', 0, 'wei',  'caohong', 0, 0);
-zgfunc[sgs.CardFinished].fujiang = function(self, room, event, player, data, isowner, name)
-	if string.find(room:getOwner():getGeneralName(), "caohong") then return false end
+zgfunc[sgs.CardUsed].fujiang = function(self, room, event, player, data, isowner, name)
+	if not string.find(room:getOwner():getGeneralName(), "caohong") then return false end
 	if not isowner then return false end
 	local use = data:toCardUse()
 	if use.from:objectName() == room:getOwner():objectName() and use.card:isKindOf("YuanhuCard") then
 		local card = sgs.Sanguosha:getCard(use.card:getSubcards():first())
-		if card:isKindOf("Horse") then
+		local to = use.to:first()
+		if card:isKindOf("Horse") and to:isWounded() then
 			addGameData(name, 1)
-			if getGameData(name) == 3 then
+			if getGameData(name) == 2 then
 				addZhanGong(room, name)
 			end
 		end
