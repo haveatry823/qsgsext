@@ -884,7 +884,7 @@ end
 zgfunc[sgs.Death].ynnd=function(self, room, event, player, data,isowner,name)
 	if  room:getOwner():getGeneralName()~='xiaoqiao' then return false end
 	local damage=data:toDeath().damage
-	if damage and damage.to:hasFlag("TianxiangTarget") then
+	if damage and damage.to:getMark("TianxiangTarget") > 0 then
 		addZhanGong(room,name)
 	end
 end
@@ -893,7 +893,7 @@ end
 zgfunc[sgs.GameOverJudge].callback.ynnd=function(room,player,data,name,result)
 	if  room:getOwner():getGeneralName()~='xiaoqiao' then return false end
 	local damage=data:toDeath().damage
-	if damage and damage.to:hasFlag("TianxiangTarget") then
+	if damage and damage.to:getMark("TianxiangTarget") > 0 then
 		addZhanGong(room,name)
 	end
 end
@@ -3915,7 +3915,7 @@ end
 -- 
 zgfunc[sgs.DamageComplete].lxxy=function(self, room, event, player, data,isowner,name)
 	if  room:getOwner():getGeneralName()~="xiaoqiao" then return false end
-	if player:hasFlag("TianxiangTarget") and player:isAlive() then
+	if player:getMark("TianxiangTarget") > 0 and player:isAlive() then
 		addGameData(name,player:getLostHp())
 		if getGameData(name)>=15 then
 			addZhanGong(room,name)
