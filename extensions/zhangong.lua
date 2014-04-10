@@ -5785,13 +5785,13 @@ end
 
 -- ('ntgm', '逆天改命', 10, '使用张宝在一局游戏中发动咒缚4次，影兵2次', 0, 'qun',  'zhangbao', 0, 0);
 zgfunc[sgs.ChoiceMade].ntgm = function(self, room, event, player, data, isowner, name)
-	if room:getOwner():getGeneralName() ~= "zhuran" then return false end
+	if room:getOwner():getGeneralName() ~= "zhangbao" then return false end
 	if not isowner then return false end
 	local choices = data:toString():split(":")
 	if choices[1] == "skillInvoke" and choices[2] == "yingbing" then
 		if choices[3] == "yes" then
 			addGameData(name .. "yingbing", 1)
-			if getGameData(name .. "yingbing") >= 2 and getGameData(name .. "zhoufu") >= 2 then
+			if getGameData(name .. "yingbing") >= 2 and getGameData(name .. "zhoufu") >= 4 then
 				setGameData(name .. "yingbing", -1000)
 				setGameData(name .. "zhoufu", -1000)
 				addZhanGong(room, name)
@@ -5802,7 +5802,7 @@ end
 
 -- ('ntgm', '逆天改命', 10, '使用张宝在一局游戏中发动咒缚4次，影兵2次', 0, 'qun',  'zhangbao', 0, 0);
 zgfunc[sgs.CardFinished].ntgm = function(self, room, event, player, data, isowner, name)
-	if room:getOwner():getGeneralName() ~= "manchong" then return false end
+	if room:getOwner():getGeneralName() ~= "zhangbao" then return false end
 	if not isowner then return false end
 	local use = data:toCardUse()
 	if use.card:isKindOf("ZhoufuCard") and use.from:objectName() == room:getOwner():objectName() then
