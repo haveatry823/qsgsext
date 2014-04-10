@@ -4759,7 +4759,7 @@ zgfunc[sgs.CardFinished].fwjj = function(self, room, event, player, data, isowne
 	if (use.card:isKindOf("ZhijianCard") and to:getKingdom() == "wu" and isowner) then
 		addGameData(name, 1)
 		if getGameData(name) == 5 then
-			addZhangong(room, name)
+			addZhanGong(room, name)
 		end
 	end
 end
@@ -5667,12 +5667,12 @@ zgfunc[sgs.Death].sjss=function(self, room, event, player, data, isowner, name)
 	local death = data:toDeath()
 	local damage = death.damage
 	if damage and damage.from and damage.from:objectName() == room:getOwner():objectName() then
-		if string.find(death.who:getGeneralName(), "guangyu") then
-			addGameData(name .. "guangyu", 1)
+		if string.find(death.who:getGeneralName(), "guanyu") then
+			addGameData(name .. "guanyu", 1)
 		elseif string.find(death.who:getGeneralName(), "huangzhong") then
 			addGameData(name .. "huangzhong", 1)
 		end
-		if getGameData(name .. "huangzhong") > 0 and getGameData(name .. "guangyu") > 0 then
+		if getGameData(name .. "huangzhong") > 0 and getGameData(name .. "guanyu") > 0 then
 			addZhanGong(room, name)
 		end
 	end
@@ -5687,12 +5687,12 @@ zgfunc[sgs.GameOverJudge].callback.sjss=function(room, player, data, name, resul
 	local death = data:toDeath()
 	local damage = death.damage
 	if damage and damage.from and damage.from:objectName() == room:getOwner():objectName() then
-		if string.find(death.who:getGeneralName(), "guangyu") then
-			addGameData(name .. "guangyu", 1)
+		if string.find(death.who:getGeneralName(), "guanyu") then
+			addGameData(name .. "guanyu", 1)
 		elseif string.find(death.who:getGeneralName(), "huangzhong") then
 			addGameData(name .. "huangzhong", 1)
 		end
-		if getGameData(name .. "huangzhong") > 0 and getGameData(name .. "guangyu") > 0 then
+		if getGameData(name .. "huangzhong") > 0 and getGameData(name .. "guanyu") > 0 then
 			addZhanGong(room, name)
 		end
 	end
