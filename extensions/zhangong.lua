@@ -1,5 +1,5 @@
 enableSkillCard = 1		-- 是否开启技能卡， 1:开启, 0:不开启
---enableLuckyCard = 1		-- 是否开启手气卡,  1:开启, 0:不开启
+enableLuckyCard = 0		-- 是否开启手气卡,  1:开启, 0:不开启
 enableHulaoCard = 1		-- 是否开启虎牢关点将卡,  1:开启, 0:不开启
 
 zgver='20131217'
@@ -712,17 +712,16 @@ zgfunc[sgs.CardsMoveOneTime].gzwb=function(self, room, event, player, data, isow
 end
 
 
--- jfhz :: 解烦护主 :: 使用韩当在一局游戏游戏中发动“解烦”救过队友孙权至少两次
---Fs: 此战功需要修改,因为韩当技能修改
+-- jfhz :: 解烦护主 :: 使用旧韩当在一局游戏游戏中发动“解烦”救过队友孙权至少两次
 zgfunc[sgs.CardFinished].jfhz=function(self, room, event, player, data, isowner, name)
-	if room:getOwner():getGeneralName()~='handang' then return false end
+	if room:getOwner():getGeneralName() ~= 'nos_handang' then return false end
 	if not isowner then return false end
-	local use=data:toCardUse()
-	local tos=sgs.QList2Table(use.to)
-	if tos and #tos and tos[1]:getGeneralName()=="sunquan"
-			and use.card:getSkillName()=="jiefan" and isSameGroup(player,tos[1]) then
-		addGameData(name,1)
-		if getGameData(name)==2 then addZhanGong(room, name) end
+	local use = data:toCardUse()
+	local tos = sgs.QList2Table(use.to)
+	if tos and #tos and tos[1]:getGeneralName() == "sunquan"
+			and use.card:getSkillName()=="nosjiefan" and isSameGroup(player, tos[1]) then
+		addGameData(name, 1)
+		if getGameData(name) == 2 then addZhanGong(room, name) end
 	end
 end
 
@@ -752,15 +751,14 @@ zgfunc[sgs.CardFinished].jjh=function(self, room, event, player, data, isowner, 
 end
 
 
--- jjnh :: 禁军难护 :: 使用韩当在一局游戏中有角色濒死时发动“解烦”并出杀后均被闪避至少5次
---Fs:此战功需要修改,因为韩当技能修改
+-- jjnh :: 禁军难护 :: 使用旧韩当在一局游戏中有角色濒死时发动“解烦”并出杀后均被闪避至少5次
 zgfunc[sgs.SlashMissed].jjnh=function(self, room, event, player, data, isowner, name)
-	if room:getOwner():getGeneralName()~='handang' then return false end
+	if room:getOwner():getGeneralName() ~= 'nos_handang' then return false end
 	if not isowner then return false end
-	local effect=data:toSlashEffect()
-	if effect.slash:hasFlag("jiefan-slash") then
-		addGameData(name,1)
-		if getGameData(name)==5 then addZhanGong(room,name) end
+	local effect = data:toSlashEffect()
+	if effect.slash:hasFlag("nosjiefan-slash") then
+		addGameData(name, 1)
+		if getGameData(name) == 5 then addZhanGong(room, name) end
 	end
 end
 
@@ -1083,15 +1081,14 @@ zgfunc[sgs.CardFinished].qjbc=function(self, room, event, player, data, isowner,
 end
 
 
--- qmjj :: 奇谋九计 :: 使用王异在一局游戏中至少成功发动九次秘计并获胜。
---Fs:同韩当
+-- qmjj :: 奇谋九计 :: 使用旧王异在一局游戏中至少成功发动九次秘计并获胜。
 zgfunc[sgs.FinishRetrial].qmjj=function(self, room, event, player, data, isowner, name)
-	if room:getOwner():getGeneralName()~='wangyi' then return false end
+	if room:getOwner():getGeneralName() ~= 'nos_wangyi' then return false end
 	if not isowner then return false end
-	local judge=data:toJudge()
-	if judge.reason=="miji" and judge:isGood() and judge.who:objectName()==room:getOwner():objectName() then
-		addGameData(name,1)
-		if getGameData(name)==9 then addZhanGong(room,name) end
+	local judge = data:toJudge()
+	if judge.reason == "nosmiji" and judge:isGood() and judge.who:objectName() == room:getOwner():objectName() then
+		addGameData(name, 1)
+		if getGameData(name) == 9 then addZhanGong(room, name) end
 	end
 end
 
@@ -1272,14 +1269,13 @@ zgfunc[sgs.GameOverJudge].callback.ybyt=function(room,player,data,name,result)
 end
 
 
--- ajnf :: 暗箭难防 :: 使用马岱在一局游戏中发动“潜袭”成功至少6次
---Fs:同韩当
+-- ajnf :: 暗箭难防 :: 使用旧马岱在一局游戏中发动“潜袭”成功至少6次
 zgfunc[sgs.FinishRetrial].ajnf=function(self, room, event, player, data, isowner, name)
-	if room:getOwner():getGeneralName()~='madai' then return false end
-	local judge=data:toJudge()
-	if judge.who:objectName()==room:getOwner():objectName() and judge.reason=="qianxi" and judge:isGood() then
-		addGameData(name,1)
-		if getGameData(name)==6 then addZhanGong(room,name) end
+	if room:getOwner():getGeneralName()~='nos_madai' then return false end
+	local judge = data:toJudge()
+	if judge.who:objectName() == room:getOwner():objectName() and judge.reason == "nosqianxi" and judge:isGood() then
+		addGameData(name, 1)
+		if getGameData(name) == 6 then addZhanGong(room, name) end
 	end
 end
 
@@ -1386,57 +1382,56 @@ zgfunc[sgs.GameOverJudge].callback.hlzms=function(room,player,data,name,result)
 end
 
 
--- hztx :: 虎子同心 :: 使用关兴张苞在父魂成功后，一个回合杀死至少三名反贼
---Fs:同韩当
+-- hztx :: 虎子同心 :: 使用旧关兴张苞在父魂成功后，一个回合杀死至少三名反贼
 zgfunc[sgs.Death].hztx=function(self, room, event, player, data, isowner, name)
-	if room:getOwner():getGeneralName()~='guanxingzhangbao' then return false end
+	if room:getOwner():getGeneralName()~='nos_guanxingzhangbao' then return false end
 	local damage=data:toDeath().damage
-	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName()
-		and damage.from:hasFlag("fuhun") and damage.to:getRole()=="rebel" then
-		addTurnData(name,1)
-		if getTurnData(name)==3 then addZhanGong(room,name) end
+	if damage and damage.from and damage.from:objectName() == room:getOwner():objectName()
+		and damage.from:hasFlag("nosfuhun") and damage.to:getRole()=="rebel" then
+		addTurnData(name, 1)
+		if getTurnData(name) == 3 then addZhanGong(room, name) end
 	end
 end
 
 
--- hztx :: 虎子同心 :: 使用关兴张苞在父魂成功后，一个回合杀死至少三名反贼
+-- hztx :: 虎子同心 :: 使用旧关兴张苞在父魂成功后，一个回合杀死至少三名反贼
 --
 zgfunc[sgs.GameOverJudge].callback.hztx=function(room,player,data,name,result)
-	if room:getOwner():getGeneralName()~='guanxingzhangbao' then return false end
+	if room:getOwner():getGeneralName()~='nos_guanxingzhangbao' then return false end
 	local damage=data:toDeath().damage
 	if damage and damage.from and damage.from:objectName()==room:getOwner():objectName()
-		and damage.from:hasFlag("fuhun") and damage.to:getRole()=="rebel" then
+		and damage.from:hasFlag("nosfuhun") and damage.to:getRole()=="rebel" then
 		addTurnData(name,1)
 		if getTurnData(name)==3 then addZhanGong(room,name) end
 	end
 end
 
 
--- rxbz :: 仁心布众 :: 使用刘备在一局游戏中，累计仁德至少30张牌
+-- rxbz :: 仁心布众 :: 使用刘备或旧刘备在一局游戏中，累计仁德至少30张牌
 --Fs:同韩当
 zgfunc[sgs.CardFinished].rxbz=function(self, room, event, player, data, isowner, name)
-	if room:getOwner():getGeneralName()~='liubei' then return false end
+	if room:getOwner():getGeneralName()~='liubei' and room:getOwner():getGeneralName()~='nos_liubei' then return false end
 	if not isowner then return false end
 	local use=data:toCardUse()
-	if use.from:objectName()==room:getOwner():objectName() and use.card:isKindOf("RendeCard") then
+	if use.from:objectName()==room:getOwner():objectName() and (use.card:isKindOf("RendeCard") or use.card:isKindOf("NosRendeCard")) then
 		for i=1, use.card:getSubcards():length(), 1 do
 			addGameData(name,1)
-			if getGameData(name)==30 then addZhanGong(room,name) end
+			if getGameData(name)==30 then addZhanGong(room, name) end
 		end
 	end
 end
 
 
--- wxwd :: 惟贤惟德 :: 使用刘备在一个回合内发动仁德给的牌不少于10张
+-- wxwd :: 惟贤惟德 :: 使用刘备或旧刘备在一个回合内发动仁德给的牌不少于10张
 --
 zgfunc[sgs.CardFinished].wxwd=function(self, room, event, player, data, isowner, name)
-	if room:getOwner():getGeneralName()~='liubei' then return false end
+	if room:getOwner():getGeneralName()~='liubei' and room:getOwner():getGeneralName()~='nos_liubei' then return false end
 	if not isowner then return false end
 	local use=data:toCardUse()
-	if use.from:objectName()==room:getOwner():objectName() and use.card:isKindOf("RendeCard") then
+	if use.from:objectName()==room:getOwner():objectName() and (use.card:isKindOf("RendeCard") or use.card:isKindOf("NosRendeCard")) then
 		for i=1, use.card:getSubcards():length(), 1 do
-			addTurnData(name,1)
-			if getTurnData(name)==10 then addZhanGong(room,name) end
+			addTurnData(name, 1)
+			if getTurnData(name)==10 then addZhanGong(room, name) end
 		end
 	end
 end
@@ -6018,7 +6013,7 @@ function useSkillCard(room,owner)
 		end
 	end
 end
---[[
+
 function useLuckyCard(room,owner)
 	if owner:hasSkill("tuntian") then return false end
 	local zgquery=db:first_row("select count(id) as num from zhangong where gained>0")
@@ -6049,7 +6044,7 @@ function useLuckyCard(room,owner)
 		end
 	end
 end
-]]
+
 function useHulaoCard(room,owner)
 	if room:getMode()~='04_1v3' or not owner:askForSkillInvoke("useHulaoCrad") then return false end
 	local generalnames=sgs.Sanguosha:getRandomGenerals(999)
@@ -6151,7 +6146,7 @@ function init_gamestart(self, room, event, player, data, isowner)
 				player:getKingdom(),getGameData("hegemony"),room:getMode())
 	end
 
-	--if enableLuckyCard==1 then useLuckyCard(room,owner) end
+	if enableLuckyCard==1 then useLuckyCard(room,owner) end
 	if enableSkillCard==1 then useSkillCard(room,owner) end
 	if enableHulaoCard==1 then useHulaoCard(room,owner) end
 
@@ -6450,6 +6445,16 @@ function initDB()
 	sqlexec("update zhangong set category='qun' where id='jwrs'")
 	-- 修正蔡文姬乱世歌姬
 	sqlexec("update zhangong set category='qun' where id='lsgj'")
+	
+	--修正技能描述
+	sqlexec("update zhangong set description='使用旧马岱在一局游戏中发动“潜袭”成功至少6次' where id='ajnf'")
+	sqlexec("update zhangong set description='使用旧关兴张苞在父魂成功后，一个回合杀死至少三名反贼' where id='hztx'")
+	sqlexec("update zhangong set description='使用旧韩当在一局游戏游戏中发动“解烦”救过队友孙权至少两次' where id='hztx'")
+	sqlexec("update zhangong set description='使用旧韩当在一局游戏中有角色濒死时发动“解烦”并出杀后均被闪避至少5次' where id='jjnh'")
+	sqlexec("update zhangong set description='使用旧王异在一局游戏中至少成功发动九次秘计并获胜。' where id='qmjj'")
+	sqlexec("update zhangong set description='使用刘备或旧刘备在一局游戏中，累计仁德至少30张牌' where id='rxbz'")
+	sqlexec("update zhangong set description='使用刘备或旧刘备在一个回合内发动仁德给的牌不少于10张' where id='wxwd'")
+
 
 	-- 所有武将的 获得N场胜利 取得相应战功的代码
 	--
@@ -6531,7 +6536,7 @@ sgs.LoadTranslationTable {
 	--["giveup"] = "立即认输并结束游戏",
 	["#enableZhangong"]="【<b><font color='green'>提示</font></b>】: 本局游戏开启了战功统计",
 	["#disableZhangong"]="【<b><font color='red'>提示</font></b>】: 本局游戏禁止了战功统计",
-	--["useLuckyCard"]  ="手气卡",
+	["useLuckyCard"]  ="手气卡",
 	["useHulaoCrad"]  ="点将卡",
 	["@chooseGeneral0"]  ="请为主公选将",
 	["@chooseGeneral1"]  ="请为先锋选将",
